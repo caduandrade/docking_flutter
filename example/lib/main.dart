@@ -1,3 +1,4 @@
+import 'package:docking/docking.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -26,6 +27,32 @@ class DockingExamplePage extends StatefulWidget {
 class _DockingExamplePageState extends State<DockingExamplePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center());
+    return Scaffold(
+        body: Container(child: _buildDocking(), padding: EdgeInsets.all(16)));
+  }
+
+  Widget _buildDocking() {
+    DockingLayout layout = DockingLayout(DockingRow([
+      _build(1, true),
+      DockingColumn([
+        _build(2, true),
+        DockingTabs([_build(3, false), _build(4, false), _build(5, false)]),
+        _build(6, true)
+      ])
+    ]));
+
+    return Docking(layout: layout);
+  }
+
+  DockingWidget _build(int value, bool decorate) {
+    BoxDecoration? decoration;
+    if (decorate) {
+      decoration = BoxDecoration(border: Border.all());
+    }
+    return DockingWidget(
+        name: value.toString(),
+        widget: Container(
+            child: Center(child: Text('Child $value')),
+            decoration: decoration));
   }
 }

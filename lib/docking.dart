@@ -1,5 +1,4 @@
 library docking;
 
-/// Docking
-class Docking {
-}
+export 'src/docking_layout.dart';
+export 'src/docking.dart';
