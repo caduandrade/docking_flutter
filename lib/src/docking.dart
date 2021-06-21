@@ -1,4 +1,6 @@
 import 'package:docking/src/docking_layout.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:tabbed_view/tabbed_view.dart';
@@ -49,7 +51,18 @@ class _DockingWidgetArea extends _DockingArea {
 
   @override
   Widget _build(BuildContext context) {
-    return dockingWidget.widget;
+    return Container(
+        child: Column(
+            children: [_buildTitleBar(), Expanded(child: dockingWidget.widget)],
+            crossAxisAlignment: CrossAxisAlignment.stretch),
+        decoration: BoxDecoration(border: Border.all()));
+  }
+
+  Widget _buildTitleBar() {
+    return Container(
+        child: Text(dockingWidget.name != null ? dockingWidget.name! : ''),
+        padding: EdgeInsets.all(4),
+        color: Colors.grey[200]);
   }
 }
 
