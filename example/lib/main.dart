@@ -32,20 +32,25 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
   }
 
   Widget _buildDocking() {
+    int v = 1;
     DockingLayout layout = DockingLayout(DockingRow([
-      _build(1),
+      _build(v++),
+      _build(v++),
       DockingColumn([
-        _build(2),
-        DockingTabs([_build(3), _build(4), _build(5)]),
-        _build(6)
+        DockingRow([
+          _build(v++),
+          DockingColumn([_build(v++), _build(v++)])
+        ]),
+        DockingTabs([_build(v++), _build(v++), _build(v++)]),
+        _build(v++)
       ])
     ]));
 
     return Docking(layout: layout);
   }
 
-  DockingWidget _build(int value) {
-    return DockingWidget(
+  DockingItem _build(int value) {
+    return DockingItem(
         name: value.toString(),
         widget: Container(child: Center(child: Text('Child $value'))));
   }
