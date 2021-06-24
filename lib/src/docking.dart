@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:docking/src/docking_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class Docking extends StatefulWidget {
   State<StatefulWidget> createState() => DockingState();
 }
 
+/// The [Docking] state.
 class DockingState extends State<Docking> {
   bool _dragging = false;
 
@@ -27,10 +29,16 @@ class DockingState extends State<Docking> {
     });
   }
 
+  /// Gets the [DockingLayout].
+  DockingLayout get layout => widget.layout;
+
   @override
   Widget build(BuildContext context) {
-    return _DockingInheritedWidget(
-        state: this, child: _DockingAreaWidget(widget.layout.root));
+    if (widget.layout.root != null) {
+      return _DockingInheritedWidget(
+          state: this, child: _DockingAreaWidget(widget.layout.root!));
+    }
+    return Container();
   }
 
   static DockingState? of(BuildContext context) {
@@ -40,7 +48,9 @@ class DockingState extends State<Docking> {
   }
 }
 
+/// The [InheritedWidget] for [Docking].
 class _DockingInheritedWidget extends InheritedWidget {
+  /// Builds a [_DockingInheritedWidget].
   _DockingInheritedWidget({required this.state, required Widget child})
       : super(child: child);
 
@@ -52,6 +62,7 @@ class _DockingInheritedWidget extends InheritedWidget {
 
 /// Represents a widget for [DockingArea].
 class _DockingAreaWidget extends StatelessWidget {
+  ///Builds a [_DockingAreaWidget].
   const _DockingAreaWidget(this.area);
 
   final DockingArea area;
@@ -205,7 +216,13 @@ class _DockingTabsWidgetState
     }
     TabbedWiewController controller = TabbedWiewController(tabs);
 
-    controller.selectedIndex = lastSelectedTabIndex;
+    if (lastSelectedTabIndex != null &&
+        lastSelectedTabIndex! >= widget.dockingTabs.children.length &&
+        widget.dockingTabs.children.length > 0) {
+      controller.selectedIndex = widget.dockingTabs.children.length - 1;
+    } else {
+      controller.selectedIndex = null;
+    }
 
     Widget content = TabbedWiew(
         controller: controller,
@@ -250,7 +267,7 @@ class _DropWidget extends StatelessWidget {
         Positioned.fill(child: areaContent),
         Positioned.fill(
             child: _DropAnchorWidget(
-                item: item, tabs: tabs, anchor: _DropAnchor.center))
+                item: item, tabs: tabs, position: DropPosition.center))
       ];
 
       double horizontalEdgeWidth = 30 * constraints.maxWidth / 100;
@@ -263,14 +280,14 @@ class _DropWidget extends StatelessWidget {
       if (availableCenterWidth >= _minimalSize) {
         children.add(Positioned(
             child: _DropAnchorWidget(
-                item: item, tabs: tabs, anchor: _DropAnchor.left),
+                item: item, tabs: tabs, position: DropPosition.left),
             width: horizontalEdgeWidth,
             bottom: 0,
             top: 0,
             left: 0));
         children.add(Positioned(
             child: _DropAnchorWidget(
-                item: item, tabs: tabs, anchor: _DropAnchor.right),
+                item: item, tabs: tabs, position: DropPosition.right),
             width: horizontalEdgeWidth,
             bottom: 0,
             top: 0,
@@ -279,14 +296,14 @@ class _DropWidget extends StatelessWidget {
       if (availableCenterHeight >= _minimalSize) {
         children.add(Positioned(
             child: _DropAnchorWidget(
-                item: item, tabs: tabs, anchor: _DropAnchor.top),
+                item: item, tabs: tabs, position: DropPosition.top),
             height: verticalEdgeHeight,
             top: 0,
             left: 0,
             right: 0));
         children.add(Positioned(
             child: _DropAnchorWidget(
-                item: item, tabs: tabs, anchor: _DropAnchor.bottom),
+                item: item, tabs: tabs, position: DropPosition.bottom),
             height: verticalEdgeHeight,
             bottom: 0,
             left: 0,
@@ -298,15 +315,12 @@ class _DropWidget extends StatelessWidget {
   }
 }
 
-/// The drop anchor in the [_DropWidget].
-enum _DropAnchor { top, bottom, left, right, center }
-
 class _DropAnchorWidget extends StatelessWidget {
-  const _DropAnchorWidget({this.item, this.tabs, required this.anchor});
+  const _DropAnchorWidget({this.item, this.tabs, required this.position});
 
   final DockingItem? item;
   final DockingTabs? tabs;
-  final _DropAnchor anchor;
+  final DropPosition position;
 
   @override
   Widget build(BuildContext context) {
@@ -318,10 +332,20 @@ class _DropAnchorWidget extends StatelessWidget {
               return item != data;
             }
             if (tabs != null) {
-              return anchor != _DropAnchor.center;
+              return position != DropPosition.center;
             }
           }
           return false;
+        },
+        onAccept: (DockingItem data) {
+          DockingState state = DockingState.of(context)!;
+          if (item != null) {
+            state.layout.rearrange(
+                draggedItem: data, dropArea: item!, dropPosition: position);
+          } else if (tabs != null) {
+            state.layout.rearrange(
+                draggedItem: data, dropArea: tabs!, dropPosition: position);
+          }
         });
   }
 

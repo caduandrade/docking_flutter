@@ -25,15 +25,14 @@ class DockingExamplePage extends StatefulWidget {
 }
 
 class _DockingExamplePageState extends State<DockingExamplePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(child: _buildDocking(), padding: EdgeInsets.all(16)));
-  }
+  late DockingLayout layout;
 
-  Widget _buildDocking() {
+  @override
+  void initState() {
+    super.initState();
+
     int v = 1;
-    DockingLayout layout = DockingLayout(DockingRow([
+    layout = DockingLayout(DockingRow([
       _build(v++),
       DockingColumn([
         DockingRow([
@@ -44,13 +43,18 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
         _build(v++)
       ])
     ]));
-
-    return Docking(layout: layout);
   }
 
   DockingItem _build(int value) {
     return DockingItem(
         name: value.toString(),
         widget: Container(child: Center(child: Text('Child $value'))));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Container(
+            child: Docking(layout: layout), padding: EdgeInsets.all(16)));
   }
 }
