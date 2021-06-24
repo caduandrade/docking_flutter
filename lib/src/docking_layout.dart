@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 /// Represents any area of the layout.
-class DockingArea {
+abstract class DockingArea {
   int _id = 0;
   DockingArea? _parent;
 
@@ -20,6 +20,9 @@ class DockingArea {
 
   @override
   int get hashCode => _id.hashCode;
+
+  /// Sets the id and parent of areas recursively in the hierarchy.
+  int _updateIdAndParent(DockingArea? parentArea, int nextId);
 }
 
 /// Represents an abstract area for a collection of widgets.
@@ -45,6 +48,16 @@ abstract class _DockingCollectionArea extends DockingArea {
     }
     return false;
   }
+
+  @override
+  int _updateIdAndParent(DockingArea? parentArea, int nextId) {
+    _id = nextId++;
+    _parent = parentArea;
+    for (DockingArea area in _children) {
+      nextId = area._updateIdAndParent(this, nextId);
+    }
+    return nextId;
+  }
 }
 
 /// Represents an area for a single widget.
@@ -54,6 +67,13 @@ class DockingItem extends DockingArea {
 
   final String? name;
   final Widget widget;
+
+  @override
+  int _updateIdAndParent(DockingArea? parentArea, int nextId) {
+    _id = nextId++;
+    _parent = parentArea;
+    return nextId;
+  }
 }
 
 /// Represents an area for a collection of widgets.
@@ -94,7 +114,7 @@ enum DropPosition { top, bottom, left, right, center }
 class DockingLayout {
   /// Builds a [DockingLayout].
   DockingLayout(DockingArea? root) : this._root = root {
-    _setIdsAndParents();
+    _updateIdAndParent();
   }
 
   /// The protected root of this layout.
@@ -103,23 +123,9 @@ class DockingLayout {
   /// The root of this layout.
   DockingArea? get root => _root;
 
-  /// Sets the id and parent of the areas.
-  void _setIdsAndParents() {
-    if (_root != null) {
-      _setIdAndParent(null, _root!, 1);
-    }
-  }
-
-  /// Sets the id and parent of a given area.
-  int _setIdAndParent(DockingArea? parentArea, DockingArea area, int nextId) {
-    area._id = nextId++;
-    area._parent = parentArea;
-    if (area is _DockingCollectionArea) {
-      area.forEach((child) {
-        nextId = _setIdAndParent(area, child, nextId);
-      });
-    }
-    return nextId;
+  /// Sets the id and parent of areas recursively in the hierarchy.
+  void _updateIdAndParent() {
+    _root?._updateIdAndParent(null, 1);
   }
 
   /// Rearranges the layout given a new location for a [DockingItem].
