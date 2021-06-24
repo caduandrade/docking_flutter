@@ -1,9 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 /// Represents any area of the layout.
-///
-/// It can be a single widget or a collection of widgets.
-/// There are 3 types of collection: column, row and stack.
 class DockingArea {
   int _id = 0;
   DockingArea? _parent;
@@ -25,14 +22,32 @@ class DockingArea {
   int get hashCode => _id.hashCode;
 }
 
-/// Indicates whether a class can have child areas
-mixin _DockingCollectionArea {
-  List<DockingArea> get children;
+/// Represents an abstract area for a collection of widgets.
+abstract class _DockingCollectionArea extends DockingArea {
+  _DockingCollectionArea(List<DockingArea> children)
+      : this._children = children;
 
-  bool _removeChild(DockingArea area);
+  final List<DockingArea> _children;
+
+  int get childrenCount => _children.length;
+
+  void forEach(void f(DockingArea child)) {
+    _children.forEach(f);
+  }
+
+  bool _removeChild(DockingArea area) {
+    _children.remove(area);
+    if (_children.length == 0) {
+      if (parent != null && parent is _DockingCollectionArea) {
+        return (parent as _DockingCollectionArea)._removeChild(this);
+      }
+      return true;
+    }
+    return false;
+  }
 }
 
-/// Represents a single widget.
+/// Represents an area for a single widget.
 class DockingItem extends DockingArea {
   /// Builds a [DockingItem].
   DockingItem({this.name, required this.widget});
@@ -41,69 +56,31 @@ class DockingItem extends DockingArea {
   final Widget widget;
 }
 
-/// Represents a collection of widgets.
+/// Represents an area for a collection of widgets.
 /// Children will be arranged horizontally.
-class DockingRow extends DockingArea with _DockingCollectionArea {
+class DockingRow extends _DockingCollectionArea {
   /// Builds a [DockingRow].
-  DockingRow(this.children);
-
-  @override
-  final List<DockingArea> children;
-
-  @override
-  bool _removeChild(DockingArea area) {
-    children.remove(area);
-    if (children.length == 0) {
-      if (parent != null && parent is _DockingCollectionArea) {
-        return (parent as _DockingCollectionArea)._removeChild(this);
-      }
-      return true;
-    }
-    return false;
-  }
+  DockingRow(List<DockingArea> children) : super(children);
 }
 
-/// Represents a collection of widgets.
+/// Represents an area for a collection of widgets.
 /// Children will be arranged vertically.
-class DockingColumn extends DockingArea with _DockingCollectionArea {
+class DockingColumn extends _DockingCollectionArea {
   /// Builds a [DockingColumn].
-  DockingColumn(this.children);
-
-  @override
-  final List<DockingArea> children;
-
-  @override
-  bool _removeChild(DockingArea area) {
-    children.remove(area);
-    if (children.length == 0) {
-      if (parent != null && parent is _DockingCollectionArea) {
-        return (parent as _DockingCollectionArea)._removeChild(this);
-      }
-      return true;
-    }
-    return false;
-  }
+  DockingColumn(List<DockingArea> children) : super(children);
 }
 
-/// Represents a collection of widgets.
+/// Represents an area for a collection of widgets.
 /// Children will be arranged in tabs.
-class DockingTabs extends DockingArea with _DockingCollectionArea {
+class DockingTabs extends _DockingCollectionArea {
   /// Builds a [DockingTabs].
-  DockingTabs(this.children);
+  DockingTabs(List<DockingItem> children) : super(children);
 
   @override
-  final List<DockingItem> children;
-
-  @override
-  bool _removeChild(DockingArea area) {
-    children.remove(area);
-    if (children.length == 0) {
-      if (parent != null && parent is _DockingCollectionArea) {
-        return (parent as _DockingCollectionArea)._removeChild(this);
-      }
-      return true;
-    }
-    return false;
+  void forEach(void f(DockingItem child)) {
+    _children.forEach((element) {
+      f(element as DockingItem);
+    });
   }
 }
 
@@ -127,7 +104,7 @@ class DockingLayout {
   DockingArea? get root => _root;
 
   /// Sets the id and parent of the areas.
-  _setIdsAndParents() {
+  void _setIdsAndParents() {
     if (_root != null) {
       _setIdAndParent(null, _root!, 1);
     }
@@ -138,15 +115,15 @@ class DockingLayout {
     area._id = nextId++;
     area._parent = parentArea;
     if (area is _DockingCollectionArea) {
-      for (DockingArea child in (area as _DockingCollectionArea).children) {
+      area.forEach((child) {
         nextId = _setIdAndParent(area, child, nextId);
-      }
+      });
     }
     return nextId;
   }
 
   /// Rearranges the layout given a new location for a [DockingItem].
-  rearrange(
+  void rearrange(
       {required DockingItem draggedItem,
       required DockingArea dropArea,
       required DropPosition dropPosition}) {
@@ -179,7 +156,7 @@ class DockingLayout {
     }
   }
 
-  _removeFromParent(DockingItem item) {
+  void _removeFromParent(DockingItem item) {
     if (item.parent == null) {
       _root = null;
     } else if (item.parent is _DockingCollectionArea) {
@@ -192,21 +169,21 @@ class DockingLayout {
     }
   }
 
-  _rearrangeOnCenter(
+  void _rearrangeOnCenter(
       {required DockingItem draggedItem, required DockingArea dropArea}) {
     if (dropArea is DockingItem) {
     } else if (dropArea is DockingTabs) {}
   }
 
-  _rearrangeOnBottom(
+  void _rearrangeOnBottom(
       {required DockingItem draggedItem, required DockingArea dropArea}) {}
 
-  _rearrangeOnTop(
+  void _rearrangeOnTop(
       {required DockingItem draggedItem, required DockingArea dropArea}) {}
 
-  _rearrangeOnLeft(
+  void _rearrangeOnLeft(
       {required DockingItem draggedItem, required DockingArea dropArea}) {}
 
-  _rearrangeOnRight(
+  void _rearrangeOnRight(
       {required DockingItem draggedItem, required DockingArea dropArea}) {}
 }

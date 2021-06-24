@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:docking/src/docking_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -84,17 +83,17 @@ class _DockingAreaWidget extends StatelessWidget {
 
   Widget _row(DockingRow row) {
     List<Widget> children = [];
-    for (DockingArea item in row.children) {
-      children.add(_DockingAreaWidget(item));
-    }
+    row.forEach((child) {
+      children.add(_DockingAreaWidget(child));
+    });
     return MultiSplitView(children: children, axis: Axis.horizontal);
   }
 
   Widget _column(DockingColumn column) {
     List<Widget> children = [];
-    for (DockingArea area in column.children) {
-      children.add(_DockingAreaWidget(area));
-    }
+    column.forEach((child) {
+      children.add(_DockingAreaWidget(child));
+    });
     return MultiSplitView(children: children, axis: Axis.vertical);
   }
 }
@@ -200,7 +199,7 @@ class _DockingTabsWidgetState
   @override
   void initState() {
     super.initState();
-    if (widget.dockingTabs.children.isNotEmpty) {
+    if (widget.dockingTabs.childrenCount > 0) {
       lastSelectedTabIndex = 0;
     }
   }
@@ -208,18 +207,18 @@ class _DockingTabsWidgetState
   @override
   Widget build(BuildContext context) {
     List<TabData> tabs = [];
-    for (DockingItem item in widget.dockingTabs.children) {
+    widget.dockingTabs.forEach((child) {
       tabs.add(TabData(
-          value: item,
-          text: item.name != null ? item.name! : '',
-          content: item.widget));
-    }
+          value: child,
+          text: child.name != null ? child.name! : '',
+          content: child.widget));
+    });
     TabbedWiewController controller = TabbedWiewController(tabs);
 
     if (lastSelectedTabIndex != null &&
-        lastSelectedTabIndex! >= widget.dockingTabs.children.length &&
-        widget.dockingTabs.children.length > 0) {
-      controller.selectedIndex = widget.dockingTabs.children.length - 1;
+        lastSelectedTabIndex! >= widget.dockingTabs.childrenCount &&
+        widget.dockingTabs.childrenCount > 0) {
+      controller.selectedIndex = widget.dockingTabs.childrenCount - 1;
     } else {
       controller.selectedIndex = null;
     }
