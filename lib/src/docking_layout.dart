@@ -32,19 +32,29 @@ abstract class _DockingCollectionArea extends DockingArea {
 
   final List<DockingArea> _children;
 
+  /// Gets the count of children.
   int get childrenCount => _children.length;
 
+  /// Applies the function [f] to each child of this collection in iteration
+  /// order.
   void forEach(void f(DockingArea child)) {
     _children.forEach(f);
   }
 
-  bool _removeChild(DockingArea area) {
-    _children.remove(area);
+  /// Removes a child from this collection.
+  ///
+  /// The return indicates if this collection is an empty layout root.
+  bool _removeChild(DockingArea child) {
+    child._parent = null;
+    _children.remove(child);
     if (_children.length == 0) {
       if (parent != null && parent is _DockingCollectionArea) {
         return (parent as _DockingCollectionArea)._removeChild(this);
       }
       return true;
+    } else if (_children.length == 1) {
+      DockingArea lastChild = _children.first;
+      //TODO se for == 1, mover child para o pai. Não faz sentido manter coleção só com 1.
     }
     return false;
   }
