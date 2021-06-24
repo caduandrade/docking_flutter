@@ -2,4 +2,8 @@
 
 # Docking
 
-Docking view under developing...
+Layout for placing widgets in docking areas and arrange them into split and tabbed views.
+
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_v1.png)
+
+*This package is still under developing*

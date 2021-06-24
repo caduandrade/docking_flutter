@@ -35,7 +35,6 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
     int v = 1;
     DockingLayout layout = DockingLayout(DockingRow([
       _build(v++),
-      _build(v++),
       DockingColumn([
         DockingRow([
           _build(v++),
