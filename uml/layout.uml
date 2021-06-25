@@ -1,0 +1,42 @@
+@startuml
+
+abstract class DockingArea #line:black {
+int: id
+parent: DockingArea?
+}
+
+class _DockingRoot #EEEEEE;line.dotted:gray;text:gray
+
+class _DockingCollectionArea #EEEEEE;line.dotted:gray;text:gray
+
+class DockingItem #line:black {
+name: String?
+widget: Widget
+}
+
+class DockingRow #line:black {
+childrenCount: int
+DockingRow(children: List<DockingArea>)
+forEach(f: void (DockingArea child))
+}
+
+class DockingColumn #line:black {
+childrenCount: int
+DockingColumn(children: List<DockingArea>)
+forEach(f: void (DockingArea child))
+}
+
+class DockingTabs #line:black {
+childrenCount: int
+DockingTabs(children: List<DockingItem>)
+forEach(f: void (DockingItem child))
+}
+
+DockingArea <|-- _DockingRoot #line:black
+DockingArea <|-- _DockingCollectionArea #line:black
+DockingArea <|-- DockingItem #line:black
+_DockingCollectionArea <|-- DockingRow #line:black
+_DockingCollectionArea <|-- DockingColumn #line:black
+_DockingCollectionArea <|--  DockingTabs #line:black
+
+@enduml
