@@ -32,7 +32,7 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
     super.initState();
 
     int v = 1;
-    layout = DockingLayout(DockingRow([
+    layout = DockingLayout(root:DockingRow([
       _build(v++),
       DockingColumn([
         DockingRow([

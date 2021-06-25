@@ -8,6 +8,9 @@ abstract class DockingArea {
   /// Gets the id.
   int get id => _id;
 
+  /// Gets the type of this area.
+  DockingAreaType get type;
+
   /// Gets the parent of this area or [NULL] if it is the root.
   DockingArea? get parent => _parent;
 
@@ -53,6 +56,9 @@ class _DockingRoot extends DockingArea {
     _child?._updateIdAndParent(this, nextId);
     return nextId;
   }
+
+  @override
+  DockingAreaType get type => DockingAreaType.root;
 }
 
 /// Represents an abstract area for a collection of widgets.
@@ -139,6 +145,9 @@ class DockingItem extends DockingArea {
 
   final String? name;
   final Widget widget;
+
+  @override
+  DockingAreaType get type => DockingAreaType.item;
 }
 
 /// Represents an area for a collection of widgets.
@@ -146,6 +155,9 @@ class DockingItem extends DockingArea {
 class DockingRow extends _DockingCollectionArea {
   /// Builds a [DockingRow].
   DockingRow(List<DockingArea> children) : super(children);
+
+  @override
+  DockingAreaType get type => DockingAreaType.row;
 }
 
 /// Represents an area for a collection of widgets.
@@ -153,6 +165,9 @@ class DockingRow extends _DockingCollectionArea {
 class DockingColumn extends _DockingCollectionArea {
   /// Builds a [DockingColumn].
   DockingColumn(List<DockingArea> children) : super(children);
+
+  @override
+  DockingAreaType get type => DockingAreaType.column;
 }
 
 /// Represents an area for a collection of widgets.
@@ -167,7 +182,13 @@ class DockingTabs extends _DockingCollectionArea {
       f(element as DockingItem);
     });
   }
+
+  @override
+  DockingAreaType get type => DockingAreaType.tabs;
 }
+
+/// Represents the [DockingArea] type.
+enum DockingAreaType { root, item, tabs, row, column }
 
 /// Represents all positions available for a drop event that will
 /// rearrange the layout.
@@ -178,7 +199,7 @@ enum DropPosition { top, bottom, left, right, center }
 /// There must be a single root that can be any [DockingArea].
 class DockingLayout {
   /// Builds a [DockingLayout].
-  DockingLayout(DockingArea? root) : this._root = _DockingRoot(root) {
+  DockingLayout({DockingArea? root}) : this._root = _DockingRoot(root) {
     _updateIdAndParent();
   }
 
@@ -190,7 +211,7 @@ class DockingLayout {
 
   /// Sets the id and parent of areas recursively in the hierarchy.
   void _updateIdAndParent() {
-    _root._updateIdAndParent(null, 1);
+    _root._updateIdAndParent(null, 0);
   }
 
   /// Rearranges the layout given a new location for a [DockingItem].
