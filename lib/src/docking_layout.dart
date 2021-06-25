@@ -57,6 +57,12 @@ abstract class DockingParentArea extends DockingArea {
     _children.forEach(f);
   }
 
+  /// Applies the function [f] to each child of this collection in iteration
+  /// reversed order.
+  void forEachReversed(void f(DockingArea child)) {
+    _children.reversed.forEach(f);
+  }
+
   void _checkSameType(DockingArea child) {
     if (child.runtimeType == this.runtimeType) {
       throw ArgumentError(
@@ -71,13 +77,22 @@ abstract class DockingParentArea extends DockingArea {
   }
 
   void _replaceChild(DockingArea oldChild, DockingArea newChild) {
-    _checkSameType(newChild);
     int index = _children.indexOf(oldChild);
     if (index == -1) {
       throw ArgumentError('The oldChild do not belong to this parent.');
     }
-    _children[index] = newChild;
-    newChild._parent = this;
+    if (this.runtimeType == newChild.runtimeType) {
+      (newChild as DockingParentArea).forEachReversed((child) {
+        _children.insert(index, child);
+        child._parent = this;
+      });
+      _children.remove(oldChild);
+      newChild._parent = null;
+      newChild._id = -1;
+    } else {
+      _children[index] = newChild;
+      newChild._parent = this;
+    }
     oldChild._parent = null;
     oldChild._id = -1;
   }

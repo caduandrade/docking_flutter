@@ -115,5 +115,34 @@ void main() {
       layout.remove(itemB);
       testDockingItem(layout.root!, 3, 'a', false);
     });
+
+    test('row column row item', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingItem itemC = dockingItem('c');
+      DockingItem itemD = dockingItem('d');
+      DockingLayout layout = DockingLayout(
+          root: DockingRow([
+        itemA,
+        DockingColumn([
+          DockingRow([itemB, itemC]),
+          itemD
+        ])
+      ]));
+      layout.remove(itemD);
+      expect(layout.root, isNotNull);
+      expect(layout.root!.type, DockingAreaType.row);
+      DockingRow row = layout.root as DockingRow;
+      expect(row.childrenCount, 3);
+      testDockingItem(row.childAt(0), 2, 'a', true);
+      testDockingItem(row.childAt(1), 5, 'b', true);
+      testDockingItem(row.childAt(2), 6, 'c', true);
+      layout.remove(itemB);
+      expect(row.childrenCount, 2);
+      testDockingItem(row.childAt(0), 2, 'a', true);
+      testDockingItem(row.childAt(1), 6, 'c', true);
+      layout.remove(itemC);
+      testDockingItem(layout.root!, 2, 'a', false);
+    });
   });
 }
