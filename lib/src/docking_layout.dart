@@ -283,5 +283,4 @@ class DockingLayout {
       {required DockingItem draggedItem, required DockingArea dropArea}) {}
 
   //TODO validar id de novas áreas? atualizar id?
-  //TODO simplify pode tentar adicionar row dentro de row?
 }
