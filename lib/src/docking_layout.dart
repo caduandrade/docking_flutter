@@ -22,7 +22,37 @@ abstract class DockingArea {
   int get hashCode => _id.hashCode;
 
   /// Sets the id and parent of areas recursively in the hierarchy.
-  int _updateIdAndParent(DockingArea? parentArea, int nextId);
+  int _updateIdAndParent(DockingArea? parentArea, int nextId) {
+    _id = nextId++;
+    _parent = parentArea;
+    return nextId;
+  }
+}
+
+class _DockingRoot extends DockingArea {
+  _DockingRoot(DockingArea? child) : this._child = child;
+
+  DockingArea? _child;
+
+  DockingArea? get child => _child;
+
+  _removeChild(DockingArea child) {
+    child._parent = null;
+    _child = null;
+  }
+
+  void _replaceChild(DockingArea oldChild, DockingArea newChild) {
+    _child = newChild;
+    newChild._parent = this;
+    oldChild._parent = null;
+  }
+
+  @override
+  int _updateIdAndParent(DockingArea? parentArea, int nextId) {
+    nextId = super._updateIdAndParent(parentArea, nextId);
+    _child?._updateIdAndParent(this, nextId);
+    return nextId;
+  }
 }
 
 /// Represents an abstract area for a collection of widgets.
@@ -41,22 +71,54 @@ abstract class _DockingCollectionArea extends DockingArea {
     _children.forEach(f);
   }
 
+  void _addChild(DockingArea child) {
+    _children.add(child);
+    child._parent = this;
+  }
+
+  void _replaceChild(DockingArea oldChild, DockingArea newChild) {
+    int index = _children.indexOf(oldChild);
+    if (index == -1) {
+      //TODO error
+    }
+    _children.add(newChild);
+    newChild._parent = this;
+    oldChild._parent = null;
+    _children.remove(oldChild);
+  }
+
   /// Removes a child from this collection.
   ///
   /// The return indicates if this collection is an empty layout root.
-  bool _removeChild(DockingArea child) {
+  void _removeChild(DockingArea child) {
     child._parent = null;
     _children.remove(child);
     if (_children.length == 0) {
-      if (parent != null && parent is _DockingCollectionArea) {
-        return (parent as _DockingCollectionArea)._removeChild(this);
+      if (parent == null) {
+        throw StateError('_DockingCollectionArea parent should not be null.');
+      } else {
+        if (parent is _DockingCollectionArea) {
+          (parent as _DockingCollectionArea)._removeChild(this);
+        } else if (parent is _DockingRoot) {
+          (parent as _DockingRoot)._removeChild(this);
+        } else {
+          //TODO tipo não reconhecido
+        }
       }
-      return true;
     } else if (_children.length == 1) {
       DockingArea lastChild = _children.first;
-      //TODO se for == 1, mover child para o pai. Não faz sentido manter coleção só com 1.
+      if (parent == null) {
+        throw StateError('_DockingCollectionArea parent should not be null.');
+      } else {
+        if (parent is _DockingCollectionArea) {
+          (parent as _DockingCollectionArea)._replaceChild(this, lastChild);
+        } else if (parent is _DockingRoot) {
+          (parent as _DockingRoot)._replaceChild(this, lastChild);
+        } else {
+          //TODO tipo não reconhecido
+        }
+      }
     }
-    return false;
   }
 
   @override
@@ -77,13 +139,6 @@ class DockingItem extends DockingArea {
 
   final String? name;
   final Widget widget;
-
-  @override
-  int _updateIdAndParent(DockingArea? parentArea, int nextId) {
-    _id = nextId++;
-    _parent = parentArea;
-    return nextId;
-  }
 }
 
 /// Represents an area for a collection of widgets.
@@ -123,19 +178,19 @@ enum DropPosition { top, bottom, left, right, center }
 /// There must be a single root that can be any [DockingArea].
 class DockingLayout {
   /// Builds a [DockingLayout].
-  DockingLayout(DockingArea? root) : this._root = root {
+  DockingLayout(DockingArea? root) : this._root = _DockingRoot(root) {
     _updateIdAndParent();
   }
 
   /// The protected root of this layout.
-  DockingArea? _root;
+  _DockingRoot _root;
 
   /// The root of this layout.
-  DockingArea? get root => _root;
+  DockingArea? get root => _root.child;
 
   /// Sets the id and parent of areas recursively in the hierarchy.
   void _updateIdAndParent() {
-    _root?._updateIdAndParent(null, 1);
+    _root._updateIdAndParent(null, 1);
   }
 
   /// Rearranges the layout given a new location for a [DockingItem].
@@ -174,11 +229,11 @@ class DockingLayout {
 
   void _removeFromParent(DockingItem item) {
     if (item.parent == null) {
-      _root = null;
+      throw StateError('DockingItem parent should not be null.');
+    } else if (item.parent is _DockingRoot) {
+      (item as _DockingRoot)._removeChild(item);
     } else if (item.parent is _DockingCollectionArea) {
-      if ((item.parent as _DockingCollectionArea)._removeChild(item)) {
-        _root = null;
-      }
+      (item.parent as _DockingCollectionArea)._removeChild(item);
     } else {
       throw ArgumentError(
           'It is not possible to remove DockingItem from its parent.');
