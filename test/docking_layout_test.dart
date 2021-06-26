@@ -8,7 +8,7 @@ void main() {
       DockingLayout layout = DockingLayout(root: dockingItem('a'));
 
       expect(layout.root, isNotNull);
-      testDockingItem(layout.root!, 1, 'a', false);
+      testDockingItem(layout.root!, id:1, name:'a', hasParent: false);
     });
 
     test('row', () {
@@ -35,8 +35,8 @@ void main() {
       expect(layout.root!.id, 1);
       DockingColumn column = layout.root! as DockingColumn;
       expect(column.childrenCount, 2);
-      testDockingItem(column.childAt(0), 2, 'a', true);
-      testDockingItem(column.childAt(1), 3, 'b', true);
+      testDockingItem(column.childAt(0), id:2,name: 'a', hasParent:true);
+      testDockingItem(column.childAt(1), id:3, name:'b',hasParent: true);
     });
   });
 
@@ -67,7 +67,7 @@ void main() {
       DockingRow row = layout.root as DockingRow;
       expect(row.childrenCount, 2);
       layout.remove(itemB);
-      testDockingItem(layout.root!, 2, 'a', false);
+      testDockingItem(layout.root!,id: 2, name:'a',hasParent: false);
     });
 
     test('column item', () {
@@ -81,7 +81,7 @@ void main() {
       DockingColumn column = layout.root as DockingColumn;
       expect(column.childrenCount, 2);
       layout.remove(itemB);
-      testDockingItem(layout.root!, 2, 'a', false);
+      testDockingItem(layout.root!,id: 2,name: 'a',hasParent: false);
     });
 
     test('tabs item', () {
@@ -95,7 +95,7 @@ void main() {
       DockingTabs tabs = layout.root as DockingTabs;
       expect(tabs.childrenCount, 2);
       layout.remove(itemB);
-      testDockingItem(layout.root!, 2, 'a', false);
+      testDockingItem(layout.root!, id:2,name: 'a',hasParent: false);
     });
 
     test('column row item', () {
@@ -113,7 +113,7 @@ void main() {
       DockingRow row = layout.root as DockingRow;
       expect(row.childrenCount, 2);
       layout.remove(itemB);
-      testDockingItem(layout.root!, 3, 'a', false);
+      testDockingItem(layout.root!,id: 3, name:'a',hasParent: false);
     });
 
     test('row column row item', () {
@@ -134,15 +134,15 @@ void main() {
       expect(layout.root!.type, DockingAreaType.row);
       DockingRow row = layout.root as DockingRow;
       expect(row.childrenCount, 3);
-      testDockingItem(row.childAt(0), 2, 'a', true);
-      testDockingItem(row.childAt(1), 5, 'b', true);
-      testDockingItem(row.childAt(2), 6, 'c', true);
+      testDockingItem(row.childAt(0),id: 2,name: 'a',hasParent: true);
+      testDockingItem(row.childAt(1), id:5, name:'b', hasParent:true);
+      testDockingItem(row.childAt(2),id: 6,name: 'c',hasParent: true);
       layout.remove(itemB);
       expect(row.childrenCount, 2);
-      testDockingItem(row.childAt(0), 2, 'a', true);
-      testDockingItem(row.childAt(1), 6, 'c', true);
+      testDockingItem(row.childAt(0), id:2,name: 'a',hasParent: true);
+      testDockingItem(row.childAt(1),id: 6,name: 'c', hasParent:true);
       layout.remove(itemC);
-      testDockingItem(layout.root!, 2, 'a', false);
+      testDockingItem(layout.root!,id: 2, name:'a',hasParent: false);
     });
   });
 }

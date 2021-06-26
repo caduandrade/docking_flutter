@@ -3,16 +3,30 @@ import 'package:flutter/widgets.dart';
 /// Represents any area of the layout.
 abstract class DockingArea {
   int _id = -1;
-  DockingParentArea? _parent;
 
   /// Gets the id.
   int get id => _id;
 
-  /// Gets the type of this area.
-  DockingAreaType get type;
+  DockingParentArea? _parent;
 
   /// Gets the parent of this area or [NULL] if it is the root.
   DockingParentArea? get parent => _parent;
+
+  /// Gets the type of this area.
+  DockingAreaType get type;
+
+  /// Gets the level in the layout hierarchy.
+  ///
+  /// Return [0] if root (null parent).
+  int get level {
+    int l = 0;
+    DockingParentArea? p = _parent;
+    while (p != null) {
+      l++;
+      p = p._parent;
+    }
+    return l;
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -41,6 +55,7 @@ abstract class DockingParentArea extends DockingArea {
     if (this._children.length < 2) {
       throw ArgumentError('Insufficient number of children');
     }
+    //TODO verificar se veio de outro layout?
   }
 
   final List<DockingArea> _children;
@@ -71,12 +86,15 @@ abstract class DockingParentArea extends DockingArea {
   }
 
   void _addChild(DockingArea child) {
+    //TODO e o id?
+    //TODO verificar se veio de outro layout?
     _checkSameType(child);
     _children.add(child);
     child._parent = this;
   }
 
   void _replaceChild(DockingArea oldChild, DockingArea newChild) {
+    //TODO verificar se veio de outro layout?
     int index = _children.indexOf(oldChild);
     if (index == -1) {
       throw ArgumentError('The oldChild do not belong to this parent.');
@@ -221,6 +239,7 @@ class DockingLayout {
 
   /// Removes a [DockingItem] from this layout.
   void remove(DockingItem item) {
+    //TODO dispose bool? esse com _ sem dispose
     if (item.parent == null) {
       // must be the root
       if (_root == item) {
@@ -260,6 +279,7 @@ class DockingLayout {
         parent._replaceChild(node, singleChild);
       }
     }
+    node._parent = null;
     node._parent = null;
     node._id = -1;
   }
