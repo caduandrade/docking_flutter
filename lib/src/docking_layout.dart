@@ -4,7 +4,9 @@ import 'package:flutter/widgets.dart';
 abstract class DockingArea {
   int _id = -1;
 
-  /// Gets the id.
+  /// Gets the id within the layout.
+  ///
+  /// If the area is outside the layout, the value will be [-1].
   int get id => _id;
 
   DockingParentArea? _parent;
@@ -14,6 +16,31 @@ abstract class DockingArea {
 
   /// Gets the type of this area.
   DockingAreaType get type;
+
+  /// Gets the acronym for type.
+  String get _typeAcronym {
+    if (type == DockingAreaType.item) {
+      return 'I';
+    } else if (type == DockingAreaType.column) {
+      return 'C';
+    } else if (type == DockingAreaType.row) {
+      return 'R';
+    } else if (type == DockingAreaType.tabs) {
+      return 'T';
+    }
+    throw StateError('DockingAreaType not recognized: ' + type.toString());
+  }
+
+  /// Gets the path in the layout hierarchy.
+  String get path {
+    String _path = _typeAcronym;
+    DockingParentArea? p = _parent;
+    while (p != null) {
+      _path = p._typeAcronym + _path;
+      p = p._parent;
+    }
+    return _path;
+  }
 
   /// Gets the level in the layout hierarchy.
   ///

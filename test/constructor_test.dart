@@ -5,9 +5,10 @@ import 'test_util.dart';
 void main() {
   group('constructor', () {
     test('DockingItem', () {
-      testDockingItem(dockingItem(null), id: -1, hasParent: false, level: -1);
+      testDockingItem(dockingItem(null),
+          id: -1, hasParent: false, level: 0, path: 'I');
       testDockingItem(dockingItem('a'),
-          id: -1, name: 'a', hasParent: false, level: -1);
+          id: -1, name: 'a', hasParent: false, level: 0, path: 'I');
     });
   });
 
