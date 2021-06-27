@@ -25,23 +25,66 @@ class DockingDemoPage extends StatefulWidget {
 }
 
 class _DockingDemoPageState extends State<DockingDemoPage> {
-  DockingItem _build(int value) {
-    return DockingItem(
-        name: value.toString(),
-        widget: Container(child: Center(child: Text('Child $value'))));
-  }
-
-  Widget _build2(int value) {
+  Widget _build(int value) {
     return Container(child: Center(child: Text('Child $value')));
   }
 
   @override
   Widget build(BuildContext context) {
+    Docking docking = _buildRCT();
+
+    return Scaffold(
+        body: Container(
+            child: Center(
+                child: SizedBox(child: docking, width: 500, height: 400)),
+            padding: EdgeInsets.all(16)));
+  }
+
+  Docking _buildR() {
     int v = 1;
-    Widget child1 = _build2(v++);
-    Widget child2 = _build2(v++);
-    Widget child3 = _build2(v++);
-    Widget child4 = _build2(v++);
+    Widget child1 = _build(v++);
+    Widget child2 = _build(v++);
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingItem(name: '2', widget: child2)
+    ]));
+    Docking docking = Docking(layout: layout);
+    return docking;
+  }
+
+  Docking _buildC() {
+    int v = 1;
+    Widget child1 = _build(v++);
+    Widget child2 = _build(v++);
+    DockingLayout layout = DockingLayout(
+        root: DockingColumn([
+      DockingItem(name: '1', widget: child1),
+      DockingItem(name: '2', widget: child2)
+    ]));
+    Docking docking = Docking(layout: layout);
+    return docking;
+  }
+
+  Docking _buildT() {
+    int v = 1;
+    Widget child1 = _build(v++);
+    Widget child2 = _build(v++);
+    DockingLayout layout = DockingLayout(
+        root: DockingTabs([
+      DockingItem(name: '1', widget: child1),
+      DockingItem(name: '2', widget: child2)
+    ]));
+    Docking docking = Docking(layout: layout);
+    return docking;
+  }
+
+  Docking _buildRCT() {
+    int v = 1;
+    Widget child1 = _build(v++);
+    Widget child2 = _build(v++);
+    Widget child3 = _build(v++);
+    Widget child4 = _build(v++);
     DockingLayout layout = DockingLayout(
         root: DockingRow([
       DockingItem(name: '1', widget: child1),
@@ -54,7 +97,6 @@ class _DockingDemoPageState extends State<DockingDemoPage> {
       ])
     ]));
     Docking docking = Docking(layout: layout);
-    return Scaffold(
-        body: Container(child: docking, padding: EdgeInsets.all(16)));
+    return docking;
   }
 }

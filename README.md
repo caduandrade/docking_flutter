@@ -15,3 +15,60 @@ The root is single and can be any area.
 
 ![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_layout_uml_v1.png)
 
+### Row
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingItem(name: '2', widget: child2)
+    ]));
+    Docking docking = Docking(layout: layout);
+```
+
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/row_v1.png)
+
+### Column
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingColumn([
+      DockingItem(name: '1', widget: child1),
+      DockingItem(name: '2', widget: child2)
+    ]));
+    Docking docking = Docking(layout: layout);
+```
+
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/column_v1.png)
+
+### Tabs
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingTabs([
+          DockingItem(name: '1', widget: child1),
+          DockingItem(name: '2', widget: child2)
+        ]));
+    Docking docking = Docking(layout: layout);
+```
+
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/tabs_v1.png)
+
+### Combined
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingColumn([
+        DockingItem(name: '2', widget: child2),
+        DockingTabs([
+          DockingItem(name: '3', widget: child3),
+          DockingItem(name: '4', widget: child4)
+        ])
+      ])
+    ]));
+    Docking docking = Docking(layout: layout);
+```
+
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/combined_v1.png)
