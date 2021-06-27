@@ -120,6 +120,22 @@ abstract class DockingParentArea extends DockingArea {
     _children.reversed.forEach(f);
   }
 
+  void _addChildBefore(DockingArea newChild, DockingArea indexChild) {
+    int index = _children.indexOf(indexChild);
+    if (index == -1) {
+      throw ArgumentError('The indexChild do not belong to this parent.');
+    }
+    _children.insert(index, newChild);
+  }
+
+  void _addChildAfter(DockingArea newChild, DockingArea indexChild) {
+    int index = _children.indexOf(indexChild);
+    if (index == -1) {
+      throw ArgumentError('The indexChild do not belong to this parent.');
+    }
+    _children.insert(index + 1, newChild);
+  }
+
   void _checkSameType(DockingArea child) {
     if (child.runtimeType == this.runtimeType) {
       throw ArgumentError(
@@ -230,6 +246,9 @@ class DockingLayout {
 
   /// Throws error if [DockingArea] does not belong to this layout.
   void _validade(DockingArea area) {
+    if (area.layoutIndex == -1) {
+      throw ArgumentError('DockingArea does not belong to this layout.');
+    }
     if (_contains(area) == false) {
       throw ArgumentError('DockingArea does not belong to this layout.');
     }
@@ -238,29 +257,29 @@ class DockingLayout {
   /// Rearranges the layout given a new location for a [DockingItem].
   void move(
       {required DockingItem draggedItem,
-      required DockingArea dropArea,
+      required DockingArea targetArea,
       required DropPosition dropPosition}) {
-    if (draggedItem == dropArea) {
+    if (draggedItem == targetArea) {
       throw ArgumentError(
           'Argument draggedItem cannot be the same as argument dropArea. A DockingItem cannot be rearranged on itself.');
     }
-    remove(draggedItem);
-    _validade(dropArea);
+    _remove(draggedItem, !(draggedItem.parent is DockingTabs));
+    _validade(targetArea);
     switch (dropPosition) {
       case DropPosition.center:
-        _rearrangeOnCenter(draggedItem: draggedItem, dropArea: dropArea);
+        _rearrangeOnCenter(draggedItem: draggedItem, targetArea: targetArea);
         break;
       case DropPosition.bottom:
-        _rearrangeOnBottom(draggedItem: draggedItem, dropArea: dropArea);
+        _rearrangeOnBottom(draggedItem: draggedItem, targetArea: targetArea);
         break;
       case DropPosition.top:
-        _rearrangeOnTop(draggedItem: draggedItem, dropArea: dropArea);
+        _rearrangeOnTop(draggedItem: draggedItem, dropArea: targetArea);
         break;
       case DropPosition.left:
-        _rearrangeOnLeft(draggedItem: draggedItem, dropArea: dropArea);
+        _rearrangeOnLeft(draggedItem: draggedItem, dropArea: targetArea);
         break;
       case DropPosition.right:
-        _rearrangeOnRight(draggedItem: draggedItem, dropArea: dropArea);
+        _rearrangeOnRight(draggedItem: draggedItem, dropArea: targetArea);
         break;
     }
     _updateLayoutIndexAndParent();
@@ -268,8 +287,13 @@ class DockingLayout {
 
   /// Removes a [DockingItem] from this layout.
   void remove(DockingItem item) {
+    _remove(item, true);
+  }
+
+  /// Removes a [DockingItem] from this layout.
+  void _remove(DockingItem item, bool simplify) {
     _validade(item);
-    bool needUpdataLayout = false;
+    bool needUpdateLayout = false;
     if (item.parent == null) {
       // must be the root
       if (_root == item) {
@@ -281,10 +305,12 @@ class DockingLayout {
       // is a child
       DockingParentArea parent = item.parent!;
       parent._children.remove(item);
-      needUpdataLayout = !_simplify(parent);
+      if (simplify) {
+        needUpdateLayout = !_simplify(parent);
+      }
     }
     item._dispose();
-    if (needUpdataLayout) {
+    if (needUpdateLayout) {
       _updateLayoutIndexAndParent();
     }
   }
@@ -295,6 +321,7 @@ class DockingLayout {
   /// The return indicates whether the layout index of each [DockingArea]
   /// has been updated
   bool _simplify(DockingParentArea node) {
+    print('filho: ' + node._children.length.toString());
     if (node._children.length == 1) {
       DockingArea singleChild = node._children.removeAt(0);
       if (node.parent == null) {
@@ -341,24 +368,52 @@ class DockingLayout {
   }
 
   void _rearrangeOnCenter(
-      {required DockingItem draggedItem, required DockingArea dropArea}) {
-    if (dropArea is DockingItem) {
-      DockingItem targetItem = dropArea;
-      DockingTabs tabs = DockingTabs([targetItem, draggedItem]);
+      {required DockingItem draggedItem, required DockingArea targetArea}) {
+    if (targetArea is DockingItem) {
+      DockingItem targetItem = targetArea;
+      DockingTabs newTabs = DockingTabs([targetItem, draggedItem]);
       if (_root == targetItem) {
-        _root = tabs;
+        _root = newTabs;
       } else {
         DockingParentArea targetParent = targetItem.parent!;
-        _replaceChild(targetParent, targetItem, tabs);
+        _replaceChild(targetParent, targetItem, newTabs);
       }
-    } else if (dropArea is DockingTabs) {
-      DockingTabs tabs = dropArea;
-      tabs._children.add(draggedItem);
+    } else if (targetArea is DockingTabs) {
+      DockingTabs targetTabs = targetArea;
+      targetTabs._children.add(draggedItem);
     }
   }
 
   void _rearrangeOnBottom(
-      {required DockingItem draggedItem, required DockingArea dropArea}) {}
+      {required DockingItem draggedItem, required DockingArea targetArea}) {
+    if (targetArea is DockingItem) {
+      DockingItem targetItem = targetArea;
+      if (targetItem.parent == null) {
+        // must be the root
+        _root = DockingColumn([targetItem, draggedItem]);
+      } else if (targetItem.parent is DockingColumn) {
+        DockingColumn parentTargetItem = targetItem.parent! as DockingColumn;
+        parentTargetItem._addChildAfter(draggedItem, targetItem);
+      } else {
+        DockingColumn newColumn = DockingColumn([targetItem, draggedItem]);
+        _replaceChild(targetItem.parent!, targetItem, newColumn);
+      }
+    } else if (targetArea is DockingTabs) {
+      if (targetArea.parent == null) {
+        // must be the root
+        _root = DockingColumn([targetArea, draggedItem]);
+      } else {
+        DockingParentArea parentTarget = targetArea.parent!;
+        DockingColumn newColumn = DockingColumn([targetArea, draggedItem]);
+        _replaceChild(parentTarget, targetArea, newColumn);
+      }
+      print(draggedItem.layoutIndex);
+      print(draggedItem.parent);
+      if (draggedItem.parent is DockingTabs) {
+        _simplify(draggedItem.parent!);
+      }
+    }
+  }
 
   void _rearrangeOnTop(
       {required DockingItem draggedItem, required DockingArea dropArea}) {}

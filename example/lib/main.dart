@@ -43,6 +43,7 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
         _build(v++)
       ])
     ]));
+    layout=DockingLayout(root:DockingTabs([_build(v++), _build(v++)]));
   }
 
   DockingItem _build(int value) {

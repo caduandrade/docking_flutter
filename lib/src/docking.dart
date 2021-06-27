@@ -343,10 +343,10 @@ class _DropAnchorWidget extends StatelessWidget {
           DockingState state = DockingState.of(context)!;
           if (item != null) {
             state.layout.move(
-                draggedItem: data, dropArea: item!, dropPosition: position);
+                draggedItem: data, targetArea: item!, dropPosition: position);
           } else if (tabs != null) {
             state.layout.move(
-                draggedItem: data, dropArea: tabs!, dropPosition: position);
+                draggedItem: data, targetArea: tabs!, dropPosition: position);
           }
         });
   }
