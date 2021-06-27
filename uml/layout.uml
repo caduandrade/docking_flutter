@@ -1,30 +1,32 @@
 @startuml
 
-abstract class DockingArea #line:black {
+class DropArea << (M,lightgray) >>  #line:black
+
+abstract class DockingArea << (C,lightgray) >> #line:black {
 int: id
 parent: DockingParentArea?
 }
 
-class DockingParentArea #line:black {
+abstract class DockingParentArea << (C,lightgray) >> #line:black {
 childrenCount: int
 }
 
-class DockingItem #line:black {
+class DockingItem << (C,lightgray) >> #line:black {
 name: String?
 widget: Widget
 }
 
-class DockingRow #line:black {
+class DockingRow << (C,lightgray) >> #line:black {
 DockingRow(children: List<DockingArea>)
 forEach(f: void (DockingArea child))
 }
 
-class DockingColumn #line:black {
+class DockingColumn << (C,lightgray) >> #line:black {
 DockingColumn(children: List<DockingArea>)
 forEach(f: void (DockingArea child))
 }
 
-class DockingTabs #line:black {
+class DockingTabs << (C,lightgray) >> #line:black {
 DockingTabs(children: List<DockingItem>)
 forEach(f: void (DockingItem child))
 }
@@ -34,5 +36,7 @@ DockingArea <|-- DockingItem #line:black
 DockingParentArea <|-- DockingRow #line:black
 DockingParentArea <|-- DockingColumn #line:black
 DockingParentArea <|--  DockingTabs #line:black
+DropArea <|-- DockingItem #line:black
+DropArea <|-- DockingTabs #line:black
 
 @enduml

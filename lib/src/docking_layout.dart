@@ -273,7 +273,9 @@ enum DropPosition { top, bottom, left, right, center }
 
 /// Represents a layout.
 ///
-/// There must be a single root that can be any [DockingArea].
+/// The layout is organized into [DockingItem], [DockingColumn],
+/// [DockingRow] and [DockingTabs].
+/// The [root] is single and can be any [DockingArea].
 class DockingLayout {
   /// Builds a [DockingLayout].
   DockingLayout({DockingArea? root}) : this._root = root {
