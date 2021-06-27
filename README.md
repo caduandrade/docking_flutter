@@ -8,6 +8,14 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 
 ![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_v1.png)
 
+## Usage
+
+* [Layout](#layout)
+  * [Row](#row)
+  * [Column](#column)
+  * [Tabs](#tabs)
+  * [Combined](#combined)
+
 ## Layout
 
 The layout is organized into areas: items (`DockingItem`), columns (`DockingColumn`), rows (`DockingRow`) and tabs (`DockingTabs`).
