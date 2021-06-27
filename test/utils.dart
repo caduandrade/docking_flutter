@@ -54,12 +54,6 @@ void testDockingItem(DockingArea item,
   expect(_item.name, name, reason: 'name');
 }
 
-void testOffstage(DockingArea area) {
-  expect(area.layoutIndex, -1, reason: 'index');
-  expect(area.parent, isNull, reason: 'null parent');
-  expect(area.level, 0, reason: 'level');
-}
-
 DockingRow rootAsRow(DockingLayout layout) {
   expect(layout.root, isNotNull);
   expect(layout.root!.type, DockingAreaType.row);

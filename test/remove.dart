@@ -9,7 +9,7 @@ void main() {
       DockingLayout layout = DockingLayout(root: item);
       layout.remove(item);
       expect(layout.root, isNull);
-      testOffstage(item);
+      testDisposed(item);
     });
 
     test('item out from layout', () {

@@ -193,11 +193,6 @@ class DockingTabs extends DockingParentArea {
 
   @override
   DockingAreaType get type => DockingAreaType.tabs;
-
-  void _addChild(DockingArea child) {
-    _children.add(child);
-    child._parent = this;
-  }
 }
 
 /// Represents the [DockingArea] type.
@@ -213,8 +208,7 @@ enum DropPosition { top, bottom, left, right, center }
 class DockingLayout {
   /// Builds a [DockingLayout].
   DockingLayout({DockingArea? root}) : this._root = root {
-    _root?._updateParent(null);
-    _updateLayoutIndex();
+    _updateLayoutIndexAndParent();
   }
 
   /// The protected root of this layout.
@@ -223,8 +217,9 @@ class DockingLayout {
   /// The root of this layout.
   DockingArea? get root => _root;
 
-  /// Updates the layout index of each [DockingArea].
-  _updateLayoutIndex() {
+  /// Updates the layout index and parent of each [DockingArea].
+  _updateLayoutIndexAndParent() {
+    _root?._updateParent(null);
     _root?._updateLayoutIndex(1);
   }
 
@@ -268,7 +263,7 @@ class DockingLayout {
         _rearrangeOnRight(draggedItem: draggedItem, dropArea: dropArea);
         break;
     }
-    _updateLayoutIndex();
+    _updateLayoutIndexAndParent();
   }
 
   /// Removes a [DockingItem] from this layout.
@@ -290,7 +285,7 @@ class DockingLayout {
     }
     item._dispose();
     if (needUpdataLayout) {
-      _updateLayoutIndex();
+      _updateLayoutIndexAndParent();
     }
   }
 
@@ -307,9 +302,8 @@ class DockingLayout {
         //TODO verificar se pertence ao layout?
         if (_root == node) {
           _root = singleChild;
-          singleChild._parent = null;
           node._dispose();
-          _updateLayoutIndex();
+          _updateLayoutIndexAndParent();
         } else {
           throw ArgumentError(
               'DockingParentArea does not belong to this layout.');
@@ -338,16 +332,14 @@ class DockingLayout {
       parent._children.remove(oldChild);
       newChild.forEachReversed((child) {
         parent._children.insert(index, child);
-        child._parent = parent;
       });
       newChild._children.clear();
       newChild._dispose();
     } else {
       parent._children[index] = newChild;
-      newChild._parent = parent;
     }
     oldChild._dispose();
-    _updateLayoutIndex();
+    _updateLayoutIndexAndParent();
   }
 
   void _rearrangeOnCenter(
@@ -361,11 +353,9 @@ class DockingLayout {
         DockingParentArea targetParent = targetItem.parent!;
         _replaceChild(targetParent, targetItem, tabs);
       }
-      targetItem._parent = tabs;
-      draggedItem._parent = tabs;
     } else if (dropArea is DockingTabs) {
       DockingTabs tabs = dropArea;
-      tabs._addChild(draggedItem);
+      tabs._children.add(draggedItem);
     }
   }
 
