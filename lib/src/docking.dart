@@ -331,7 +331,10 @@ class _DropAnchorWidget extends StatelessWidget {
               return item != data;
             }
             if (tabs != null) {
-              return position != DropPosition.center;
+              if (tabs!.contains(data)) {
+                return position != DropPosition.center;
+              }
+              return true;
             }
           }
           return false;

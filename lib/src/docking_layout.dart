@@ -2,14 +2,20 @@ import 'package:flutter/widgets.dart';
 
 /// Represents any area of the layout.
 abstract class DockingArea {
-  int _id = -1;
+  int _layoutIndex = -1;
 
-  /// Gets the id within the layout.
+  /// Gets the index in the layout.
   ///
   /// If the area is outside the layout, the value will be [-1].
-  int get id => _id;
+  /// It will be unique across the layout.
+  int get layoutIndex => _layoutIndex;
 
   DockingParentArea? _parent;
+
+  void _dispose() {
+    _parent = null;
+    _layoutIndex = -1;
+  }
 
   /// Gets the parent of this area or [NULL] if it is the root.
   DockingParentArea? get parent => _parent;
@@ -60,16 +66,20 @@ abstract class DockingArea {
       identical(this, other) ||
       other is DockingArea &&
           runtimeType == other.runtimeType &&
-          _id == other._id;
+          _layoutIndex == other._layoutIndex;
 
   @override
-  int get hashCode => _id.hashCode;
+  int get hashCode => _layoutIndex.hashCode;
 
-  /// Sets the id and parent of areas recursively in the hierarchy.
-  int _updateIdAndParent(DockingParentArea? parentArea, int nextId) {
-    _id = nextId++;
+  /// Sets the parent of areas recursively in the hierarchy.
+  void _updateParent(DockingParentArea? parentArea) {
     _parent = parentArea;
-    return nextId;
+  }
+
+  @override
+  int _updateLayoutIndex(int nextIndex) {
+    _layoutIndex = nextIndex++;
+    return nextIndex;
   }
 }
 
@@ -93,6 +103,11 @@ abstract class DockingParentArea extends DockingArea {
   /// Gets a child for a given index.
   DockingArea childAt(int index) => _children[index];
 
+  /// Whether the [DockingParentArea] contains a child equal to [area].
+  bool contains(DockingArea area) {
+    return _children.contains(area);
+  }
+
   /// Applies the function [f] to each child of this collection in iteration
   /// order.
   void forEach(void f(DockingArea child)) {
@@ -113,43 +128,27 @@ abstract class DockingParentArea extends DockingArea {
   }
 
   void _addChild(DockingArea child) {
-    //TODO e o id?
-    //TODO verificar se veio de outro layout?
+    //TODO e o index?
     _checkSameType(child);
     _children.add(child);
     child._parent = this;
   }
 
-  void _replaceChild(DockingArea oldChild, DockingArea newChild) {
-    //TODO verificar se veio de outro layout?
-    int index = _children.indexOf(oldChild);
-    if (index == -1) {
-      throw ArgumentError('The oldChild do not belong to this parent.');
+  @override
+  void _updateParent(DockingParentArea? parentArea) {
+    super._updateParent(parentArea);
+    for (DockingArea area in _children) {
+      area._updateParent(this);
     }
-    if (this.runtimeType == newChild.runtimeType) {
-      (newChild as DockingParentArea).forEachReversed((child) {
-        _children.insert(index, child);
-        child._parent = this;
-      });
-      _children.remove(oldChild);
-      newChild._parent = null;
-      newChild._id = -1;
-    } else {
-      _children[index] = newChild;
-      newChild._parent = this;
-    }
-    oldChild._parent = null;
-    oldChild._id = -1;
   }
 
   @override
-  int _updateIdAndParent(DockingParentArea? parentArea, int nextId) {
-    _id = nextId++;
-    _parent = parentArea;
+  int _updateLayoutIndex(int nextIndex) {
+    _layoutIndex = nextIndex++;
     for (DockingArea area in _children) {
-      nextId = area._updateIdAndParent(this, nextId);
+      nextIndex = area._updateLayoutIndex(nextIndex);
     }
-    return nextId;
+    return nextIndex;
   }
 }
 
@@ -215,8 +214,8 @@ enum DropPosition { top, bottom, left, right, center }
 class DockingLayout {
   /// Builds a [DockingLayout].
   DockingLayout({DockingArea? root}) : this._root = root {
-    _updateIdAndParent();
-    _simplifyAll();
+    _root?._updateParent(null);
+    _updateLayoutIndex();
   }
 
   /// The protected root of this layout.
@@ -225,9 +224,9 @@ class DockingLayout {
   /// The root of this layout.
   DockingArea? get root => _root;
 
-  /// Sets the id and parent of areas recursively in the hierarchy.
-  void _updateIdAndParent() {
-    _root?._updateIdAndParent(null, 1);
+  /// Updates the layout index of each [DockingArea].
+  _updateLayoutIndex() {
+    _root?._updateLayoutIndex(1);
   }
 
   /// Rearranges the layout given a new location for a [DockingItem].
@@ -240,9 +239,9 @@ class DockingLayout {
           'Argument draggedItem cannot be the same as argument dropArea. A DockingItem cannot be rearranged on itself.');
     }
     remove(draggedItem);
-    print(draggedItem.id.toString() +
+    print(draggedItem.layoutIndex.toString() +
         ' on ' +
-        dropArea.id.toString() +
+        dropArea.layoutIndex.toString() +
         ' / ' +
         dropPosition.toString());
     switch (dropPosition) {
@@ -262,11 +261,12 @@ class DockingLayout {
         _rearrangeOnRight(draggedItem: draggedItem, dropArea: dropArea);
         break;
     }
+    _updateLayoutIndex();
   }
 
   /// Removes a [DockingItem] from this layout.
   void remove(DockingItem item) {
-    //TODO dispose bool? esse com _ sem dispose
+    bool needUpdataLayout = false;
     if (item.parent == null) {
       // must be the root
       if (_root == item) {
@@ -278,24 +278,30 @@ class DockingLayout {
       // is a child
       DockingParentArea parent = item.parent!;
       parent._children.remove(item);
-      _simplify(parent);
+      needUpdataLayout = !_simplify(parent);
     }
-    item._parent = null;
-    item._id = -1;
+    item._dispose();
+    if (needUpdataLayout) {
+      _updateLayoutIndex();
+    }
   }
 
-  _simplifyAll() {
-    //TODO here!
-  }
-
-  _simplify(DockingParentArea node) {
+  /// Simplifies the layout, that is, if a parent has only 1 child,
+  /// this parent will be replaced by the child.
+  ///
+  /// The return indicates whether the layout index of each [DockingArea]
+  /// has been updated
+  bool _simplify(DockingParentArea node) {
     if (node._children.length == 1) {
-      DockingArea singleChild = node._children.first;
+      DockingArea singleChild = node._children.removeAt(0);
       if (node.parent == null) {
         // must be the root
+        //TODO verificar se pertence ao layout?
         if (_root == node) {
           _root = singleChild;
           singleChild._parent = null;
+          node._dispose();
+          _updateLayoutIndex();
         } else {
           throw ArgumentError(
               'DockingParentArea does not belong to this layout.');
@@ -303,12 +309,36 @@ class DockingLayout {
       } else {
         // is a child
         DockingParentArea parent = node.parent!;
-        parent._replaceChild(node, singleChild);
+        _replaceChild(parent, node, singleChild);
       }
+      return true;
     }
-    node._parent = null;
-    node._parent = null;
-    node._id = -1;
+    return false;
+  }
+
+  /// Replaces children in a [DockingParentArea].
+  /// The layout index of each [DockingArea] will be updated.
+  void _replaceChild(
+      DockingParentArea parent, DockingArea oldChild, DockingArea newChild) {
+    //TODO verificar se veio de outro layout?
+    int index = parent._children.indexOf(oldChild);
+    if (index == -1) {
+      throw ArgumentError('The oldChild do not belong to this parent.');
+    }
+    if (newChild is DockingParentArea) {
+      parent._children.remove(oldChild);
+      newChild.forEachReversed((child) {
+        parent._children.insert(index, child);
+        child._parent = parent;
+      });
+      newChild._children.clear();
+      newChild._dispose();
+    } else {
+      parent._children[index] = newChild;
+      newChild._parent = parent;
+    }
+    oldChild._dispose();
+    _updateLayoutIndex();
   }
 
   void _rearrangeOnCenter(

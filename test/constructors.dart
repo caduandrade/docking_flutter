@@ -1,15 +1,13 @@
 import 'package:docking/docking.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'test_util.dart';
+import 'utils.dart';
 
 void main() {
-  group('constructor', () {
-    test('DockingItem', () {
-      testDockingItem(dockingItem(null),
-          id: -1, hasParent: false, level: 0, path: 'I');
-      testDockingItem(dockingItem('a'),
-          id: -1, name: 'a', hasParent: false, level: 0, path: 'I');
-    });
+  test('DockingItem', () {
+    testDockingItem(dockingItem(null),
+        layoutIndex: -1, hasParent: false, level: 0, path: 'I');
+    testDockingItem(dockingItem('a'),
+        layoutIndex: -1, name: 'a', hasParent: false, level: 0, path: 'I');
   });
 
   test('empty layout', () {
