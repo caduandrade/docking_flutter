@@ -93,7 +93,6 @@ abstract class DockingParentArea extends DockingArea {
     if (this._children.length < 2) {
       throw ArgumentError('Insufficient number of children');
     }
-    //TODO verificar se veio de outro layout?
   }
 
   final List<DockingArea> _children;
@@ -225,6 +224,7 @@ class DockingLayout {
 
   /// Indicates whether the [DockingArea] belongs to this layout.
   bool _contains(DockingArea area) {
+    //TODO to implement
     return true;
   }
 
@@ -299,7 +299,6 @@ class DockingLayout {
       DockingArea singleChild = node._children.removeAt(0);
       if (node.parent == null) {
         // must be the root
-        //TODO verificar se pertence ao layout?
         if (_root == node) {
           _root = singleChild;
           node._dispose();
@@ -322,7 +321,6 @@ class DockingLayout {
   /// The layout index of each [DockingArea] will be updated.
   void _replaceChild(
       DockingParentArea parent, DockingArea oldChild, DockingArea newChild) {
-    //TODO verificar se veio de outro layout?
     int index = parent._children.indexOf(oldChild);
     if (index == -1) {
       throw ArgumentError('The oldChild do not belong to this parent.');
@@ -370,6 +368,4 @@ class DockingLayout {
 
   void _rearrangeOnRight(
       {required DockingItem draggedItem, required DockingArea dropArea}) {}
-
-  //TODO validar id de novas áreas? atualizar id?
 }
