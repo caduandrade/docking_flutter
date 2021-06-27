@@ -16,24 +16,6 @@ void main() {
   });
 
   group('not allowed', () {
-    test('build row in row', () {
-      expect(
-          () => DockingRow([
-                DockingRow([dockingItem('a'), dockingItem('a')]),
-                dockingItem('a')
-              ]),
-          throwsArgumentError);
-    });
-
-    test('build column in column', () {
-      expect(
-          () => DockingColumn([
-                DockingColumn([dockingItem('a'), dockingItem('a')]),
-                dockingItem('a')
-              ]),
-          throwsArgumentError);
-    });
-
     test('column children count', () {
       expect(() => DockingColumn([dockingItem('a')]), throwsArgumentError);
       expect(() => DockingColumn([]), throwsArgumentError);
