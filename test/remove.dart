@@ -48,8 +48,7 @@ void main() {
           hasParent: false,
           path: 'R',
           level: 0);
-      testDockingItem(itemA,
-          layoutIndex: -1, name: 'a', hasParent: false, path: 'I', level: 0);
+      testDisposed(itemA);
       testDockingItem(itemB,
           layoutIndex: 2, name: 'b', hasParent: true, path: 'RI', level: 1);
       testDockingItem(itemC,
@@ -57,14 +56,8 @@ void main() {
 
       layout.remove(itemB);
 
-      testDockingParentArea(row,
-          layoutIndex: -1,
-          childrenCount: 0,
-          hasParent: false,
-          path: 'R',
-          level: 0);
-      testDockingItem(itemB,
-          layoutIndex: -1, name: 'b', hasParent: false, path: 'I', level: 0);
+      testDisposed(row);
+      testDisposed(itemB);
       testDockingItem(itemC,
           layoutIndex: 1, name: 'c', hasParent: false, path: 'I', level: 0);
       expect(layout.root!, itemC);
@@ -99,8 +92,7 @@ void main() {
           hasParent: false,
           path: 'C',
           level: 0);
-      testDockingItem(itemA,
-          layoutIndex: -1, name: 'a', hasParent: false, path: 'I', level: 0);
+      testDisposed(itemA);
       testDockingItem(itemB,
           layoutIndex: 2, name: 'b', hasParent: true, path: 'CI', level: 1);
       testDockingItem(itemC,
@@ -108,14 +100,8 @@ void main() {
 
       layout.remove(itemB);
 
-      testDockingParentArea(column,
-          layoutIndex: -1,
-          childrenCount: 0,
-          hasParent: false,
-          path: 'C',
-          level: 0);
-      testDockingItem(itemB,
-          layoutIndex: -1, name: 'b', hasParent: false, path: 'I', level: 0);
+      testDisposed(column);
+      testDisposed(itemB);
       testDockingItem(itemC,
           layoutIndex: 1, name: 'c', hasParent: false, path: 'I', level: 0);
       expect(layout.root!, itemC);
@@ -150,8 +136,7 @@ void main() {
           hasParent: false,
           path: 'T',
           level: 0);
-      testDockingItem(itemA,
-          layoutIndex: -1, name: 'a', hasParent: false, path: 'I', level: 0);
+      testDisposed(itemA);
       testDockingItem(itemB,
           layoutIndex: 2, name: 'b', hasParent: true, path: 'TI', level: 1);
       testDockingItem(itemC,
@@ -159,14 +144,8 @@ void main() {
 
       layout.remove(itemB);
 
-      testDockingParentArea(tabs,
-          layoutIndex: -1,
-          childrenCount: 0,
-          hasParent: false,
-          path: 'T',
-          level: 0);
-      testDockingItem(itemB,
-          layoutIndex: -1, name: 'b', hasParent: false, path: 'I', level: 0);
+      testDisposed(tabs);
+      testDisposed(itemB);
       testDockingItem(itemC,
           layoutIndex: 1, name: 'c', hasParent: false, path: 'I', level: 0);
       expect(layout.root!, itemC);
@@ -201,12 +180,7 @@ void main() {
 
       layout.remove(itemC);
 
-      testDockingParentArea(column,
-          layoutIndex: -1,
-          childrenCount: 0,
-          hasParent: false,
-          path: 'C',
-          level: 0);
+      testDisposed(column);
       testDockingParentArea(row,
           layoutIndex: 1,
           childrenCount: 2,
@@ -217,22 +191,15 @@ void main() {
           layoutIndex: 2, name: 'a', hasParent: true, path: 'RI', level: 1);
       testDockingItem(itemB,
           layoutIndex: 3, name: 'b', hasParent: true, path: 'RI', level: 1);
-      testDockingItem(itemC,
-          layoutIndex: -1, name: 'c', hasParent: false, path: 'I', level: 0);
+      testDisposed(itemC);
       expect(layout.root, row);
 
       layout.remove(itemB);
 
-      testDockingParentArea(row,
-          layoutIndex: -1,
-          childrenCount: 0,
-          hasParent: false,
-          path: 'R',
-          level: 0);
+      testDisposed(row);
       testDockingItem(itemA,
           layoutIndex: 1, name: 'a', hasParent: false, path: 'I', level: 0);
-      testDockingItem(itemB,
-          layoutIndex: -1, name: 'b', hasParent: false, path: 'I', level: 0);
+      testDisposed(itemB);
       expect(layout.root, itemA);
     });
 
@@ -271,8 +238,8 @@ void main() {
           hasParent: false,
           path: 'C',
           level: 0);
-      testDisposedDockingRow(row);
-      testDisposedDockingItem(itemA);
+      testDisposed(row);
+      testDisposed(itemA);
       testDockingItem(itemB,
           layoutIndex: 2, name: 'b', hasParent: true, path: 'CI', level: 1);
       testDockingItem(itemC,
@@ -281,8 +248,8 @@ void main() {
 
       layout.remove(itemB);
 
-      testDisposedDockingColumn(column);
-      testDisposedDockingItem(itemB);
+      testDisposed(column);
+      testDisposed(itemB);
       testDockingItem(itemC,
           layoutIndex: 1, name: 'c', hasParent: false, path: 'I', level: 0);
       expect(layout.root, itemC);
@@ -335,13 +302,13 @@ void main() {
           level: 0);
       testDockingItem(itemA,
           layoutIndex: 2, name: 'a', hasParent: true, path: 'RI', level: 1);
-      testDisposedDockingColumn(column);
-      testDisposedDockingRow(row);
+      testDisposed(column);
+      testDisposed(row);
       testDockingItem(itemB,
           layoutIndex: 3, name: 'b', hasParent: true, path: 'RI', level: 1);
       testDockingItem(itemC,
           layoutIndex: 4, name: 'c', hasParent: true, path: 'RI', level: 1);
-      testDisposedDockingItem(itemD);
+      testDisposed(itemD);
       expect(layout.root, rootRow);
 
       layout.remove(itemB);
@@ -354,10 +321,10 @@ void main() {
           level: 0);
       testDockingItem(itemA,
           layoutIndex: 2, name: 'a', hasParent: true, path: 'RI', level: 1);
-      testDisposedDockingItem(itemB);
+      testDisposed(itemB);
       testDockingItem(itemC,
           layoutIndex: 3, name: 'c', hasParent: true, path: 'RI', level: 1);
-      testDisposedDockingItem(itemD);
+      testDisposed(itemD);
       expect(layout.root, rootRow);
 
       layout.remove(itemC);
@@ -365,9 +332,9 @@ void main() {
       testDockingParentArea(rootRow);
       testDockingItem(itemA,
           layoutIndex: 1, name: 'a', hasParent: false, path: 'I', level: 0);
-      testDisposedDockingItem(itemB);
-      testDisposedDockingItem(itemC);
-      testDisposedDockingItem(itemD);
+      testDisposed(itemB);
+      testDisposed(itemC);
+      testDisposed(itemD);
       expect(layout.root, itemA);
     });
   });

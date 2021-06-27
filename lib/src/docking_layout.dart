@@ -25,7 +25,7 @@ abstract class DockingArea {
   DockingAreaType get type;
 
   /// Gets the acronym for type.
-  String get _typeAcronym {
+  String get typeAcronym {
     if (type == DockingAreaType.item) {
       return 'I';
     } else if (type == DockingAreaType.column) {
@@ -40,10 +40,10 @@ abstract class DockingArea {
 
   /// Gets the path in the layout hierarchy.
   String get path {
-    String _path = _typeAcronym;
+    String _path = typeAcronym;
     DockingParentArea? p = _parent;
     while (p != null) {
-      _path = p._typeAcronym + _path;
+      _path = p.typeAcronym + _path;
       p = p._parent;
     }
     return _path;

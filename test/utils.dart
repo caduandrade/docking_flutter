@@ -23,23 +23,9 @@ void testDockingArea(DockingArea area,
   }
 }
 
-void testDisposedDockingColumn(DockingColumn column) {
-  testDockingParentArea(column,
-      layoutIndex: -1, childrenCount: 0, hasParent: false, path: 'C', level: 0);
-}
-
-void testDisposedDockingRow(DockingRow row) {
-  testDockingParentArea(row,
-      layoutIndex: -1, childrenCount: 0, hasParent: false, path: 'R', level: 0);
-}
-
-void testDisposedDockingTabs(DockingTabs tabs) {
-  testDockingParentArea(tabs,
-      layoutIndex: -1, childrenCount: 0, hasParent: false, path: 'T', level: 0);
-}
-
-void testDisposedDockingItem(DockingItem item) {
-  testDockingArea(item, layoutIndex: -1, hasParent: false, path: 'I', level: 0);
+void testDisposed(DockingArea area) {
+  testDockingArea(area,
+      layoutIndex: -1, hasParent: false, path: area.typeAcronym, level: 0);
 }
 
 void testDockingParentArea(DockingParentArea parent,
