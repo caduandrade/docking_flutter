@@ -134,22 +134,6 @@ abstract class DockingParentArea extends DockingArea {
     _children.reversed.forEach(f);
   }
 
-  void _addChildBefore(DockingArea newChild, DockingArea indexChild) {
-    int index = _children.indexOf(indexChild);
-    if (index == -1) {
-      throw ArgumentError('The indexChild do not belong to this parent.');
-    }
-    _children.insert(index, newChild);
-  }
-
-  void _addChildAfter(DockingArea newChild, DockingArea indexChild) {
-    int index = _children.indexOf(indexChild);
-    if (index == -1) {
-      throw ArgumentError('The indexChild do not belong to this parent.');
-    }
-    _children.insert(index + 1, newChild);
-  }
-
   void _checkSameType(DockingArea child) {
     if (child.runtimeType == this.runtimeType) {
       throw ArgumentError(
