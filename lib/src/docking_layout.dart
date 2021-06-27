@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 /// Represents any area of the layout.
@@ -127,13 +128,6 @@ abstract class DockingParentArea extends DockingArea {
     }
   }
 
-  void _addChild(DockingArea child) {
-    //TODO e o index?
-    _checkSameType(child);
-    _children.add(child);
-    child._parent = this;
-  }
-
   @override
   void _updateParent(DockingParentArea? parentArea) {
     super._updateParent(parentArea);
@@ -199,6 +193,11 @@ class DockingTabs extends DockingParentArea {
 
   @override
   DockingAreaType get type => DockingAreaType.tabs;
+
+  void _addChild(DockingArea child) {
+    _children.add(child);
+    child._parent = this;
+  }
 }
 
 /// Represents the [DockingArea] type.
@@ -229,6 +228,18 @@ class DockingLayout {
     _root?._updateLayoutIndex(1);
   }
 
+  /// Indicates whether the [DockingArea] belongs to this layout.
+  bool _contains(DockingArea area) {
+    return true;
+  }
+
+  /// Throws error if [DockingArea] does not belong to this layout.
+  void _validade(DockingArea area) {
+    if (_contains(area) == false) {
+      throw ArgumentError('DockingArea does not belong to this layout.');
+    }
+  }
+
   /// Rearranges the layout given a new location for a [DockingItem].
   void move(
       {required DockingItem draggedItem,
@@ -239,11 +250,7 @@ class DockingLayout {
           'Argument draggedItem cannot be the same as argument dropArea. A DockingItem cannot be rearranged on itself.');
     }
     remove(draggedItem);
-    print(draggedItem.layoutIndex.toString() +
-        ' on ' +
-        dropArea.layoutIndex.toString() +
-        ' / ' +
-        dropPosition.toString());
+    _validade(dropArea);
     switch (dropPosition) {
       case DropPosition.center:
         _rearrangeOnCenter(draggedItem: draggedItem, dropArea: dropArea);
@@ -266,6 +273,7 @@ class DockingLayout {
 
   /// Removes a [DockingItem] from this layout.
   void remove(DockingItem item) {
+    _validade(item);
     bool needUpdataLayout = false;
     if (item.parent == null) {
       // must be the root
@@ -325,7 +333,8 @@ class DockingLayout {
     if (index == -1) {
       throw ArgumentError('The oldChild do not belong to this parent.');
     }
-    if (newChild is DockingParentArea) {
+    if (newChild is DockingParentArea &&
+        parent.runtimeType == newChild.runtimeType) {
       parent._children.remove(oldChild);
       newChild.forEachReversed((child) {
         parent._children.insert(index, child);
@@ -344,7 +353,20 @@ class DockingLayout {
   void _rearrangeOnCenter(
       {required DockingItem draggedItem, required DockingArea dropArea}) {
     if (dropArea is DockingItem) {
-    } else if (dropArea is DockingTabs) {}
+      DockingItem targetItem = dropArea;
+      DockingTabs tabs = DockingTabs([targetItem, draggedItem]);
+      if (_root == targetItem) {
+        _root = tabs;
+      } else {
+        DockingParentArea targetParent = targetItem.parent!;
+        _replaceChild(targetParent, targetItem, tabs);
+      }
+      targetItem._parent = tabs;
+      draggedItem._parent = tabs;
+    } else if (dropArea is DockingTabs) {
+      DockingTabs tabs = dropArea;
+      tabs._addChild(draggedItem);
+    }
   }
 
   void _rearrangeOnBottom(
