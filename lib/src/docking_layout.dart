@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -14,6 +16,12 @@ mixin DropArea {
 
 /// Represents any area of the layout.
 abstract class DockingArea {
+  DockingArea() : this._id = DockingLayout._randomId();
+
+  /// Id used to debugger.
+  final int _id;
+
+  int _layoutId = -1;
   int _layoutIndex = -1;
 
   /// Gets the index in the layout.
@@ -29,8 +37,15 @@ abstract class DockingArea {
   /// Disposes recursively.
   void _dispose() {
     _parent = null;
+    _layoutId = -1;
     _layoutIndex = -1;
     _disposed = true;
+  }
+
+  /// Print used in debug.
+  void _printDebug() {
+    print(
+        '$path - layoutIndex: $_layoutIndex - id: $_id - layoutId: $_layoutId');
   }
 
   /// Gets the parent of this area or [NULL] if it is the root.
@@ -87,12 +102,11 @@ abstract class DockingArea {
   @override
   int get hashCode => _layoutIndex.hashCode;
 
-  /// Sets the parent of areas recursively in the hierarchy.
-  void _updateParent(DockingParentArea? parentArea) {
+  /// Updates recursively the information of parent, index and layoutId.
+  int _updateHierarchy(
+      DockingParentArea? parentArea, int nextIndex, int layoutId) {
     _parent = parentArea;
-  }
-
-  int _updateLayoutIndex(int nextIndex) {
+    _layoutId = layoutId;
     _layoutIndex = nextIndex++;
     return nextIndex;
   }
@@ -150,20 +164,23 @@ abstract class DockingParentArea extends DockingArea {
   }
 
   @override
-  void _updateParent(DockingParentArea? parentArea) {
-    super._updateParent(parentArea);
+  int _updateHierarchy(
+      DockingParentArea? parentArea, int nextIndex, int layoutId) {
+    _parent = parentArea;
+    _layoutId = layoutId;
+    _layoutIndex = nextIndex++;
     for (DockingArea area in _children) {
-      area._updateParent(this);
+      nextIndex = area._updateHierarchy(this, nextIndex, layoutId);
     }
+    return nextIndex;
   }
 
   @override
-  int _updateLayoutIndex(int nextIndex) {
-    _layoutIndex = nextIndex++;
+  void _printDebug() {
+    super._printDebug();
     for (DockingArea area in _children) {
-      nextIndex = area._updateLayoutIndex(nextIndex);
+      area._printDebug();
     }
-    return nextIndex;
   }
 }
 
@@ -262,9 +279,14 @@ enum DropPosition { top, bottom, left, right, center }
 /// The [root] is single and can be any [DockingArea].
 class DockingLayout {
   /// Builds a [DockingLayout].
-  DockingLayout({DockingArea? root}) : this._root = root {
+  DockingLayout({DockingArea? root, int? id})
+      : this._root = root,
+        this.id = (id != null) ? id : DockingLayout._randomId() {
     _updateLayoutIndexAndParent();
   }
+
+  /// The id of this layout.
+  final int id;
 
   /// The protected root of this layout.
   DockingArea? _root;
@@ -272,16 +294,11 @@ class DockingLayout {
   /// The root of this layout.
   DockingArea? get root => _root;
 
-  /// Updates the layout index and parent of each [DockingArea].
+  /// Updates recursively the information of parent,
+  /// index and layoutId in each [DockingArea].
   _updateLayoutIndexAndParent() {
-    _root?._updateParent(null);
-    _root?._updateLayoutIndex(1);
-  }
-
-  /// Indicates whether the [DockingArea] belongs to this layout.
-  bool _contains(DockingArea area) {
-    //TODO to implement
-    return true;
+    _root?._updateHierarchy(null, 1, id);
+    // _root?._printDebug();
   }
 
   /// Throws error if [DockingArea] does not belong to this layout.
@@ -292,8 +309,9 @@ class DockingLayout {
     if (area.layoutIndex == -1) {
       throw ArgumentError('DockingArea does not belong to this layout.');
     }
-    if (_contains(area) == false) {
-      throw ArgumentError('DockingArea does not belong to this layout.');
+    if (area._layoutId != id) {
+      throw ArgumentError(
+          'DockingArea belongs to other layout: ' + area._layoutId.toString());
     }
   }
 
@@ -489,5 +507,10 @@ class DockingLayout {
       return true;
     }
     return false;
+  }
+
+  /// Gets a random id.
+  static int _randomId() {
+    return math.Random().nextInt(9999999) + 1;
   }
 }

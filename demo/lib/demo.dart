@@ -31,7 +31,7 @@ class _DockingDemoPageState extends State<DockingDemoPage> {
 
   @override
   Widget build(BuildContext context) {
-    Docking docking = _buildRCT();
+    Docking docking = _buildRC();
 
     return Scaffold(
         body: Container(
@@ -96,6 +96,23 @@ class _DockingDemoPageState extends State<DockingDemoPage> {
         ])
       ])
     ]));
+    Docking docking = Docking(layout: layout);
+    return docking;
+  }
+
+  Docking _buildRC() {
+    int v = 1;
+    Widget child1 = _build(v++);
+    Widget child2 = _build(v++);
+    Widget child3 = _build(v++);
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+          DockingItem(name: '1', widget: child1),
+          DockingColumn([
+            DockingItem(name: '2', widget: child2),
+            DockingItem(name: '3', widget: child3)
+          ])
+        ]));
     Docking docking = Docking(layout: layout);
     return docking;
   }
