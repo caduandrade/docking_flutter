@@ -22,6 +22,8 @@ abstract class DockingArea {
   final int _id;
 
   int _layoutId = -1;
+
+  /// The index in the layout.
   int _layoutIndex = -1;
 
   /// Gets the index in the layout.
@@ -31,6 +33,9 @@ abstract class DockingArea {
   int get layoutIndex => _layoutIndex;
 
   DockingParentArea? _parent;
+
+  /// Gets the parent of this area or [NULL] if it is the root.
+  DockingParentArea? get parent => _parent;
 
   bool _disposed = false;
 
@@ -47,9 +52,6 @@ abstract class DockingArea {
     print(
         '$path - layoutIndex: $_layoutIndex - id: $_id - layoutId: $_layoutId');
   }
-
-  /// Gets the parent of this area or [NULL] if it is the root.
-  DockingParentArea? get parent => _parent;
 
   /// Gets the type of this area.
   DockingAreaType get type;
@@ -116,7 +118,10 @@ abstract class DockingArea {
 abstract class DockingParentArea extends DockingArea {
   DockingParentArea(List<DockingArea> children) : this._children = children {
     for (DockingArea child in this._children) {
-      _checkSameType(child);
+      if (child.runtimeType == this.runtimeType) {
+        throw ArgumentError(
+            'DockingParentArea cannot have children of the same type');
+      }
     }
     if (this._children.length < 2) {
       throw ArgumentError('Insufficient number of children');
@@ -146,13 +151,6 @@ abstract class DockingParentArea extends DockingArea {
   /// reversed order.
   void forEachReversed(void f(DockingArea child)) {
     _children.reversed.forEach(f);
-  }
-
-  void _checkSameType(DockingArea child) {
-    if (child.runtimeType == this.runtimeType) {
-      throw ArgumentError(
-          'DockingParentArea cannot have children of the same type');
-    }
   }
 
   @override
@@ -282,7 +280,7 @@ class DockingLayout {
   DockingLayout({DockingArea? root, int? id})
       : this._root = root,
         this.id = (id != null) ? id : DockingLayout._randomId() {
-    _updateLayoutIndexAndParent();
+    _updateHierarchy();
   }
 
   /// The id of this layout.
@@ -296,7 +294,7 @@ class DockingLayout {
 
   /// Updates recursively the information of parent,
   /// index and layoutId in each [DockingArea].
-  _updateLayoutIndexAndParent() {
+  _updateHierarchy() {
     _root?._updateHierarchy(null, 1, id);
     // _root?._printDebug();
   }
@@ -310,8 +308,9 @@ class DockingLayout {
       throw ArgumentError('DockingArea does not belong to this layout.');
     }
     if (area._layoutId != id) {
-      throw ArgumentError(
-          'DockingArea belongs to other layout: ' + area._layoutId.toString());
+      throw ArgumentError('DockingArea belongs to other layout: ' +
+          area._layoutId.toString() +
+          '. Make sure you keep the layout in the state of your widget.');
     }
   }
 
@@ -360,7 +359,7 @@ class DockingLayout {
     }
     item._dispose();
     if (needUpdateLayout) {
-      _updateLayoutIndexAndParent();
+      _updateHierarchy();
     }
   }
 
@@ -384,13 +383,13 @@ class DockingLayout {
       parent._children[index] = newChild;
     }
     oldChild._dispose();
-    _updateLayoutIndexAndParent();
+    _updateHierarchy();
   }
 
   void _rebuildLayout() {
     if (_root != null) {
       _root = _rebuildLayoutRecursively(_root!);
-      _updateLayoutIndexAndParent();
+      _updateHierarchy();
     }
   }
 
@@ -494,7 +493,7 @@ class DockingLayout {
         if (_root == node) {
           _root = singleChild;
           node._dispose();
-          _updateLayoutIndexAndParent();
+          _updateHierarchy();
         } else {
           throw ArgumentError(
               'DockingParentArea does not belong to this layout.');
