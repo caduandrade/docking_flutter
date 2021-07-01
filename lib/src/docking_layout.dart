@@ -308,9 +308,8 @@ class DockingLayout {
       throw ArgumentError('DockingArea does not belong to this layout.');
     }
     if (area._layoutId != id) {
-      throw ArgumentError('DockingArea belongs to other layout: ' +
-          area._layoutId.toString() +
-          '. Make sure you keep the layout in the state of your widget.');
+      throw ArgumentError(
+          'DockingArea belongs to other layout. Keep the layout in the state of your StatefulWidget.');
     }
   }
 
