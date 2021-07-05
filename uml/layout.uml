@@ -3,7 +3,7 @@
 class DropArea << (M,lightgray) >>  #line:black
 
 abstract class DockingArea << (C,lightgray) >> #line:black {
-int: id
+int: index
 parent: DockingParentArea?
 }
 

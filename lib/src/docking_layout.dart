@@ -24,13 +24,13 @@ abstract class DockingArea {
   int _layoutId = -1;
 
   /// The index in the layout.
-  int _layoutIndex = -1;
+  int _index = -1;
 
-  /// Gets the index in the layout.
+  /// Gets the index of this area in the layout.
   ///
   /// If the area is outside the layout, the value will be [-1].
   /// It will be unique across the layout.
-  int get layoutIndex => _layoutIndex;
+  int get index => _index;
 
   DockingParentArea? _parent;
 
@@ -43,14 +43,14 @@ abstract class DockingArea {
   void _dispose() {
     _parent = null;
     _layoutId = -1;
-    _layoutIndex = -1;
+    _index = -1;
     _disposed = true;
   }
 
   /// Print used in debug.
   void _printDebug() {
     print(
-        '$path - layoutIndex: $_layoutIndex - id: $_id - layoutId: $_layoutId');
+        '$path - layoutIndex: $_index - id: $_id - layoutId: $_layoutId');
   }
 
   /// Gets the type of this area.
@@ -99,17 +99,17 @@ abstract class DockingArea {
       identical(this, other) ||
       other is DockingArea &&
           runtimeType == other.runtimeType &&
-          _layoutIndex == other._layoutIndex;
+          _index == other._index;
 
   @override
-  int get hashCode => _layoutIndex.hashCode;
+  int get hashCode => _index.hashCode;
 
   /// Updates recursively the information of parent, index and layoutId.
   int _updateHierarchy(
       DockingParentArea? parentArea, int nextIndex, int layoutId) {
     _parent = parentArea;
     _layoutId = layoutId;
-    _layoutIndex = nextIndex++;
+    _index = nextIndex++;
     return nextIndex;
   }
 }
@@ -166,7 +166,7 @@ abstract class DockingParentArea extends DockingArea {
       DockingParentArea? parentArea, int nextIndex, int layoutId) {
     _parent = parentArea;
     _layoutId = layoutId;
-    _layoutIndex = nextIndex++;
+    _index = nextIndex++;
     for (DockingArea area in _children) {
       nextIndex = area._updateHierarchy(this, nextIndex, layoutId);
     }
@@ -304,7 +304,7 @@ class DockingLayout {
     if (area._disposed) {
       throw ArgumentError('DockingArea already has been disposed.');
     }
-    if (area.layoutIndex == -1) {
+    if (area.index == -1) {
       throw ArgumentError('DockingArea does not belong to this layout.');
     }
     if (area._layoutId != id) {

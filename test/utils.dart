@@ -9,7 +9,7 @@ DockingItem dockingItem(String? name) {
 void testDockingArea(DockingArea area,
     {int? layoutIndex, bool? hasParent, int? level, String? path}) {
   if (layoutIndex != null) {
-    expect(area.layoutIndex, layoutIndex, reason: 'layoutIndex');
+    expect(area.index, layoutIndex, reason: 'layoutIndex');
   }
   if (hasParent != null) {
     expect(area.parent != null, hasParent, reason: 'hasParent');

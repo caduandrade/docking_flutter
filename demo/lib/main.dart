@@ -1,6 +1,7 @@
 import 'package:demo/layout_c.dart';
 import 'package:demo/layout_r.dart';
 import 'package:demo/layout_rc.dart';
+import 'package:demo/layout_rcr.dart';
 import 'package:demo/layout_rct.dart';
 import 'package:demo/layout_t.dart';
 import 'package:demoflu/demoflu.dart';
@@ -30,7 +31,10 @@ void main() {
             builder: (BuildContext context) => LayoutRC()),
         DFExample(
             name: 'Row > Column > Tabs',
-            builder: (BuildContext context) => LayoutRCT())
+            builder: (BuildContext context) => LayoutRCT()),
+        DFExample(
+            name: 'Row > Column > Row',
+            builder: (BuildContext context) => LayoutRCR())
       ])
     ],
   ));

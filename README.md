@@ -21,7 +21,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 The layout is organized into areas: items (`DockingItem`), columns (`DockingColumn`), rows (`DockingRow`) and tabs (`DockingTabs`).
 The root is single and can be any area.
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_layout_uml_v1.png)
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_layout_uml_v2.png)
 
 ### Row
 
