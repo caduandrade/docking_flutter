@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  demoflu: #^0.3.0
+    path: ../../demoflu/
   docking:
     path: ../
 
