@@ -50,7 +50,7 @@ abstract class DockingArea {
   /// Print used in debug.
   void _printDebug() {
     print(
-        '$path - layoutIndex: $_index - id: $_id - layoutId: $_layoutId');
+        '$path - index: $_index - id: $_id - layoutId: $_layoutId');
   }
 
   /// Gets the type of this area.
