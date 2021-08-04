@@ -22,19 +22,18 @@ void main() {
     maxSize: maxSize,
     resizable: resizable,
     sections: [
-      DFSection(name: 'Layouts', examples: [
-        DFExample(name: 'Row', builder: (BuildContext context) => LayoutR()),
-        DFExample(name: 'Column', builder: (BuildContext context) => LayoutC()),
-        DFExample(name: 'Tabs', builder: (BuildContext context) => LayoutT()),
-        DFExample(
-            name: 'Row > Column',
-            builder: (BuildContext context) => LayoutRC()),
-        DFExample(
+      Section(name: 'Layouts', examples: [
+        Example(name: 'Row', builder: (buttonClickNotifier) => LayoutR()),
+        Example(name: 'Column', builder: (buttonClickNotifier) => LayoutC()),
+        Example(name: 'Tabs', builder: (buttonClickNotifier) => LayoutT()),
+        Example(
+            name: 'Row > Column', builder: (buttonClickNotifier) => LayoutRC()),
+        Example(
             name: 'Row > Column > Tabs',
-            builder: (BuildContext context) => LayoutRCT()),
-        DFExample(
+            builder: (buttonClickNotifier) => LayoutRCT()),
+        Example(
             name: 'Row > Column > Row',
-            builder: (BuildContext context) => LayoutRCR())
+            builder: (buttonClickNotifier) => LayoutRCR())
       ])
     ],
   ));

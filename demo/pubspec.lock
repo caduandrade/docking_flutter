@@ -53,10 +53,10 @@ packages:
   demoflu:
     dependency: "direct main"
     description:
-      path: "../../demoflu"
-      relative: true
-    source: path
-    version: "0.3.0"
+      name: demoflu
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
   docking:
     dependency: "direct main"
     description:
@@ -127,7 +127,7 @@ packages:
       name: multi_split_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "1.5.0+1"
   path:
     dependency: transitive
     description:
