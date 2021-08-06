@@ -194,7 +194,7 @@ class _DockingTabsWidget extends StatefulWidget {
 class _DockingTabsWidgetState
     extends _DraggableBuilderState<_DockingTabsWidget> {
   int? lastSelectedTabIndex;
-  late TabbedWiewController controller;
+  late TabbedViewController controller;
 
   @override
   void initState() {
@@ -213,7 +213,7 @@ class _DockingTabsWidgetState
           text: child.name != null ? child.name! : '',
           content: child.widget));
     });
-    TabbedWiewController controller = TabbedWiewController(tabs);
+    TabbedViewController controller = TabbedViewController(tabs);
 
     if (lastSelectedTabIndex != null &&
         lastSelectedTabIndex! >= widget.dockingTabs.childrenCount &&
@@ -223,7 +223,7 @@ class _DockingTabsWidgetState
       controller.selectedIndex = null;
     }
 
-    Widget content = TabbedWiew(
+    Widget content = TabbedView(
         controller: controller,
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) =>
             buildDraggable(tab.value as DockingItem, tabWidget),
