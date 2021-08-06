@@ -3,15 +3,15 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class _LaytoutAction {
-  _LaytoutAction(this.draggedItem, this.dropPosition);
+class _LayoutAction {
+  _LayoutAction(this.draggedItem, this.dropPosition);
 
   final DockingItem draggedItem;
   final DropPosition dropPosition;
 }
 
 mixin DropArea {
-  _LaytoutAction? _layoutAction;
+  _LayoutAction? _layoutAction;
 }
 
 /// Represents any area of the layout.
@@ -328,7 +328,7 @@ class DockingLayout {
     }
     _validate(targetArea as DockingArea);
     draggedItem._dragged = true;
-    targetArea._layoutAction = _LaytoutAction(draggedItem, dropPosition);
+    targetArea._layoutAction = _LayoutAction(draggedItem, dropPosition);
     _rebuildLayout();
   }
 
