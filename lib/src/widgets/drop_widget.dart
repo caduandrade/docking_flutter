@@ -1,5 +1,6 @@
 import 'package:docking/docking.dart';
-import 'package:docking/src/docking_layout.dart';
+import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/layout/move_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -125,11 +126,11 @@ class _DropAnchorWidget extends StatelessWidget {
         },
         onAccept: (DockingItem data) {
           if (item != null) {
-            model.layout.move(
-                draggedItem: data, targetArea: item!, dropPosition: position);
+            model.layout.rebuild(MoveItem(
+                draggedItem: data, targetArea: item!, dropPosition: position));
           } else if (tabs != null) {
-            model.layout.move(
-                draggedItem: data, targetArea: tabs!, dropPosition: position);
+            model.layout.rebuild(MoveItem(
+                draggedItem: data, targetArea: tabs!, dropPosition: position));
           }
         });
   }

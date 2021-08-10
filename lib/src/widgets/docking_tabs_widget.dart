@@ -1,4 +1,4 @@
-import 'package:docking/src/docking_layout.dart';
+import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/docking_model.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
@@ -17,19 +17,11 @@ class DockingTabsWidget extends DraggableWidget {
 
 /// The [DockingTabsWidget] state.
 class _DockingTabsWidgetState extends DraggableBuilderState<DockingTabsWidget> {
-  int? lastSelectedTabIndex;
   late TabbedViewController controller;
 
   @override
   void initState() {
     super.initState();
-    if (widget.dockingTabs.childrenCount > 0) {
-      lastSelectedTabIndex = 0;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     List<TabData> tabs = [];
     widget.dockingTabs.forEach((child) {
       tabs.add(TabData(
@@ -37,22 +29,21 @@ class _DockingTabsWidgetState extends DraggableBuilderState<DockingTabsWidget> {
           text: child.name != null ? child.name! : '',
           content: child.widget));
     });
-    TabbedViewController controller = TabbedViewController(tabs);
+    controller = TabbedViewController(tabs);
+    //print('::: ' + widget.dockingTabs.selectedIndex.toString());
+    // controller.selectedIndex = widget.dockingTabs.selectedIndex;
+  }
 
-    if (lastSelectedTabIndex != null &&
-        lastSelectedTabIndex! >= widget.dockingTabs.childrenCount &&
-        widget.dockingTabs.childrenCount > 0) {
-      controller.selectedIndex = widget.dockingTabs.childrenCount - 1;
-    } else {
-      controller.selectedIndex = null;
-    }
-
+  @override
+  Widget build(BuildContext context) {
     Widget content = TabbedView(
         controller: controller,
-        draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) =>
-            buildDraggable(tab.value as DockingItem, tabWidget),
+        // draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) =>     buildDraggable(tab.value as DockingItem, tabWidget),
         onTabSelection: (int? index) {
-          lastSelectedTabIndex = index;
+          print(index);
+          if (index != null) {
+            //widget.dockingTabs.selectedIndex = index;
+          }
         });
 
     if (widget.model.dragging) {

@@ -1,4 +1,4 @@
-import 'package:docking/src/docking_layout.dart';
+import 'package:docking/src/layout/docking_layout.dart';
 import 'package:flutter/cupertino.dart';
 
 /// The [Docking] model.

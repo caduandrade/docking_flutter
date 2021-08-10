@@ -3,152 +3,101 @@ import 'package:flutter_test/flutter_test.dart';
 import 'utils.dart';
 
 void main() {
-  group('remove', () {
+  group('remove item', () {
     test('item', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
-      layout.remove(item);
-      expect(layout.root, isNull);
-      testDisposed(item);
+      testHierarchy(layout, 'Ia');
+      removeItem(layout, item);
+      testHierarchy(layout, '');
     });
 
     test('item out from layout', () {
       DockingLayout layout = DockingLayout();
-      expect(() => layout.remove(dockingItem('a')), throwsArgumentError);
+      expect(() => removeItem(layout, dockingItem('a')), throwsArgumentError);
       layout = DockingLayout(root: dockingItem('a'));
-      expect(() => layout.remove(dockingItem('a')), throwsArgumentError);
+      expect(() => removeItem(layout, dockingItem('a')), throwsArgumentError);
     });
 
-    test('row item', () {
+    test('row item 1', () {
       DockingItem itemA = dockingItem('a');
       DockingItem itemB = dockingItem('b');
       DockingItem itemC = dockingItem('c');
       DockingRow row = DockingRow([itemA, itemB, itemC]);
       DockingLayout layout = DockingLayout(root: row);
 
-      testDockingParentArea(row,
-          layoutIndex: 1,
-          childrenCount: 3,
-          hasParent: false,
-          path: 'R',
-          level: 0);
-      testDockingItem(itemA,
-          layoutIndex: 2, name: 'a', hasParent: true, path: 'RI', level: 1);
-      testDockingItem(itemB,
-          layoutIndex: 3, name: 'b', hasParent: true, path: 'RI', level: 1);
-      testDockingItem(itemC,
-          layoutIndex: 4, name: 'c', hasParent: true, path: 'RI', level: 1);
+      testHierarchy(layout, 'R(Ia,Ib,Ic)');
 
-      layout.remove(itemA);
+      removeItem(layout, itemA);
 
-      expect(layout.root, row);
-      testDockingParentArea(row,
-          layoutIndex: 1,
-          childrenCount: 2,
-          hasParent: false,
-          path: 'R',
-          level: 0);
-      testDisposed(itemA);
-      testDockingItem(itemB,
-          layoutIndex: 2, name: 'b', hasParent: true, path: 'RI', level: 1);
-      testDockingItem(itemC,
-          layoutIndex: 3, name: 'c', hasParent: true, path: 'RI', level: 1);
-
-      layout.remove(itemB);
-
-      testDisposed(row);
-      testDisposed(itemB);
-      testDockingItem(itemC,
-          layoutIndex: 1, name: 'c', hasParent: false, path: 'I', level: 0);
-      expect(layout.root!, itemC);
+      testHierarchy(layout, 'R(Ib,Ic)');
     });
 
-    test('column item', () {
+    test('row item 2', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingRow row = DockingRow([itemA, itemB]);
+      DockingLayout layout = DockingLayout(root: row);
+
+      testHierarchy(layout, 'R(Ia,Ib)');
+
+      removeItem(layout, itemA);
+
+      testHierarchy(layout, 'Ib');
+    });
+
+    test('column item 1', () {
       DockingItem itemA = dockingItem('a');
       DockingItem itemB = dockingItem('b');
       DockingItem itemC = dockingItem('c');
       DockingColumn column = DockingColumn([itemA, itemB, itemC]);
       DockingLayout layout = DockingLayout(root: column);
 
-      testDockingParentArea(column,
-          layoutIndex: 1,
-          childrenCount: 3,
-          hasParent: false,
-          path: 'C',
-          level: 0);
-      testDockingItem(itemA,
-          layoutIndex: 2, name: 'a', hasParent: true, path: 'CI', level: 1);
-      testDockingItem(itemB,
-          layoutIndex: 3, name: 'b', hasParent: true, path: 'CI', level: 1);
-      testDockingItem(itemC,
-          layoutIndex: 4, name: 'c', hasParent: true, path: 'CI', level: 1);
+      testHierarchy(layout, 'C(Ia,Ib,Ic)');
 
-      layout.remove(itemA);
+      removeItem(layout, itemA);
 
-      expect(layout.root, column);
-      testDockingParentArea(column,
-          layoutIndex: 1,
-          childrenCount: 2,
-          hasParent: false,
-          path: 'C',
-          level: 0);
-      testDisposed(itemA);
-      testDockingItem(itemB,
-          layoutIndex: 2, name: 'b', hasParent: true, path: 'CI', level: 1);
-      testDockingItem(itemC,
-          layoutIndex: 3, name: 'c', hasParent: true, path: 'CI', level: 1);
-
-      layout.remove(itemB);
-
-      testDisposed(column);
-      testDisposed(itemB);
-      testDockingItem(itemC,
-          layoutIndex: 1, name: 'c', hasParent: false, path: 'I', level: 0);
-      expect(layout.root!, itemC);
+      testHierarchy(layout, 'C(Ib,Ic)');
     });
 
-    test('tabs item', () {
+    test('column item 2', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingColumn column = DockingColumn([itemA, itemB]);
+      DockingLayout layout = DockingLayout(root: column);
+
+      testHierarchy(layout, 'C(Ia,Ib)');
+
+      removeItem(layout, itemA);
+
+      testHierarchy(layout, 'Ib');
+    });
+
+    test('tabs item 1', () {
       DockingItem itemA = dockingItem('a');
       DockingItem itemB = dockingItem('b');
       DockingItem itemC = dockingItem('c');
       DockingTabs tabs = DockingTabs([itemA, itemB, itemC]);
       DockingLayout layout = DockingLayout(root: tabs);
 
-      testDockingParentArea(tabs,
-          layoutIndex: 1,
-          childrenCount: 3,
-          hasParent: false,
-          path: 'T',
-          level: 0);
-      testDockingItem(itemA,
-          layoutIndex: 2, name: 'a', hasParent: true, path: 'TI', level: 1);
-      testDockingItem(itemB,
-          layoutIndex: 3, name: 'b', hasParent: true, path: 'TI', level: 1);
-      testDockingItem(itemC,
-          layoutIndex: 4, name: 'c', hasParent: true, path: 'TI', level: 1);
+      testHierarchy(layout, 'T(Ia,Ib,Ic)');
 
-      layout.remove(itemA);
+      removeItem(layout, itemA);
 
-      expect(layout.root, tabs);
-      testDockingParentArea(tabs,
-          layoutIndex: 1,
-          childrenCount: 2,
-          hasParent: false,
-          path: 'T',
-          level: 0);
-      testDisposed(itemA);
-      testDockingItem(itemB,
-          layoutIndex: 2, name: 'b', hasParent: true, path: 'TI', level: 1);
-      testDockingItem(itemC,
-          layoutIndex: 3, name: 'c', hasParent: true, path: 'TI', level: 1);
+      testHierarchy(layout, 'T(Ib,Ic)');
+    });
 
-      layout.remove(itemB);
+    test('tabs item 2', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingTabs tabs = DockingTabs([itemA, itemB]);
+      DockingLayout layout = DockingLayout(root: tabs);
 
-      testDisposed(tabs);
-      testDisposed(itemB);
-      testDockingItem(itemC,
-          layoutIndex: 1, name: 'c', hasParent: false, path: 'I', level: 0);
-      expect(layout.root!, itemC);
+      testHierarchy(layout, 'T(Ia,Ib)');
+
+      removeItem(layout, itemA);
+
+      testHierarchy(layout, 'Ib');
     });
 
     test('column row item 1', () {
@@ -159,48 +108,11 @@ void main() {
       DockingColumn column = DockingColumn([row, itemC]);
       DockingLayout layout = DockingLayout(root: column);
 
-      testDockingParentArea(column,
-          layoutIndex: 1,
-          childrenCount: 2,
-          hasParent: false,
-          path: 'C',
-          level: 0);
-      testDockingParentArea(row,
-          layoutIndex: 2,
-          childrenCount: 2,
-          hasParent: true,
-          path: 'CR',
-          level: 1);
-      testDockingItem(itemA,
-          layoutIndex: 3, name: 'a', hasParent: true, path: 'CRI', level: 2);
-      testDockingItem(itemB,
-          layoutIndex: 4, name: 'b', hasParent: true, path: 'CRI', level: 2);
-      testDockingItem(itemC,
-          layoutIndex: 5, name: 'c', hasParent: true, path: 'CI', level: 1);
+      testHierarchy(layout, 'C(R(Ia,Ib),Ic)');
 
-      layout.remove(itemC);
+      removeItem(layout, itemC);
 
-      testDisposed(column);
-      testDockingParentArea(row,
-          layoutIndex: 1,
-          childrenCount: 2,
-          hasParent: false,
-          path: 'R',
-          level: 0);
-      testDockingItem(itemA,
-          layoutIndex: 2, name: 'a', hasParent: true, path: 'RI', level: 1);
-      testDockingItem(itemB,
-          layoutIndex: 3, name: 'b', hasParent: true, path: 'RI', level: 1);
-      testDisposed(itemC);
-      expect(layout.root, row);
-
-      layout.remove(itemB);
-
-      testDisposed(row);
-      testDockingItem(itemA,
-          layoutIndex: 1, name: 'a', hasParent: false, path: 'I', level: 0);
-      testDisposed(itemB);
-      expect(layout.root, itemA);
+      testHierarchy(layout, 'R(Ia,Ib)');
     });
 
     test('column row item 2', () {
@@ -211,48 +123,11 @@ void main() {
       DockingColumn column = DockingColumn([row, itemC]);
       DockingLayout layout = DockingLayout(root: column);
 
-      testDockingParentArea(column,
-          layoutIndex: 1,
-          childrenCount: 2,
-          hasParent: false,
-          path: 'C',
-          level: 0);
-      testDockingParentArea(row,
-          layoutIndex: 2,
-          childrenCount: 2,
-          hasParent: true,
-          path: 'CR',
-          level: 1);
-      testDockingItem(itemA,
-          layoutIndex: 3, name: 'a', hasParent: true, path: 'CRI', level: 2);
-      testDockingItem(itemB,
-          layoutIndex: 4, name: 'b', hasParent: true, path: 'CRI', level: 2);
-      testDockingItem(itemC,
-          layoutIndex: 5, name: 'c', hasParent: true, path: 'CI', level: 1);
+      testHierarchy(layout, 'C(R(Ia,Ib),Ic)');
 
-      layout.remove(itemA);
+      removeItem(layout, itemA);
 
-      testDockingParentArea(column,
-          layoutIndex: 1,
-          childrenCount: 2,
-          hasParent: false,
-          path: 'C',
-          level: 0);
-      testDisposed(row);
-      testDisposed(itemA);
-      testDockingItem(itemB,
-          layoutIndex: 2, name: 'b', hasParent: true, path: 'CI', level: 1);
-      testDockingItem(itemC,
-          layoutIndex: 3, name: 'c', hasParent: true, path: 'CI', level: 1);
-      expect(layout.root, column);
-
-      layout.remove(itemB);
-
-      testDisposed(column);
-      testDisposed(itemB);
-      testDockingItem(itemC,
-          layoutIndex: 1, name: 'c', hasParent: false, path: 'I', level: 0);
-      expect(layout.root, itemC);
+      testHierarchy(layout, 'C(Ib,Ic)');
     });
 
     test('row column row item', () {
@@ -265,77 +140,11 @@ void main() {
       DockingRow rootRow = DockingRow([itemA, column]);
       DockingLayout layout = DockingLayout(root: rootRow);
 
-      testDockingParentArea(rootRow,
-          layoutIndex: 1,
-          childrenCount: 2,
-          hasParent: false,
-          path: 'R',
-          level: 0);
-      testDockingItem(itemA,
-          layoutIndex: 2, name: 'a', hasParent: true, path: 'RI', level: 1);
-      testDockingParentArea(column,
-          layoutIndex: 3,
-          childrenCount: 2,
-          hasParent: true,
-          path: 'RC',
-          level: 1);
-      testDockingParentArea(row,
-          layoutIndex: 4,
-          childrenCount: 2,
-          hasParent: true,
-          path: 'RCR',
-          level: 2);
-      testDockingItem(itemB,
-          layoutIndex: 5, name: 'b', hasParent: true, path: 'RCRI', level: 3);
-      testDockingItem(itemC,
-          layoutIndex: 6, name: 'c', hasParent: true, path: 'RCRI', level: 3);
-      testDockingItem(itemD,
-          layoutIndex: 7, name: 'd', hasParent: true, path: 'RCI', level: 2);
+      testHierarchy(layout, 'R(Ia,C(R(Ib,Ic),Id))');
 
-      layout.remove(itemD);
+      removeItem(layout, itemD);
 
-      testDockingParentArea(rootRow,
-          layoutIndex: 1,
-          childrenCount: 3,
-          hasParent: false,
-          path: 'R',
-          level: 0);
-      testDockingItem(itemA,
-          layoutIndex: 2, name: 'a', hasParent: true, path: 'RI', level: 1);
-      testDisposed(column);
-      testDisposed(row);
-      testDockingItem(itemB,
-          layoutIndex: 3, name: 'b', hasParent: true, path: 'RI', level: 1);
-      testDockingItem(itemC,
-          layoutIndex: 4, name: 'c', hasParent: true, path: 'RI', level: 1);
-      testDisposed(itemD);
-      expect(layout.root, rootRow);
-
-      layout.remove(itemB);
-
-      testDockingParentArea(rootRow,
-          layoutIndex: 1,
-          childrenCount: 2,
-          hasParent: false,
-          path: 'R',
-          level: 0);
-      testDockingItem(itemA,
-          layoutIndex: 2, name: 'a', hasParent: true, path: 'RI', level: 1);
-      testDisposed(itemB);
-      testDockingItem(itemC,
-          layoutIndex: 3, name: 'c', hasParent: true, path: 'RI', level: 1);
-      testDisposed(itemD);
-      expect(layout.root, rootRow);
-
-      layout.remove(itemC);
-
-      testDockingParentArea(rootRow);
-      testDockingItem(itemA,
-          layoutIndex: 1, name: 'a', hasParent: false, path: 'I', level: 0);
-      testDisposed(itemB);
-      testDisposed(itemC);
-      testDisposed(itemD);
-      expect(layout.root, itemA);
+      testHierarchy(layout, 'R(Ia,Ib,Ic)');
     });
   });
 }

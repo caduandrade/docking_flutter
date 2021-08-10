@@ -1,4 +1,4 @@
-import 'package:docking/src/docking_layout.dart';
+import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/docking_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

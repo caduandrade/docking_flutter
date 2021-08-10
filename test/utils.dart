@@ -1,9 +1,49 @@
 import 'package:docking/docking.dart';
+import 'package:docking/src/layout/remove_item.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 DockingItem dockingItem(String? name) {
   return DockingItem(name: name, widget: Container());
+}
+
+void removeItem(DockingLayout layout, DockingItem item) {
+  List<DockingArea> areas = layout.layoutAreas();
+  layout.rebuild(RemoveItem(itemToRemove: item));
+  testDisposedList(areas);
+}
+
+int _testAreasAttributes(DockingArea parent, bool value, int level, int index) {
+  expect(parent.parent != null, value);
+  expect(parent.level, level);
+  expect(parent.index, index);
+  index++;
+  if (parent is DockingParentArea) {
+    parent.forEach((child) {
+      index = _testAreasAttributes(child, true, level + 1, index);
+    });
+  }
+  return index;
+}
+
+void testAreasAttributes(DockingLayout layout) {
+  if(layout.root!=null) {
+    _testAreasAttributes(layout.root!, false, 0, 1);
+  }
+}
+
+void testHierarchy(DockingLayout layout, String hierarchy) {
+  if(hierarchy.length==0){
+    expect(layout.root, isNull);
+  } else {
+    expect(layout.root, isNotNull);
+    testAreasAttributes(layout);
+    expect(layout.hierarchy(nameInfo: true), hierarchy);
+  }
+}
+
+void testDisposedList(List<DockingArea> layoutAreas) {
+  layoutAreas.forEach((area) => testDisposed(area));
 }
 
 void testDockingArea(DockingArea area,

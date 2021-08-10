@@ -1,4 +1,4 @@
-import 'package:docking/src/docking_layout.dart';
+import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/docking_model.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';

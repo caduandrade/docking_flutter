@@ -1,5 +1,5 @@
 import 'package:docking/docking.dart';
-import 'package:docking/src/docking_layout.dart';
+import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/widgets/docking_item_widget.dart';
 import 'package:docking/src/widgets/docking_tabs_widget.dart';
 import 'package:flutter/cupertino.dart';
