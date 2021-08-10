@@ -7,7 +7,8 @@ void main() {
     test('draggedItem == targetArea ', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
-      expect(() => moveItem(layout, item, item, DropPosition.bottom), throwsArgumentError);
+      expect(() => moveItem(layout, item, item, DropPosition.bottom),
+          throwsArgumentError);
     });
 
     test('row - no change', () {
@@ -69,7 +70,7 @@ void main() {
       DockingItem itemA = dockingItem('a');
       DockingItem itemB = dockingItem('b');
       DockingItem itemC = dockingItem('c');
-      DockingTabs tabs=DockingTabs([itemB, itemC]);
+      DockingTabs tabs = DockingTabs([itemB, itemC]);
       DockingRow row = DockingRow([itemA, tabs]);
       DockingLayout layout = DockingLayout(root: row);
 
@@ -82,13 +83,67 @@ void main() {
       DockingItem itemA = dockingItem('a');
       DockingItem itemB = dockingItem('b');
       DockingItem itemC = dockingItem('c');
-      DockingTabs tabs=DockingTabs([itemB, itemC]);
+      DockingTabs tabs = DockingTabs([itemB, itemC]);
       DockingRow row = DockingRow([itemA, tabs]);
       DockingLayout layout = DockingLayout(root: row);
 
-      expect(() => moveItem(layout, itemA, itemB, DropPosition.center), throwsArgumentError);
+      expect(() => moveItem(layout, itemA, itemB, DropPosition.center),
+          throwsArgumentError);
     });
 
+    test('complex 1', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingItem itemC = dockingItem('c');
+      DockingItem itemD = dockingItem('d');
+      DockingItem itemE = dockingItem('e');
+      DockingColumn innerColumn = DockingColumn([itemB, itemC]);
+      DockingRow row = DockingRow([itemA, innerColumn]);
+      DockingTabs tabs = DockingTabs([itemD, itemE]);
+      DockingColumn column = DockingColumn([row, tabs]);
+      DockingLayout layout = DockingLayout(root: column);
 
+      moveItem(layout, itemA, itemC, DropPosition.center);
+
+      testHierarchy(layout, 'C(Ib,T(Ic,Ia),T(Id,Ie))');
+    });
+
+    test('complex 2', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingItem itemC = dockingItem('c');
+      DockingItem itemD = dockingItem('d');
+      DockingItem itemE = dockingItem('e');
+      DockingItem itemF = dockingItem('f');
+      DockingColumn innerColumn = DockingColumn([itemB, itemC]);
+      DockingRow row = DockingRow([itemA, innerColumn]);
+      DockingTabs tabs = DockingTabs([itemD, itemE]);
+      DockingColumn column = DockingColumn([row, tabs, itemF]);
+      DockingLayout layout = DockingLayout(root: column);
+
+      moveItem(layout, itemA, itemC, DropPosition.center);
+
+      testHierarchy(layout, 'C(Ib,T(Ic,Ia),T(Id,Ie),If)');
+    });
+
+    test('complex 3', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingItem itemC = dockingItem('c');
+      DockingItem itemD = dockingItem('d');
+      DockingItem itemE = dockingItem('e');
+      DockingItem itemF = dockingItem('f');
+      DockingItem itemG = dockingItem('g');
+      DockingColumn innerColumn = DockingColumn([itemB, itemC]);
+      DockingRow row = DockingRow([itemA, innerColumn]);
+      DockingTabs tabs = DockingTabs([itemD, itemE]);
+      DockingColumn column = DockingColumn([row, tabs, itemF]);
+      DockingRow row2 = DockingRow([itemG, column]);
+      DockingLayout layout = DockingLayout(root: row2);
+
+      moveItem(layout, itemA, itemC, DropPosition.center);
+
+      testHierarchy(layout, 'R(Ig,C(Ib,T(Ic,Ia),T(Id,Ie),If))');
+    });
   });
 }

@@ -82,6 +82,9 @@ abstract class DockingArea {
   /// Updates recursively the information of parent, index and layoutId.
   int _updateHierarchy(
       DockingParentArea? parentArea, int nextIndex, int layoutId) {
+    if (this.disposed) {
+      throw StateError('Disposed area');
+    }
     _parent = parentArea;
     _layoutId = layoutId;
     _index = nextIndex++;
@@ -118,6 +121,12 @@ abstract class DockingParentArea extends DockingArea {
       if (child.runtimeType == this.runtimeType) {
         throw ArgumentError(
             'DockingParentArea cannot have children of the same type');
+      }
+      if (child.disposed) {
+        throw ArgumentError('DockingParentArea cannot have disposed child');
+      }
+      if (child.layoutId != -1) {
+        throw ArgumentError('Child already belongs to another layout');
       }
     }
     if (this._children.length < 2) {
@@ -161,6 +170,9 @@ abstract class DockingParentArea extends DockingArea {
   @override
   int _updateHierarchy(
       DockingParentArea? parentArea, int nextIndex, int layoutId) {
+    if (this.disposed) {
+      throw StateError('Disposed area');
+    }
     _parent = parentArea;
     _layoutId = layoutId;
     _index = nextIndex++;
