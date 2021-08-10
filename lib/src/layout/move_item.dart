@@ -61,6 +61,9 @@ class MoveItem extends LayoutModifier {
       DockingTabs dockingTabs = area;
       List<DockingItem> children = [];
       dockingTabs.forEach((child) {
+        if (child == targetArea) {
+          throw ArgumentError('Nested tabbed panels are not allowed.');
+        }
         if (child != draggedItem) {
           children.add(DockingItem.clone(child));
         }

@@ -53,10 +53,10 @@ class RemoveItem extends LayoutModifier {
       } else if (area is DockingColumn) {
         return DockingColumn(children);
       }
-      throw StateError(
+      throw ArgumentError(
           'DockingArea class not recognized: ' + area.runtimeType.toString());
     }
-    throw StateError(
+    throw ArgumentError(
         'DockingArea class not recognized: ' + area.runtimeType.toString());
   }
 }
