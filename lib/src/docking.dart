@@ -1,8 +1,6 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/layout/layout_modifier.dart';
-import 'package:docking/src/layout/move_item.dart';
-import 'package:docking/src/layout/remove_item.dart';
 import 'package:docking/src/widgets/docking_item_widget.dart';
 import 'package:docking/src/widgets/docking_tabs_widget.dart';
 import 'package:flutter/cupertino.dart';
