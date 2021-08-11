@@ -1,24 +1,24 @@
+import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/docking_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 /// Represents a abstract draggable widget.
 abstract class DraggableWidget extends StatelessWidget {
-  DraggableWidget({Key? key, required this.notifier}) : super(key: key);
+  DraggableWidget({Key? key, required this.dockingDrag}) : super(key: key);
 
-  final DockingNotifier notifier;
+  final DockingDrag dockingDrag;
   Draggable buildDraggable(DockingItem item, Widget child) {
     String name = item.name != null ? item.name! : '';
     return Draggable<DockingItem>(
         data: item,
         onDragStarted: () {
           print('onDragStarted');
-          notifier.dragging = true;
+          dockingDrag.enable = true;
         },
         onDragCompleted: () {
           print('onDragCompleted');
-          notifier.dragging = false;
+          dockingDrag.enable = false;
         },
         onDragEnd: (details) {
           print('onDragEnd');

@@ -1,6 +1,7 @@
-import 'package:demo/example_widget.dart';
 import 'package:docking/docking.dart';
 import 'package:flutter/widgets.dart';
+
+import 'example_widget.dart';
 
 class LayoutRCT extends ExampleStatelessWidget {
   @override

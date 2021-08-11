@@ -1,5 +1,7 @@
+import 'package:docking/src/docking.dart';
+import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/docking_notifier.dart';
+import 'package:docking/src/layout/remove_item.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
 import 'package:flutter/widgets.dart';
@@ -8,10 +10,14 @@ import 'package:tabbed_view/tabbed_view.dart';
 /// Represents a widget for [DockingTabs].
 class DockingTabsWidget extends DraggableWidget {
   DockingTabsWidget(
-      {Key? key, required DockingNotifier notifier, required this.dockingTabs})
-      : super(key: key, notifier: notifier);
+      {Key? key,
+      required this.onLayoutModifier,
+      required DockingDrag dockingDrag,
+      required this.dockingTabs})
+      : super(key: key, dockingDrag: dockingDrag);
 
   final DockingTabs dockingTabs;
+  final OnLayoutModifier onLayoutModifier;
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +43,15 @@ class DockingTabsWidget extends DraggableWidget {
               dockingTabs.childAt(tabIndex) as DockingItem, tabWidget);
         },
         onTabClosing: _onTabClosing);
-    if (notifier.dragging) {
-      return DropWidget.tabs(notifier, dockingTabs, content);
+    if (dockingDrag.enable) {
+      return DropWidget.tabs(onLayoutModifier, dockingTabs, content);
     }
     return content;
   }
 
   bool _onTabClosing(int tabIndex) {
-    notifier.removeItem(dockingTabs.childAt(tabIndex) as DockingItem);
+    onLayoutModifier(
+        RemoveItem(itemToRemove: dockingTabs.childAt(tabIndex) as DockingItem));
     return false;
   }
 }

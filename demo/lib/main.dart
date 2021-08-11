@@ -1,11 +1,12 @@
-import 'package:demo/layout_c.dart';
-import 'package:demo/layout_r.dart';
-import 'package:demo/layout_rc.dart';
-import 'package:demo/layout_rcr.dart';
-import 'package:demo/layout_rct.dart';
-import 'package:demo/layout_t.dart';
 import 'package:demoflu/demoflu.dart';
 import 'package:flutter/material.dart';
+
+import 'layout_c.dart';
+import 'layout_r.dart';
+import 'layout_rc.dart';
+import 'layout_rcr.dart';
+import 'layout_rct.dart';
+import 'layout_t.dart';
 
 void main() {
   bool dev = true;

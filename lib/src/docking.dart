@@ -1,5 +1,8 @@
-import 'package:docking/src/docking_notifier.dart';
+import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/layout/layout_modifier.dart';
+import 'package:docking/src/layout/move_item.dart';
+import 'package:docking/src/layout/remove_item.dart';
 import 'package:docking/src/widgets/docking_item_widget.dart';
 import 'package:docking/src/widgets/docking_tabs_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,9 +13,9 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 /// The docking widget.
 class Docking extends StatefulWidget {
-  const Docking({Key? key, required this.layout}) : super(key: key);
+  const Docking({Key? key, this.layout}) : super(key: key);
 
-  final DockingLayout layout;
+  final DockingLayout? layout;
 
   @override
   State<StatefulWidget> createState() => _DockingState();
@@ -20,44 +23,51 @@ class Docking extends StatefulWidget {
 
 /// The [Docking] state.
 class _DockingState extends State<Docking> {
-  late DockingNotifier _notifier;
+  final DockingDrag _dockingDrag = DockingDrag();
 
   @override
   void initState() {
     super.initState();
-    _notifier = DockingNotifier(widget.layout);
-    _notifier.addListener(_rebuild);
+    _dockingDrag.addListener(_forceRebuild);
   }
 
   @override
   void dispose() {
-    _notifier.removeListener(_rebuild);
     super.dispose();
+    _dockingDrag.removeListener(_forceRebuild);
   }
 
-  void _rebuild() {
-    setState(() {
-      // rebuild
-    });
+  void _onLayoutModifier(LayoutModifier modifier) {
+    if (widget.layout != null) {
+      setState(() {
+        widget.layout!.rebuild(modifier);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.layout.root != null) {
-      return _buildArea(context, widget.layout.root!);
+    if (widget.layout != null) {
+      return _buildArea(context, widget.layout!.root!);
     }
     return Container();
   }
 
   Widget _buildArea(BuildContext context, DockingArea area) {
     if (area is DockingItem) {
-      return DockingItemWidget(notifier: _notifier, item: area);
+      return DockingItemWidget(
+          dockingDrag: _dockingDrag,
+          onLayoutModifier: _onLayoutModifier,
+          item: area);
     } else if (area is DockingRow) {
       return _row(context, area);
     } else if (area is DockingColumn) {
       return _column(context, area);
     } else if (area is DockingTabs) {
-      return DockingTabsWidget(notifier: _notifier, dockingTabs: area);
+      return DockingTabsWidget(
+          dockingDrag: _dockingDrag,
+          onLayoutModifier: _onLayoutModifier,
+          dockingTabs: area);
     }
     throw UnimplementedError(
         'Unrecognized runtimeType: ' + area.runtimeType.toString());
@@ -78,4 +88,12 @@ class _DockingState extends State<Docking> {
     });
     return MultiSplitView(children: children, axis: Axis.vertical);
   }
+
+  void _forceRebuild() {
+    setState(() {
+      // just rebuild
+    });
+  }
 }
+
+typedef OnLayoutModifier = void Function(LayoutModifier modifier);

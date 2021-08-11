@@ -1,26 +1,28 @@
-import 'package:docking/src/docking_notifier.dart';
+import 'package:docking/src/docking.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/layout/move_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 /// Represents a container for [DockingItem] or [DockingTabs] that creates
 /// drop areas for a [Draggable].
 class DropWidget extends StatelessWidget {
-  const DropWidget._(this.notifier, this.item, this.tabs, this.areaContent);
+  const DropWidget._(
+      this.onLayoutModifier, this.item, this.tabs, this.areaContent);
 
   factory DropWidget.item(
-      DockingNotifier model, DockingItem item, Widget areaContent) {
-    return DropWidget._(model, item, null, areaContent);
+      OnLayoutModifier onLayoutModifier, DockingItem item, Widget areaContent) {
+    return DropWidget._(onLayoutModifier, item, null, areaContent);
   }
 
   factory DropWidget.tabs(
-      DockingNotifier notifier, DockingTabs tabs, Widget areaContent) {
-    return DropWidget._(notifier, null, tabs, areaContent);
+      OnLayoutModifier onLayoutModifier, DockingTabs tabs, Widget areaContent) {
+    return DropWidget._(onLayoutModifier, null, tabs, areaContent);
   }
 
   static const double _minimalSize = 30;
 
-  final DockingNotifier notifier;
+  final OnLayoutModifier onLayoutModifier;
   final DockingItem? item;
   final DockingTabs? tabs;
   final Widget areaContent;
@@ -33,10 +35,10 @@ class DropWidget extends StatelessWidget {
         Positioned.fill(child: areaContent),
         Positioned.fill(
             child: _DropAnchorWidget(
-                notifier: notifier,
-                item: item,
-                tabs: tabs,
-                position: DropPosition.center))
+                onLayoutModifier: onLayoutModifier,
+                dockingItem: item,
+                dockingTabs: tabs,
+                dropPosition: DropPosition.center))
       ];
 
       double horizontalEdgeWidth = 30 * constraints.maxWidth / 100;
@@ -49,20 +51,20 @@ class DropWidget extends StatelessWidget {
       if (availableCenterWidth >= _minimalSize) {
         children.add(Positioned(
             child: _DropAnchorWidget(
-                notifier: notifier,
-                item: item,
-                tabs: tabs,
-                position: DropPosition.left),
+                onLayoutModifier: onLayoutModifier,
+                dockingItem: item,
+                dockingTabs: tabs,
+                dropPosition: DropPosition.left),
             width: horizontalEdgeWidth,
             bottom: 0,
             top: 0,
             left: 0));
         children.add(Positioned(
             child: _DropAnchorWidget(
-                notifier: notifier,
-                item: item,
-                tabs: tabs,
-                position: DropPosition.right),
+                onLayoutModifier: onLayoutModifier,
+                dockingItem: item,
+                dockingTabs: tabs,
+                dropPosition: DropPosition.right),
             width: horizontalEdgeWidth,
             bottom: 0,
             top: 0,
@@ -71,20 +73,20 @@ class DropWidget extends StatelessWidget {
       if (availableCenterHeight >= _minimalSize) {
         children.add(Positioned(
             child: _DropAnchorWidget(
-                notifier: notifier,
-                item: item,
-                tabs: tabs,
-                position: DropPosition.top),
+                onLayoutModifier: onLayoutModifier,
+                dockingItem: item,
+                dockingTabs: tabs,
+                dropPosition: DropPosition.top),
             height: verticalEdgeHeight,
             top: 0,
             left: 0,
             right: 0));
         children.add(Positioned(
             child: _DropAnchorWidget(
-                notifier: notifier,
-                item: item,
-                tabs: tabs,
-                position: DropPosition.bottom),
+                onLayoutModifier: onLayoutModifier,
+                dockingItem: item,
+                dockingTabs: tabs,
+                dropPosition: DropPosition.bottom),
             height: verticalEdgeHeight,
             bottom: 0,
             left: 0,
@@ -98,12 +100,15 @@ class DropWidget extends StatelessWidget {
 
 class _DropAnchorWidget extends StatelessWidget {
   const _DropAnchorWidget(
-      {required this.notifier, this.item, this.tabs, required this.position});
+      {required this.onLayoutModifier,
+      this.dockingItem,
+      this.dockingTabs,
+      required this.dropPosition});
 
-  final DockingNotifier notifier;
-  final DockingItem? item;
-  final DockingTabs? tabs;
-  final DropPosition position;
+  final OnLayoutModifier onLayoutModifier;
+  final DockingItem? dockingItem;
+  final DockingTabs? dockingTabs;
+  final DropPosition dropPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -111,12 +116,12 @@ class _DropAnchorWidget extends StatelessWidget {
         builder: _buildDropWidget,
         onWillAccept: (DockingItem? data) {
           if (data != null) {
-            if (item != null) {
-              return item != data;
+            if (dockingItem != null) {
+              return dockingItem != data;
             }
-            if (tabs != null) {
-              if (tabs!.contains(data)) {
-                return position != DropPosition.center;
+            if (dockingTabs != null) {
+              if (dockingTabs!.contains(data)) {
+                return dropPosition != DropPosition.center;
               }
               return true;
             }
@@ -124,10 +129,16 @@ class _DropAnchorWidget extends StatelessWidget {
           return false;
         },
         onAccept: (DockingItem data) {
-          if (item != null) {
-            notifier.moveItem(data, item!, position);
-          } else if (tabs != null) {
-            notifier.moveItem(data, tabs!, position);
+          if (dockingItem != null) {
+            onLayoutModifier(MoveItem(
+                draggedItem: data,
+                targetArea: dockingItem!,
+                dropPosition: dropPosition));
+          } else if (dockingTabs != null) {
+            onLayoutModifier(MoveItem(
+                draggedItem: data,
+                targetArea: dockingTabs!,
+                dropPosition: dropPosition));
           }
         });
   }
