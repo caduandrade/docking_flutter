@@ -1,13 +1,13 @@
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/docking_model.dart';
+import 'package:docking/src/docking_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 /// Represents a abstract draggable widget.
 abstract class DraggableWidget extends StatefulWidget {
-  DraggableWidget(this.model);
+  DraggableWidget(this.model) : super(key: UniqueKey());
 
-  final DockingModel model;
+  final DockingNotifier model;
 }
 
 /// Abstract state to build a [Draggable].

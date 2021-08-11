@@ -1,4 +1,4 @@
-import 'package:docking/docking.dart';
+import 'package:docking/src/docking_notifier.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/layout/move_item.dart';
 import 'package:flutter/material.dart';
@@ -10,18 +10,18 @@ class DropWidget extends StatelessWidget {
   const DropWidget._(this.model, this.item, this.tabs, this.areaContent);
 
   factory DropWidget.item(
-      DockingModel model, DockingItem item, Widget areaContent) {
+      DockingNotifier model, DockingItem item, Widget areaContent) {
     return DropWidget._(model, item, null, areaContent);
   }
 
   factory DropWidget.tabs(
-      DockingModel model, DockingTabs tabs, Widget areaContent) {
+      DockingNotifier model, DockingTabs tabs, Widget areaContent) {
     return DropWidget._(model, null, tabs, areaContent);
   }
 
   static const double _minimalSize = 30;
 
-  final DockingModel model;
+  final DockingNotifier model;
   final DockingItem? item;
   final DockingTabs? tabs;
   final Widget areaContent;
@@ -101,7 +101,7 @@ class _DropAnchorWidget extends StatelessWidget {
   const _DropAnchorWidget(
       {required this.model, this.item, this.tabs, required this.position});
 
-  final DockingModel model;
+  final DockingNotifier model;
   final DockingItem? item;
   final DockingTabs? tabs;
   final DropPosition position;
@@ -126,11 +126,9 @@ class _DropAnchorWidget extends StatelessWidget {
         },
         onAccept: (DockingItem data) {
           if (item != null) {
-            model.layout.rebuild(MoveItem(
-                draggedItem: data, targetArea: item!, dropPosition: position));
+            model.moveItem(data, item!, position);
           } else if (tabs != null) {
-            model.layout.rebuild(MoveItem(
-                draggedItem: data, targetArea: tabs!, dropPosition: position));
+            model.moveItem(data, tabs!, position);
           }
         });
   }

@@ -1,5 +1,5 @@
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/docking_model.dart';
+import 'package:docking/src/docking_notifier.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
 import 'package:flutter/widgets.dart';
@@ -7,7 +7,7 @@ import 'package:tabbed_view/tabbed_view.dart';
 
 /// Represents a widget for [DockingTabs].
 class DockingTabsWidget extends DraggableWidget {
-  DockingTabsWidget(DockingModel model, this.dockingTabs) : super(model);
+  DockingTabsWidget(DockingNotifier model, this.dockingTabs) : super(model);
 
   final DockingTabs dockingTabs;
 
@@ -44,11 +44,21 @@ class _DockingTabsWidgetState extends DraggableBuilderState<DockingTabsWidget> {
           if (index != null) {
             //widget.dockingTabs.selectedIndex = index;
           }
-        });
-
+        },
+        draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
+          return buildDraggable(
+              widget.dockingTabs.childAt(tabIndex) as DockingItem, tabWidget);
+        },
+        onTabClosing: onTabClosing);
     if (widget.model.dragging) {
       return DropWidget.tabs(widget.model, widget.dockingTabs, content);
     }
     return content;
+  }
+
+  bool onTabClosing(int tabIndex) {
+    widget.model
+        .removeItem(widget.dockingTabs.childAt(tabIndex) as DockingItem);
+    return false;
   }
 }

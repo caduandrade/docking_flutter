@@ -1,4 +1,4 @@
-import 'package:docking/docking.dart';
+import 'package:docking/src/docking_notifier.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/widgets/docking_item_widget.dart';
 import 'package:docking/src/widgets/docking_tabs_widget.dart';
@@ -20,18 +20,18 @@ class Docking extends StatefulWidget {
 
 /// The [Docking] state.
 class _DockingState extends State<Docking> {
-  late DockingModel _model;
+  late DockingNotifier _notifier;
 
   @override
   void initState() {
     super.initState();
-    _model = DockingModel(layout: widget.layout);
-    _model.addListener(_rebuild);
+    _notifier = DockingNotifier(widget.layout);
+    _notifier.addListener(_rebuild);
   }
 
   @override
   void dispose() {
-    _model.removeListener(_rebuild);
+    _notifier.removeListener(_rebuild);
     super.dispose();
   }
 
@@ -44,48 +44,39 @@ class _DockingState extends State<Docking> {
   @override
   Widget build(BuildContext context) {
     if (widget.layout.root != null) {
-      return DockingAreaWidget(_model, widget.layout.root!);
+      return _buildArea(context, widget.layout.root!);
     }
     return Container();
   }
-}
 
-/// Represents a widget for [DockingArea].
-class DockingAreaWidget extends StatelessWidget {
-  ///Builds a [DockingAreaWidget].
-  const DockingAreaWidget(this.model, this.area);
-
-  final DockingModel model;
-  final DockingArea area;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildArea(BuildContext context, DockingArea area) {
     if (area is DockingItem) {
-      return DockingItemWidget(model, area as DockingItem);
+      return DockingItemWidget(_notifier, area);
     } else if (area is DockingRow) {
-      return _row(area as DockingRow);
+      return _row(context, area);
     } else if (area is DockingColumn) {
-      return _column(area as DockingColumn);
+      return _column(context, area);
     } else if (area is DockingTabs) {
-      return DockingTabsWidget(model, area as DockingTabs);
+      return DockingTabsWidget(_notifier, area);
     }
     throw UnimplementedError(
         'Unrecognized runtimeType: ' + area.runtimeType.toString());
   }
 
-  Widget _row(DockingRow row) {
+  Widget _row(BuildContext context, DockingRow row) {
     List<Widget> children = [];
     row.forEach((child) {
-      children.add(DockingAreaWidget(model, child));
+      children.add(_buildArea(context, child));
     });
     return MultiSplitView(children: children, axis: Axis.horizontal);
   }
 
-  Widget _column(DockingColumn column) {
+  Widget _column(BuildContext context, DockingColumn column) {
     List<Widget> children = [];
     column.forEach((child) {
-      children.add(DockingAreaWidget(model, child));
+      children.add(_buildArea(context, child));
     });
-    return MultiSplitView(children: children, axis: Axis.vertical);
+    return MultiSplitView(
+        key: UniqueKey(), children: children, axis: Axis.vertical);
   }
 }
