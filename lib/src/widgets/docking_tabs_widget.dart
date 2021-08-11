@@ -33,7 +33,6 @@ class DockingTabsWidget extends DraggableWidget {
     Widget content = TabbedView(
         controller: controller,
         onTabSelection: (int? index) {
-          print(index);
           if (index != null) {
             //widget.dockingTabs.selectedIndex = index;
           }

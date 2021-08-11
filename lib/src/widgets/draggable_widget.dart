@@ -13,19 +13,13 @@ abstract class DraggableWidget extends StatelessWidget {
     return Draggable<DockingItem>(
         data: item,
         onDragStarted: () {
-          print('onDragStarted');
           dockingDrag.enable = true;
         },
         onDragCompleted: () {
-          print('onDragCompleted');
           dockingDrag.enable = false;
         },
-        onDragEnd: (details) {
-          print('onDragEnd');
-        },
-        onDraggableCanceled: (Velocity velocity, Offset offset) {
-          print('onDraggableCanceled');
-        },
+        onDragEnd: (details) {},
+        onDraggableCanceled: (Velocity velocity, Offset offset) {},
         child: child,
         feedback: buildFeedback(name),
         dragAnchorStrategy: (Draggable<Object> draggable, BuildContext context,
