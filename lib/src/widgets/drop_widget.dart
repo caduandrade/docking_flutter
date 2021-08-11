@@ -1,13 +1,12 @@
 import 'package:docking/src/docking_notifier.dart';
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/layout/move_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 /// Represents a container for [DockingItem] or [DockingTabs] that creates
 /// drop areas for a [Draggable].
 class DropWidget extends StatelessWidget {
-  const DropWidget._(this.model, this.item, this.tabs, this.areaContent);
+  const DropWidget._(this.notifier, this.item, this.tabs, this.areaContent);
 
   factory DropWidget.item(
       DockingNotifier model, DockingItem item, Widget areaContent) {
@@ -15,13 +14,13 @@ class DropWidget extends StatelessWidget {
   }
 
   factory DropWidget.tabs(
-      DockingNotifier model, DockingTabs tabs, Widget areaContent) {
-    return DropWidget._(model, null, tabs, areaContent);
+      DockingNotifier notifier, DockingTabs tabs, Widget areaContent) {
+    return DropWidget._(notifier, null, tabs, areaContent);
   }
 
   static const double _minimalSize = 30;
 
-  final DockingNotifier model;
+  final DockingNotifier notifier;
   final DockingItem? item;
   final DockingTabs? tabs;
   final Widget areaContent;
@@ -34,7 +33,7 @@ class DropWidget extends StatelessWidget {
         Positioned.fill(child: areaContent),
         Positioned.fill(
             child: _DropAnchorWidget(
-                model: model,
+                notifier: notifier,
                 item: item,
                 tabs: tabs,
                 position: DropPosition.center))
@@ -50,7 +49,7 @@ class DropWidget extends StatelessWidget {
       if (availableCenterWidth >= _minimalSize) {
         children.add(Positioned(
             child: _DropAnchorWidget(
-                model: model,
+                notifier: notifier,
                 item: item,
                 tabs: tabs,
                 position: DropPosition.left),
@@ -60,7 +59,7 @@ class DropWidget extends StatelessWidget {
             left: 0));
         children.add(Positioned(
             child: _DropAnchorWidget(
-                model: model,
+                notifier: notifier,
                 item: item,
                 tabs: tabs,
                 position: DropPosition.right),
@@ -72,7 +71,7 @@ class DropWidget extends StatelessWidget {
       if (availableCenterHeight >= _minimalSize) {
         children.add(Positioned(
             child: _DropAnchorWidget(
-                model: model,
+                notifier: notifier,
                 item: item,
                 tabs: tabs,
                 position: DropPosition.top),
@@ -82,7 +81,7 @@ class DropWidget extends StatelessWidget {
             right: 0));
         children.add(Positioned(
             child: _DropAnchorWidget(
-                model: model,
+                notifier: notifier,
                 item: item,
                 tabs: tabs,
                 position: DropPosition.bottom),
@@ -99,9 +98,9 @@ class DropWidget extends StatelessWidget {
 
 class _DropAnchorWidget extends StatelessWidget {
   const _DropAnchorWidget(
-      {required this.model, this.item, this.tabs, required this.position});
+      {required this.notifier, this.item, this.tabs, required this.position});
 
-  final DockingNotifier model;
+  final DockingNotifier notifier;
   final DockingItem? item;
   final DockingTabs? tabs;
   final DropPosition position;
@@ -126,9 +125,9 @@ class _DropAnchorWidget extends StatelessWidget {
         },
         onAccept: (DockingItem data) {
           if (item != null) {
-            model.moveItem(data, item!, position);
+            notifier.moveItem(data, item!, position);
           } else if (tabs != null) {
-            model.moveItem(data, tabs!, position);
+            notifier.moveItem(data, tabs!, position);
           }
         });
   }

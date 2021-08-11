@@ -51,13 +51,13 @@ class _DockingState extends State<Docking> {
 
   Widget _buildArea(BuildContext context, DockingArea area) {
     if (area is DockingItem) {
-      return DockingItemWidget(_notifier, area);
+      return DockingItemWidget(notifier: _notifier, item: area);
     } else if (area is DockingRow) {
       return _row(context, area);
     } else if (area is DockingColumn) {
       return _column(context, area);
     } else if (area is DockingTabs) {
-      return DockingTabsWidget(_notifier, area);
+      return DockingTabsWidget(notifier: _notifier, dockingTabs: area);
     }
     throw UnimplementedError(
         'Unrecognized runtimeType: ' + area.runtimeType.toString());
@@ -76,7 +76,6 @@ class _DockingState extends State<Docking> {
     column.forEach((child) {
       children.add(_buildArea(context, child));
     });
-    return MultiSplitView(
-        key: UniqueKey(), children: children, axis: Axis.vertical);
+    return MultiSplitView(children: children, axis: Axis.vertical);
   }
 }

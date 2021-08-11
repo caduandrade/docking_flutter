@@ -8,38 +8,34 @@ import 'package:tabbed_view/tabbed_view.dart';
 
 /// Represents a widget for [DockingItem].
 class DockingItemWidget extends DraggableWidget {
-  DockingItemWidget(DockingNotifier model, this.item) : super(model);
+  DockingItemWidget(
+      {Key? key, required DockingNotifier notifier, required this.item})
+      : super(key: key, notifier: notifier);
 
   final DockingItem item;
 
   @override
-  State<StatefulWidget> createState() => DockingItemWidgetState();
-}
-
-/// The [DockingItemWidget] state.
-class DockingItemWidgetState extends DraggableBuilderState<DockingItemWidget> {
-  @override
   Widget build(BuildContext context) {
-    String name = widget.item.name != null ? widget.item.name! : '';
+    String name = item.name != null ? item.name! : '';
     List<TabData> tabs = [
-      TabData(value: widget.item, text: name, content: widget.item.widget)
+      TabData(value: item, text: name, content: item.widget)
     ];
     TabbedViewController controller = TabbedViewController(tabs);
 
     Widget content = TabbedView(
-        onTabClosing: onTabClosing,
+        onTabClosing: _onTabClosing,
         controller: controller,
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
-          return buildDraggable(widget.item, tabWidget);
+          return buildDraggable(item, tabWidget);
         });
-    if (widget.model.dragging) {
-      return DropWidget.item(widget.model, widget.item, content);
+    if (notifier.dragging) {
+      return DropWidget.item(notifier, item, content);
     }
     return content;
   }
 
-  bool onTabClosing(int tabIndex) {
-    widget.model.removeItem(widget.item);
+  bool _onTabClosing(int tabIndex) {
+    notifier.removeItem(item);
     return false;
   }
 }

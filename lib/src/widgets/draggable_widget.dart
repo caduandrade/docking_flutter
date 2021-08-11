@@ -4,26 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 /// Represents a abstract draggable widget.
-abstract class DraggableWidget extends StatefulWidget {
-  DraggableWidget(this.model) : super(key: UniqueKey());
+abstract class DraggableWidget extends StatelessWidget {
+  DraggableWidget({Key? key, required this.notifier}) : super(key: key);
 
-  final DockingNotifier model;
-}
-
-/// Abstract state to build a [Draggable].
-abstract class DraggableBuilderState<T extends DraggableWidget>
-    extends State<T> {
+  final DockingNotifier notifier;
   Draggable buildDraggable(DockingItem item, Widget child) {
     String name = item.name != null ? item.name! : '';
     return Draggable<DockingItem>(
         data: item,
         onDragStarted: () {
           print('onDragStarted');
-          widget.model.dragging = true;
+          notifier.dragging = true;
         },
         onDragCompleted: () {
           print('onDragCompleted');
-          widget.model.dragging = false;
+          notifier.dragging = false;
         },
         onDragEnd: (details) {
           print('onDragEnd');

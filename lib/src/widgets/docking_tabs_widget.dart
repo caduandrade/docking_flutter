@@ -7,38 +7,25 @@ import 'package:tabbed_view/tabbed_view.dart';
 
 /// Represents a widget for [DockingTabs].
 class DockingTabsWidget extends DraggableWidget {
-  DockingTabsWidget(DockingNotifier model, this.dockingTabs) : super(model);
+  DockingTabsWidget(
+      {Key? key, required DockingNotifier notifier, required this.dockingTabs})
+      : super(key: key, notifier: notifier);
 
   final DockingTabs dockingTabs;
 
   @override
-  State<StatefulWidget> createState() => _DockingTabsWidgetState();
-}
-
-/// The [DockingTabsWidget] state.
-class _DockingTabsWidgetState extends DraggableBuilderState<DockingTabsWidget> {
-  late TabbedViewController controller;
-
-  @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     List<TabData> tabs = [];
-    widget.dockingTabs.forEach((child) {
+    dockingTabs.forEach((child) {
       tabs.add(TabData(
           value: child,
           text: child.name != null ? child.name! : '',
           content: child.widget));
     });
-    controller = TabbedViewController(tabs);
-    //print('::: ' + widget.dockingTabs.selectedIndex.toString());
-    // controller.selectedIndex = widget.dockingTabs.selectedIndex;
-  }
+    TabbedViewController controller = TabbedViewController(tabs);
 
-  @override
-  Widget build(BuildContext context) {
     Widget content = TabbedView(
         controller: controller,
-        // draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) =>     buildDraggable(tab.value as DockingItem, tabWidget),
         onTabSelection: (int? index) {
           print(index);
           if (index != null) {
@@ -47,18 +34,17 @@ class _DockingTabsWidgetState extends DraggableBuilderState<DockingTabsWidget> {
         },
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
           return buildDraggable(
-              widget.dockingTabs.childAt(tabIndex) as DockingItem, tabWidget);
+              dockingTabs.childAt(tabIndex) as DockingItem, tabWidget);
         },
-        onTabClosing: onTabClosing);
-    if (widget.model.dragging) {
-      return DropWidget.tabs(widget.model, widget.dockingTabs, content);
+        onTabClosing: _onTabClosing);
+    if (notifier.dragging) {
+      return DropWidget.tabs(notifier, dockingTabs, content);
     }
     return content;
   }
 
-  bool onTabClosing(int tabIndex) {
-    widget.model
-        .removeItem(widget.dockingTabs.childAt(tabIndex) as DockingItem);
+  bool _onTabClosing(int tabIndex) {
+    notifier.removeItem(dockingTabs.childAt(tabIndex) as DockingItem);
     return false;
   }
 }
