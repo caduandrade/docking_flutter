@@ -1,6 +1,6 @@
 ## [0.3.0]
 
-* Allow removes a DockingItem from the layout
+* Feature to remove an item from the layout
 
 ## [0.2.0]
 

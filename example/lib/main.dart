@@ -41,6 +41,7 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
             DockingTabs([_build(v++), _build(v++)]),
             _build(v++)
           ]));
+
   }
 
   DockingItem _build(int value) {

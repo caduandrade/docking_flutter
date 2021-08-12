@@ -56,7 +56,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.2.0"
+    version: "0.3.0"
   fake_async:
     dependency: transitive
     description:
@@ -138,9 +138,9 @@ packages:
   tabbed_view:
     dependency: transitive
     description:
-      name: tabbed_view
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../../tabbed_view"
+      relative: true
+    source: path
     version: "1.2.0"
   term_glyph:
     dependency: transitive
