@@ -22,20 +22,17 @@ void main() {
     widgetBackground: Colors.white,
     maxSize: maxSize,
     resizable: resizable,
-    sections: [
-      Section(name: 'Layouts', examples: [
-        Example(name: 'Row', builder: (buttonClickNotifier) => LayoutR()),
-        Example(name: 'Column', builder: (buttonClickNotifier) => LayoutC()),
-        Example(name: 'Tabs', builder: (buttonClickNotifier) => LayoutT()),
-        Example(
-            name: 'Row > Column', builder: (buttonClickNotifier) => LayoutRC()),
-        Example(
-            name: 'Row > Column > Tabs',
-            builder: (buttonClickNotifier) => LayoutRCT()),
-        Example(
-            name: 'Row > Column > Row',
-            builder: (buttonClickNotifier) => LayoutRCR())
-      ])
-    ],
+    sectionsBuilder: (menuNotifier) {
+      return [
+        Section(name: 'Layouts', examples: [
+          Example(name: 'Row', content: LayoutR()),
+          Example(name: 'Column', content: LayoutC()),
+          Example(name: 'Tabs', content: LayoutT()),
+          Example(name: 'Row > Column', content: LayoutRC()),
+          Example(name: 'Row > Column > Tabs', content: LayoutRCT()),
+          Example(name: 'Row > Column > Row', content: LayoutRCR())
+        ])
+      ];
+    },
   ));
 }
