@@ -45,7 +45,7 @@ class _DockingState extends State<Docking> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.layout != null) {
+    if (widget.layout != null && widget.layout!.root != null) {
       return _buildArea(context, widget.layout!.root!);
     }
     return Container();
