@@ -6,7 +6,7 @@ __*This package is still under developing*__
 
 Layout for placing widgets in docking areas and arrange them into split and tabbed views.
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_v1.png)
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_v2.png)
 
 ## Usage
 
