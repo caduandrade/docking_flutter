@@ -33,15 +33,14 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
 
     int v = 1;
       layout = DockingLayout(
-          root: DockingColumn([
-            DockingRow([
-              _build(v++),
-              DockingColumn([_build(v++), _build(v++)])
-            ]),
-            DockingTabs([_build(v++), _build(v++)]),
-            _build(v++)
+          root: DockingRow([
+            _build(v++),
+            DockingColumn([
+              DockingRow([_build(v++),_build(v++)]),
+              DockingTabs([_build(v++), _build(v++), _build(v++)]),
+              _build(v++)
+            ])
           ]));
-
   }
 
   DockingItem _build(int value) {

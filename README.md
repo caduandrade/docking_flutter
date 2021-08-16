@@ -34,7 +34,7 @@ The root is single and can be any area.
     Docking docking = Docking(layout: layout);
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/row_v1.png)
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/row_v2.png)
 
 ### Column
 
@@ -47,7 +47,7 @@ The root is single and can be any area.
     Docking docking = Docking(layout: layout);
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/column_v1.png)
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/column_v2.png)
 
 ### Tabs
 
@@ -79,4 +79,4 @@ The root is single and can be any area.
     Docking docking = Docking(layout: layout);
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/combined_v1.png)
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/combined_v2.png)
