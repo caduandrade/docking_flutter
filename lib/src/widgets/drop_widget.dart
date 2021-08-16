@@ -1,28 +1,25 @@
-import 'package:docking/src/docking.dart';
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/layout/move_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 /// Represents a container for [DockingItem] or [DockingTabs] that creates
 /// drop areas for a [Draggable].
 class DropWidget extends StatelessWidget {
-  const DropWidget._(
-      this.onLayoutModifier, this.item, this.tabs, this.areaContent);
+  const DropWidget._(this.layout, this.item, this.tabs, this.areaContent);
 
   factory DropWidget.item(
-      OnLayoutModifier onLayoutModifier, DockingItem item, Widget areaContent) {
-    return DropWidget._(onLayoutModifier, item, null, areaContent);
+      DockingLayout layout, DockingItem item, Widget areaContent) {
+    return DropWidget._(layout, item, null, areaContent);
   }
 
   factory DropWidget.tabs(
-      OnLayoutModifier onLayoutModifier, DockingTabs tabs, Widget areaContent) {
-    return DropWidget._(onLayoutModifier, null, tabs, areaContent);
+      DockingLayout layout, DockingTabs tabs, Widget areaContent) {
+    return DropWidget._(layout, null, tabs, areaContent);
   }
 
   static const double _minimalSize = 30;
 
-  final OnLayoutModifier onLayoutModifier;
+  final DockingLayout layout;
   final DockingItem? item;
   final DockingTabs? tabs;
   final Widget areaContent;
@@ -35,7 +32,7 @@ class DropWidget extends StatelessWidget {
         Positioned.fill(child: areaContent),
         Positioned.fill(
             child: _DropAnchorWidget(
-                onLayoutModifier: onLayoutModifier,
+                layout: layout,
                 dockingItem: item,
                 dockingTabs: tabs,
                 dropPosition: DropPosition.center))
@@ -51,7 +48,7 @@ class DropWidget extends StatelessWidget {
       if (availableCenterWidth >= _minimalSize) {
         children.add(Positioned(
             child: _DropAnchorWidget(
-                onLayoutModifier: onLayoutModifier,
+                layout: layout,
                 dockingItem: item,
                 dockingTabs: tabs,
                 dropPosition: DropPosition.left),
@@ -61,7 +58,7 @@ class DropWidget extends StatelessWidget {
             left: 0));
         children.add(Positioned(
             child: _DropAnchorWidget(
-                onLayoutModifier: onLayoutModifier,
+                layout: layout,
                 dockingItem: item,
                 dockingTabs: tabs,
                 dropPosition: DropPosition.right),
@@ -73,7 +70,7 @@ class DropWidget extends StatelessWidget {
       if (availableCenterHeight >= _minimalSize) {
         children.add(Positioned(
             child: _DropAnchorWidget(
-                onLayoutModifier: onLayoutModifier,
+                layout: layout,
                 dockingItem: item,
                 dockingTabs: tabs,
                 dropPosition: DropPosition.top),
@@ -83,7 +80,7 @@ class DropWidget extends StatelessWidget {
             right: 0));
         children.add(Positioned(
             child: _DropAnchorWidget(
-                onLayoutModifier: onLayoutModifier,
+                layout: layout,
                 dockingItem: item,
                 dockingTabs: tabs,
                 dropPosition: DropPosition.bottom),
@@ -100,12 +97,12 @@ class DropWidget extends StatelessWidget {
 
 class _DropAnchorWidget extends StatelessWidget {
   const _DropAnchorWidget(
-      {required this.onLayoutModifier,
+      {required this.layout,
       this.dockingItem,
       this.dockingTabs,
       required this.dropPosition});
 
-  final OnLayoutModifier onLayoutModifier;
+  final DockingLayout layout;
   final DockingItem? dockingItem;
   final DockingTabs? dockingTabs;
   final DropPosition dropPosition;
@@ -130,15 +127,15 @@ class _DropAnchorWidget extends StatelessWidget {
         },
         onAccept: (DockingItem data) {
           if (dockingItem != null) {
-            onLayoutModifier(MoveItem(
+            layout.moveItem(
                 draggedItem: data,
                 targetArea: dockingItem!,
-                dropPosition: dropPosition));
+                dropPosition: dropPosition);
           } else if (dockingTabs != null) {
-            onLayoutModifier(MoveItem(
+            layout.moveItem(
                 draggedItem: data,
                 targetArea: dockingTabs!,
-                dropPosition: dropPosition));
+                dropPosition: dropPosition);
           }
         });
   }

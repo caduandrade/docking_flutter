@@ -1,4 +1,7 @@
+import 'package:docking/src/layout/add_item.dart';
 import 'package:docking/src/layout/layout_modifier.dart';
+import 'package:docking/src/layout/move_item.dart';
+import 'package:docking/src/layout/remove_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -318,9 +321,9 @@ enum DropPosition { top, bottom, left, right, center }
 /// The layout is organized into [DockingItem], [DockingColumn],
 /// [DockingRow] and [DockingTabs].
 /// The [root] is single and can be any [DockingArea].
-class DockingLayout {
+class DockingLayout extends ChangeNotifier {
   /// Builds a [DockingLayout].
-  DockingLayout({DockingArea? root, int? id}) : this._root = root {
+  DockingLayout({DockingArea? root}) : this._root = root {
     _updateHierarchy();
   }
 
@@ -333,6 +336,7 @@ class DockingLayout {
   /// The root of this layout.
   DockingArea? get root => _root;
 
+  /// Converts layout's hierarchical structure to String.
   String hierarchy(
       {bool indexInfo = false,
       bool levelInfo = false,
@@ -354,13 +358,58 @@ class DockingLayout {
     _root?._updateHierarchy(null, 1, id);
   }
 
-  void rebuild(LayoutModifier modifier) {
+  /// Moves a DockingItem in this layout.
+  void moveItem(
+      {required DockingItem draggedItem,
+      required DropArea targetArea,
+      required DropPosition dropPosition}) {
+    _rebuild(MoveItem(
+        draggedItem: draggedItem,
+        targetArea: targetArea,
+        dropPosition: dropPosition));
+  }
+
+  /// Removes a DockingItem from this layout.
+  void removeItem({required DockingItem item}) {
+    _rebuild(RemoveItem(itemToRemove: item));
+  }
+
+  /// Adds a DockingItem to this layout.
+  void addItemOn(
+      {required DockingItem newItem,
+      required DropArea targetArea,
+      required DropPosition dropPosition}) {
+    _rebuild(AddItem(
+        newItem: newItem, targetArea: targetArea, dropPosition: dropPosition));
+  }
+
+  /// Adds a DockingItem to the root of this layout.
+  void addItemOnRoot(
+      {required DockingItem newItem, required DropPosition dropPosition}) {
+    if (root == null) {
+      throw StateError('Root is null');
+    }
+    if (root is DropArea) {
+      DropArea targetArea = root! as DropArea;
+      _rebuild(AddItem(
+          newItem: newItem,
+          targetArea: targetArea,
+          dropPosition: dropPosition));
+    } else {
+      throw StateError('Root is not a DropArea');
+    }
+  }
+
+  /// Rebuilds this layout with a modifier.
+  void _rebuild(LayoutModifier modifier) {
     List<DockingArea> toDispose = layoutAreas();
     _root = modifier.newLayout(this);
     _updateHierarchy();
     toDispose.forEach((area) => area._dispose());
+    notifyListeners();
   }
 
+  /// Gets all [DockingArea] from this layout.
   List<DockingArea> layoutAreas() {
     List<DockingArea> list = [];
     if (_root != null) {
@@ -369,6 +418,7 @@ class DockingLayout {
     return list;
   }
 
+  /// Gets recursively all [DockingArea] of that layout.
   void _fetchAreas(List<DockingArea> areas, DockingArea root) {
     areas.add(root);
     if (root is DockingParentArea) {

@@ -8,14 +8,24 @@ class RemoveItem extends LayoutModifier {
   final DockingItem itemToRemove;
 
   @override
+  void validate(DockingLayout layout, DockingArea area) {
+    super.validate(layout, area);
+    if (area.layoutId != layout.id) {
+      throw ArgumentError(
+          'DockingArea belongs to another layout. Keep the layout in the state of your StatefulWidget.');
+    }
+  }
+
+  @override
   DockingArea? newLayout(DockingLayout layout) {
-    validate(layout.id, itemToRemove);
+    validate(layout, itemToRemove);
     if (layout.root != null) {
       return _buildLayout(layout.root!);
     }
     return null;
   }
 
+  /// Builds a new root.
   DockingArea? _buildLayout(DockingArea area) {
     if (area is DockingItem) {
       DockingItem dockingItem = area;

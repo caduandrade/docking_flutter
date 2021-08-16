@@ -1,7 +1,5 @@
-import 'package:docking/src/docking.dart';
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/layout/remove_item.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +10,13 @@ import 'package:tabbed_view/tabbed_view.dart';
 class DockingItemWidget extends DraggableWidget {
   DockingItemWidget(
       {Key? key,
-      required this.onLayoutModifier,
+      required this.layout,
       required DockingDrag dockingDrag,
       required this.item})
       : super(key: key, dockingDrag: dockingDrag);
 
+  final DockingLayout layout;
   final DockingItem item;
-  final OnLayoutModifier onLayoutModifier;
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +33,13 @@ class DockingItemWidget extends DraggableWidget {
           return buildDraggable(item, tabWidget);
         });
     if (dockingDrag.enable) {
-      return DropWidget.item(onLayoutModifier, item, content);
+      return DropWidget.item(layout, item, content);
     }
     return content;
   }
 
   bool _onTabClosing(int tabIndex) {
-    onLayoutModifier(RemoveItem(itemToRemove: item));
+    layout.removeItem(item: item);
     return false;
   }
 }

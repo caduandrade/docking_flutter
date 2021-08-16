@@ -1,6 +1,5 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/layout/layout_modifier.dart';
 import 'package:docking/src/widgets/docking_item_widget.dart';
 import 'package:docking/src/widgets/docking_tabs_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,20 +26,14 @@ class _DockingState extends State<Docking> {
   void initState() {
     super.initState();
     _dockingDrag.addListener(_forceRebuild);
+    widget.layout?.addListener(_forceRebuild);
   }
 
   @override
   void dispose() {
     super.dispose();
     _dockingDrag.removeListener(_forceRebuild);
-  }
-
-  void _onLayoutModifier(LayoutModifier modifier) {
-    if (widget.layout != null) {
-      setState(() {
-        widget.layout!.rebuild(modifier);
-      });
-    }
+    widget.layout?.removeListener(_forceRebuild);
   }
 
   @override
@@ -54,18 +47,14 @@ class _DockingState extends State<Docking> {
   Widget _buildArea(BuildContext context, DockingArea area) {
     if (area is DockingItem) {
       return DockingItemWidget(
-          dockingDrag: _dockingDrag,
-          onLayoutModifier: _onLayoutModifier,
-          item: area);
+          layout: widget.layout!, dockingDrag: _dockingDrag, item: area);
     } else if (area is DockingRow) {
       return _row(context, area);
     } else if (area is DockingColumn) {
       return _column(context, area);
     } else if (area is DockingTabs) {
       return DockingTabsWidget(
-          dockingDrag: _dockingDrag,
-          onLayoutModifier: _onLayoutModifier,
-          dockingTabs: area);
+          layout: widget.layout!, dockingDrag: _dockingDrag, dockingTabs: area);
     }
     throw UnimplementedError(
         'Unrecognized runtimeType: ' + area.runtimeType.toString());
@@ -93,5 +82,3 @@ class _DockingState extends State<Docking> {
     });
   }
 }
-
-typedef OnLayoutModifier = void Function(LayoutModifier modifier);

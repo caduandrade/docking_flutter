@@ -1,5 +1,6 @@
 import 'package:docking/docking.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'utils.dart';
 
 void main() {
@@ -12,11 +13,19 @@ void main() {
       testHierarchy(layout, '');
     });
 
-    test('item out from layout', () {
+    test('item without layout', () {
       DockingLayout layout = DockingLayout();
       expect(() => removeItem(layout, dockingItem('a')), throwsArgumentError);
       layout = DockingLayout(root: dockingItem('a'));
-      expect(() => removeItem(layout, dockingItem('a')), throwsArgumentError);
+      expect(() => removeItem(layout, dockingItem('b')), throwsArgumentError);
+    });
+
+    test('item from another layout', () {
+      DockingLayout layout1 = DockingLayout(root: dockingItem('a'));
+      DockingLayout layout2 = DockingLayout(root: dockingItem('b'));
+      expect(
+          () => removeItem(layout2, layout1.layoutAreas().first as DockingItem),
+          throwsArgumentError);
     });
 
     test('row item 1', () {

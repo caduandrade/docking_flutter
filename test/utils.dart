@@ -1,6 +1,4 @@
 import 'package:docking/docking.dart';
-import 'package:docking/src/layout/move_item.dart';
-import 'package:docking/src/layout/remove_item.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -10,17 +8,32 @@ DockingItem dockingItem(String? name) {
 
 void removeItem(DockingLayout layout, DockingItem item) {
   List<DockingArea> areas = layout.layoutAreas();
-  layout.rebuild(RemoveItem(itemToRemove: item));
+  layout.removeItem(item: item);
   testDisposedList(areas);
 }
 
 void moveItem(DockingLayout layout, DockingItem draggedItem,
     DropArea targetArea, DropPosition dropPosition) {
   List<DockingArea> areas = layout.layoutAreas();
-  layout.rebuild(MoveItem(
+  layout.moveItem(
       draggedItem: draggedItem,
       targetArea: targetArea,
-      dropPosition: dropPosition));
+      dropPosition: dropPosition);
+  testDisposedList(areas);
+}
+
+void addItemOnRoot(
+    DockingLayout layout, DockingItem newItem, DropPosition dropPosition) {
+  List<DockingArea> areas = layout.layoutAreas();
+  layout.addItemOnRoot(newItem: newItem, dropPosition: dropPosition);
+  testDisposedList(areas);
+}
+
+void addItemOn(DockingLayout layout, DockingItem newItem, DropArea targetArea,
+    DropPosition dropPosition) {
+  List<DockingArea> areas = layout.layoutAreas();
+  layout.addItemOn(
+      newItem: newItem, targetArea: targetArea, dropPosition: dropPosition);
   testDisposedList(areas);
 }
 

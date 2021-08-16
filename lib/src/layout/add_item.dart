@@ -1,62 +1,31 @@
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/layout/layout_modifier.dart';
+import 'package:docking/src/layout/drop_item.dart';
 
-/// Removes a [DockingItem] from this layout.
-class RemoveItem extends LayoutModifier {
-  RemoveItem({required this.itemToRemove});
-
-  final DockingItem itemToRemove;
+/// Adds an item to the layout.
+class AddItem extends DropItem {
+  AddItem(
+      {required DockingItem newItem,
+      required DropArea targetArea,
+      required DropPosition dropPosition})
+      : super(
+            dropItem: newItem,
+            targetArea: targetArea,
+            dropPosition: dropPosition);
 
   @override
-  DockingArea? newLayout(DockingLayout layout) {
-    validate(layout.id, itemToRemove);
-    if (layout.root != null) {
-      return _buildLayout(layout.root!);
+  void validateDropItem(DockingLayout layout, DockingArea area) {
+    super.validateDropItem(layout, area);
+    if (area.layoutId != -1) {
+      throw ArgumentError('DockingArea already belongs to some layout.');
     }
-    return null;
   }
 
-  DockingArea? _buildLayout(DockingArea area) {
-    if (area is DockingItem) {
-      DockingItem dockingItem = area;
-      if (dockingItem == itemToRemove) {
-        return null;
-      }
-      return DockingItem.clone(dockingItem);
-    } else if (area is DockingTabs) {
-      DockingTabs dockingTabs = area;
-      List<DockingItem> children = [];
-      dockingTabs.forEach((child) {
-        if (child != itemToRemove) {
-          children.add(DockingItem.clone(child));
-        }
-      });
-      if (children.length == 1) {
-        return children.first;
-      }
-      return DockingTabs(children);
-    } else if (area is DockingParentArea) {
-      List<DockingArea> children = [];
-      area.forEach((child) {
-        DockingArea? newChild = _buildLayout(child);
-        if (newChild != null) {
-          children.add(newChild);
-        }
-      });
-      if (children.length == 0) {
-        return null;
-      } else if (children.length == 1) {
-        return children.first;
-      }
-      if (area is DockingRow) {
-        return DockingRow(children);
-      } else if (area is DockingColumn) {
-        return DockingColumn(children);
-      }
+  @override
+  void validateTargetArea(DockingLayout layout, DockingArea area) {
+    super.validateTargetArea(layout, area);
+    if (area.layoutId != layout.id) {
       throw ArgumentError(
-          'DockingArea class not recognized: ' + area.runtimeType.toString());
+          'DockingArea belongs to another layout. Keep the layout in the state of your StatefulWidget.');
     }
-    throw ArgumentError(
-        'DockingArea class not recognized: ' + area.runtimeType.toString());
   }
 }
