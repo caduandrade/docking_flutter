@@ -84,12 +84,15 @@ class DropItem extends LayoutModifier {
         newArea = children.first;
       } else {
         newArea = DockingTabs(children);
+        (newArea as DockingTabs).selectedIndex = dockingTabs.selectedIndex;
       }
       if (dockingTabs == targetArea) {
         DockingItem newDraggedItem = DockingItem.clone(dropItem);
         if (dropPosition == DropPosition.center) {
           children.add(newDraggedItem);
-          return DockingTabs(children);
+          DockingTabs newDockingTabs = DockingTabs(children);
+          newDockingTabs.selectedIndex = dockingTabs.selectedIndex;
+          return newDockingTabs;
         } else if (dropPosition == DropPosition.top) {
           return DockingColumn([newDraggedItem, newArea]);
         } else if (dropPosition == DropPosition.bottom) {
@@ -118,9 +121,13 @@ class DropItem extends LayoutModifier {
         return children.first;
       }
       if (area is DockingRow) {
-        return DockingRow(children);
+        DockingRow row = DockingRow(children);
+        row.weights = area.weights;
+        return row;
       } else if (area is DockingColumn) {
-        return DockingColumn(children);
+        DockingColumn column = DockingColumn(children);
+        column.weights = area.weights;
+        return column;
       }
       throw StateError(
           'DockingArea class not recognized: ' + area.runtimeType.toString());

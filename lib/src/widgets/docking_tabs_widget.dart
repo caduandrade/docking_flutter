@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
@@ -24,15 +25,18 @@ class DockingTabsWidget extends DraggableWidget {
       tabs.add(TabData(
           value: child,
           text: child.name != null ? child.name! : '',
-          content: child.widget));
+          content: child.widget,
+          keepAlive: true));
     });
     TabbedViewController controller = TabbedViewController(tabs);
+    controller.selectedIndex =
+        math.min(dockingTabs.selectedIndex, tabs.length - 1);
 
     Widget content = TabbedView(
         controller: controller,
         onTabSelection: (int? index) {
           if (index != null) {
-            //widget.dockingTabs.selectedIndex = index;
+            dockingTabs.selectedIndex = index;
           }
         },
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {

@@ -1,7 +1,7 @@
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/layout/drop_item.dart';
 
-/// Adds an item to the layout.
+/// Adds [DockingItem] to the layout.
 class AddItem extends DropItem {
   AddItem(
       {required DockingItem newItem,

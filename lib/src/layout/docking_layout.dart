@@ -250,6 +250,8 @@ class DockingRow extends DockingParentArea {
   /// Builds a [DockingRow].
   DockingRow._(List<DockingArea> children) : super(children);
 
+  List<double> weights = [];
+
   /// Builds a [DockingRow].
   factory DockingRow(List<DockingArea> children) {
     List<DockingArea> newChildren = [];
@@ -272,6 +274,8 @@ class DockingRow extends DockingParentArea {
 class DockingColumn extends DockingParentArea {
   /// Builds a [DockingColumn].
   DockingColumn._(List<DockingArea> children) : super(children);
+
+  List<double> weights = [];
 
   /// Builds a [DockingColumn].
   factory DockingColumn(List<DockingArea> children) {

@@ -65,7 +65,15 @@ class _DockingState extends State<Docking> {
     row.forEach((child) {
       children.add(_buildArea(context, child));
     });
-    return MultiSplitView(children: children, axis: Axis.horizontal);
+    MultiSplitViewController controller =
+        MultiSplitViewController(weights: row.weights);
+    return MultiSplitView(
+        children: children,
+        axis: Axis.horizontal,
+        controller: controller,
+        onSizeChange: (i1, i2) {
+          row.weights = controller.weights.toList();
+        });
   }
 
   Widget _column(BuildContext context, DockingColumn column) {
@@ -73,7 +81,15 @@ class _DockingState extends State<Docking> {
     column.forEach((child) {
       children.add(_buildArea(context, child));
     });
-    return MultiSplitView(children: children, axis: Axis.vertical);
+    MultiSplitViewController controller =
+        MultiSplitViewController(weights: column.weights);
+    return MultiSplitView(
+        children: children,
+        axis: Axis.vertical,
+        controller: controller,
+        onSizeChange: (i1, i2) {
+          column.weights = controller.weights.toList();
+        });
   }
 
   void _forceRebuild() {
