@@ -1,6 +1,10 @@
+## [0.4.0]
+
+* Method to add item
+
 ## [0.3.0]
 
-* Feature to remove an item from the layout
+* Method to remove item
 
 ## [0.2.0]
 
