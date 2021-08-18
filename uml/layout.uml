@@ -3,7 +3,8 @@
 class DropArea << (M,lightgray) >>  #line:black
 
 abstract class DockingArea << (C,lightgray) >> #line:black {
-int: index
+index: int
+layoutId: int
 parent: DockingParentArea?
 }
 
@@ -14,6 +15,7 @@ childrenCount: int
 class DockingItem << (C,lightgray) >> #line:black {
 name: String?
 widget: Widget
+value: dynamic
 }
 
 class DockingRow << (C,lightgray) >> #line:black {

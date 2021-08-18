@@ -214,14 +214,15 @@ abstract class DockingParentArea extends DockingArea {
 /// Represents an area for a single widget.
 class DockingItem extends DockingArea with DropArea {
   /// Builds a [DockingItem].
-  DockingItem({this.name, required this.widget});
+  DockingItem({this.name, required this.widget, this.value});
 
   factory DockingItem.clone(DockingItem item) {
-    return DockingItem(name: item.name, widget: item.widget);
+    return DockingItem(name: item.name, widget: item.widget, value: item.value);
   }
 
   final String? name;
   final Widget widget;
+  final dynamic value;
 
   @override
   DockingAreaType get type => DockingAreaType.item;

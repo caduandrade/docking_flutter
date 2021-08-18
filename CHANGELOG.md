@@ -1,3 +1,7 @@
+## [0.5.0]
+
+* Dynamic value in [DockingItem] class
+
 ## [0.4.0]
 
 * Method to add item
