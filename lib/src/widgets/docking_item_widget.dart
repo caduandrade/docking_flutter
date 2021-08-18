@@ -22,7 +22,11 @@ class DockingItemWidget extends DraggableWidget {
   Widget build(BuildContext context) {
     String name = item.name != null ? item.name! : '';
     List<TabData> tabs = [
-      TabData(value: item, text: name, content: item.widget)
+      TabData(
+          value: item,
+          text: name,
+          content: item.widget,
+          closable: item.closable)
     ];
     TabbedViewController controller = TabbedViewController(tabs);
 

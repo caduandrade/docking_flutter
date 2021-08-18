@@ -1,6 +1,7 @@
 ## [0.5.0]
 
 * Dynamic value in [DockingItem] class
+* Closable [DockingItem]
 
 ## [0.4.0]
 

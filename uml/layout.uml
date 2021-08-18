@@ -15,6 +15,7 @@ childrenCount: int
 class DockingItem << (C,lightgray) >> #line:black {
 name: String?
 widget: Widget
+closable: bool
 value: dynamic
 }
 

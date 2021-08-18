@@ -36,16 +36,17 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
         root: DockingRow([
       _build(v++),
       DockingColumn([
-        DockingRow([_build(v++), _build(v++)]),
+        DockingRow([_build(v++), _build(v++, closable: false)]),
         DockingTabs([_build(v++), _build(v++), _build(v++)]),
         _build(v++)
       ])
     ]));
   }
 
-  DockingItem _build(int value) {
+  DockingItem _build(int value, {bool closable = true}) {
     return DockingItem(
         name: value.toString(),
+        closable: closable,
         widget: Container(child: Center(child: Text('Child $value'))));
   }
 
