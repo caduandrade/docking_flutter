@@ -80,3 +80,18 @@ The root is single and can be any area.
 ```
 
 ![](https://raw.githubusercontent.com/caduandrade/images/main/docking/combined_v2.png)
+
+## Item
+
+### Non-closable
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingItem(name: '2', widget: child2, closable: false)
+    ]));
+    Docking docking = Docking(layout: layout);
+```
+
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/nonclosable_v1.png)
