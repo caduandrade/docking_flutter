@@ -101,11 +101,11 @@ The root is single and can be any area.
 
 ## Theme
 
-The tab widget is provided by the [tabbed_view](https://pub.dev/packages/tabbed_view) package. Add it to your project to define themes.
+The tabs widget is provided by the [tabbed_view](https://pub.dev/packages/tabbed_view) package. Add it to your project to define themes.
 
 You should use the *TabbedViewTheme* widget to apply the theme to all descendant widgets.
 
-Read more information about the themes on the package [page](https://pub.dev/packages/tabbed_view).
+Read more information about themes on [tabbed_view](https://pub.dev/packages/tabbed_view).
 
 ```dart
     DockingLayout layout = DockingLayout(
