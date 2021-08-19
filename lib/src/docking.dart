@@ -1,5 +1,6 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/widgets/docking_item_widget.dart';
 import 'package:docking/src/widgets/docking_tabs_widget.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +10,11 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 /// The docking widget.
 class Docking extends StatefulWidget {
-  const Docking({Key? key, this.layout}) : super(key: key);
+  const Docking({Key? key, this.layout, this.onItemSelection})
+      : super(key: key);
 
   final DockingLayout? layout;
+  final OnItemSelection? onItemSelection;
 
   @override
   State<StatefulWidget> createState() => _DockingState();
@@ -46,14 +49,20 @@ class _DockingState extends State<Docking> {
   Widget _buildArea(BuildContext context, DockingArea area) {
     if (area is DockingItem) {
       return DockingItemWidget(
-          layout: widget.layout!, dockingDrag: _dockingDrag, item: area);
+          layout: widget.layout!,
+          dockingDrag: _dockingDrag,
+          item: area,
+          onItemSelection: widget.onItemSelection);
     } else if (area is DockingRow) {
       return _row(context, area);
     } else if (area is DockingColumn) {
       return _column(context, area);
     } else if (area is DockingTabs) {
       return DockingTabsWidget(
-          layout: widget.layout!, dockingDrag: _dockingDrag, dockingTabs: area);
+          layout: widget.layout!,
+          dockingDrag: _dockingDrag,
+          dockingTabs: area,
+          onItemSelection: widget.onItemSelection);
     }
     throw UnimplementedError(
         'Unrecognized runtimeType: ' + area.runtimeType.toString());

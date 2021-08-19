@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
 import 'package:flutter/widgets.dart';
@@ -12,11 +13,13 @@ class DockingTabsWidget extends DraggableWidget {
       {Key? key,
       required this.layout,
       required DockingDrag dockingDrag,
-      required this.dockingTabs})
+      required this.dockingTabs,
+      this.onItemSelection})
       : super(key: key, dockingDrag: dockingDrag);
 
   final DockingLayout layout;
   final DockingTabs dockingTabs;
+  final OnItemSelection? onItemSelection;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,9 @@ class DockingTabsWidget extends DraggableWidget {
         onTabSelection: (int? index) {
           if (index != null) {
             dockingTabs.selectedIndex = index;
+            if (onItemSelection != null) {
+              onItemSelection!(dockingTabs.childAt(index));
+            }
           }
         },
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {

@@ -17,6 +17,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
   * [Combined](#combined)
 * Item
   * [Non-closable](#non-closable)
+  * [Selection listener](#selection-listener)
 * [Theme](#theme)
 
 ## Layout
@@ -98,6 +99,22 @@ The root is single and can be any area.
 ```
 
 ![](https://raw.githubusercontent.com/caduandrade/images/main/docking/nonclosable_v1.png)
+
+### Selection listener
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingTabs([
+          DockingItem(name: '1', widget: child1),
+          DockingItem(name: '2', widget: child2),
+          DockingItem(name: '3', widget: child3)
+        ]));
+    Docking docking = Docking(
+        layout: layout,
+        onItemSelection: (DockingItem item) {
+          print(item.name!);
+        });
+```
 
 ## Theme
 

@@ -1,5 +1,6 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +13,13 @@ class DockingItemWidget extends DraggableWidget {
       {Key? key,
       required this.layout,
       required DockingDrag dockingDrag,
-      required this.item})
+      required this.item,
+      this.onItemSelection})
       : super(key: key, dockingDrag: dockingDrag);
 
   final DockingLayout layout;
   final DockingItem item;
+  final OnItemSelection? onItemSelection;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,17 @@ class DockingItemWidget extends DraggableWidget {
     ];
     TabbedViewController controller = TabbedViewController(tabs);
 
+    OnTabSelection? onTabSelection;
+    if (onItemSelection != null) {
+      onTabSelection = (int? index) {
+        if (index != null) {
+          onItemSelection!(item);
+        }
+      };
+    }
+
     Widget content = TabbedView(
+        onTabSelection: onTabSelection,
         onTabClosing: _onTabClosing,
         controller: controller,
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {

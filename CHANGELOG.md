@@ -2,6 +2,7 @@
 
 * Dynamic value in *DockingItem*
 * Non-Closable *DockingItem*
+* *DockingItem* selection listener
 
 ## [0.4.0]
 

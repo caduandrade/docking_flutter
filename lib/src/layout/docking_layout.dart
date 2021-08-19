@@ -310,6 +310,9 @@ class DockingTabs extends DockingParentArea with DropArea {
   int selectedIndex = 0;
 
   @override
+  DockingItem childAt(int index) => _children[index] as DockingItem;
+
+  @override
   void forEach(void f(DockingItem child)) {
     _children.forEach((element) {
       f(element as DockingItem);
