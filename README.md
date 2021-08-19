@@ -97,3 +97,27 @@ The root is single and can be any area.
 ```
 
 ![](https://raw.githubusercontent.com/caduandrade/images/main/docking/nonclosable_v1.png)
+
+## Theme
+
+The tab widget is provided by the [tabbed_view](https://pub.dev/packages/tabbed_view) package. Add it to your project to define themes.
+
+You should use the *TabbedViewTheme* widget to apply the theme to all descendant widgets.
+
+Read more information about the themes on the package [page](https://pub.dev/packages/tabbed_view).
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingTabs([
+        DockingItem(name: '2', widget: child2),
+        DockingItem(name: '3', widget: child3)
+      ])
+    ]));
+    Docking docking = Docking(layout: layout);
+    TabbedViewTheme theme =
+        TabbedViewTheme(child: docking, data: TabbedViewThemeData.mobile());
+```
+
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/theme_v1.png)
