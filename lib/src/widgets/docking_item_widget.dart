@@ -44,7 +44,7 @@ class DockingItemWidget extends DraggableWidget {
 
     Widget content = TabbedView(
         onTabSelection: onTabSelection,
-        onTabClosing: _onTabClosing,
+        onTabClose: _onTabClose,
         controller: controller,
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
           return buildDraggable(item, tabWidget);
@@ -55,8 +55,7 @@ class DockingItemWidget extends DraggableWidget {
     return content;
   }
 
-  bool _onTabClosing(int tabIndex) {
+  void _onTabClose(int tabIndex, TabData tabData) {
     layout.removeItem(item: item);
-    return false;
   }
 }

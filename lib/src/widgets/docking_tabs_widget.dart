@@ -47,18 +47,16 @@ class DockingTabsWidget extends DraggableWidget {
           }
         },
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
-          return buildDraggable(
-              dockingTabs.childAt(tabIndex) as DockingItem, tabWidget);
+          return buildDraggable(dockingTabs.childAt(tabIndex), tabWidget);
         },
-        onTabClosing: _onTabClosing);
+        onTabClose: _onTabClose);
     if (dockingDrag.enable) {
       return DropWidget.tabs(layout, dockingTabs, content);
     }
     return content;
   }
 
-  bool _onTabClosing(int tabIndex) {
-    layout.removeItem(item: dockingTabs.childAt(tabIndex) as DockingItem);
-    return false;
+  void _onTabClose(int tabIndex, TabData tabData) {
+    layout.removeItem(item: dockingTabs.childAt(tabIndex));
   }
 }
