@@ -17,6 +17,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
   * [Combined](#combined)
 * Item
   * [Non-closable](#non-closable)
+* [Theme](#theme)
 
 ## Layout
 
