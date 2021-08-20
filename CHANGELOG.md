@@ -6,6 +6,7 @@
   * selection listener
   * close listener
   * close interceptor
+  * buttons
 
 ## [0.4.0]
 

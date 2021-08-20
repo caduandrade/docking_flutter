@@ -169,6 +169,46 @@ The root is single and can be any area.
   }
 ```
 
+### Item buttons
+
+```dart
+    import 'package:tabbed_view/tabbed_view.dart';
+```
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingColumn([
+        DockingItem(name: '2', widget: child2),
+        DockingItem(name: '3', widget: child3, buttons: [
+          TabButton(
+              icon: Icons.add_circle_outline,
+              onPressed: () => _toast(context, 'add button')),
+          TabButton(
+              icon: Icons.arrow_drop_down_outlined,
+              menuBuilder: (context) {
+                return [
+                  TabbedViewMenuItem(
+                      text: 'Option 1',
+                      onSelection: () => _toast(context, '1')),
+                  TabbedViewMenuItem(
+                      text: 'Option 2', onSelection: () => _toast(context, '2'))
+                ];
+              })
+        ])
+      ])
+    ]));
+    Docking docking = Docking(layout: layout);
+```
+
+```dart
+  void _toast(BuildContext context, String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg), duration: const Duration(seconds: 1)));
+  }
+```
+
 ## Theme
 
 The tabs widget is provided by the [tabbed_view](https://pub.dev/packages/tabbed_view) package. Add it to your project to define themes.
@@ -176,6 +216,10 @@ The tabs widget is provided by the [tabbed_view](https://pub.dev/packages/tabbed
 You should use the *TabbedViewTheme* widget to apply the theme to all descendant widgets.
 
 Read more information about themes on [tabbed_view](https://pub.dev/packages/tabbed_view).
+
+```dart
+    import 'package:tabbed_view/tabbed_view.dart';
+```
 
 ```dart
     DockingLayout layout = DockingLayout(

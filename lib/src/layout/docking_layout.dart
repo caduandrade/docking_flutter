@@ -4,6 +4,7 @@ import 'package:docking/src/layout/move_item.dart';
 import 'package:docking/src/layout/remove_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tabbed_view/tabbed_view.dart';
 
 mixin DropArea {}
 
@@ -215,20 +216,27 @@ abstract class DockingParentArea extends DockingArea {
 class DockingItem extends DockingArea with DropArea {
   /// Builds a [DockingItem].
   DockingItem(
-      {this.name, required this.widget, this.value, this.closable = true});
+      {this.name,
+      required this.widget,
+      this.value,
+      this.closable = true,
+      List<TabButton>? buttons})
+      : this.buttons = buttons != null ? List.unmodifiable(buttons) : [];
 
   factory DockingItem.clone(DockingItem item) {
     return DockingItem(
         name: item.name,
         widget: item.widget,
         value: item.value,
-        closable: item.closable);
+        closable: item.closable,
+        buttons: item.buttons);
   }
 
   final String? name;
   final Widget widget;
   final dynamic value;
   final bool closable;
+  final List<TabButton>? buttons;
 
   @override
   DockingAreaType get type => DockingAreaType.item;
