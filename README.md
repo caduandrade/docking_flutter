@@ -19,7 +19,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
   * [Non-closable](#non-closable)
   * [Selection listener](#selection-listener)
   * [Close listener](#close-listener)
-  * [Close interceptor](close-interceptor)
+  * [Close interceptor](#close-interceptor)
 * [Theme](#theme)
 
 ## Layout
