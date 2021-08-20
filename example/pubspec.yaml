@@ -23,7 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  tabbed_view: ^1.4.0
   docking:
     path: ../
 
