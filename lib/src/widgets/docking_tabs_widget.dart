@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
@@ -14,12 +15,16 @@ class DockingTabsWidget extends DraggableWidget {
       required this.layout,
       required DockingDrag dockingDrag,
       required this.dockingTabs,
-      this.onItemSelection})
+      this.onItemSelection,
+      this.onItemClose,
+      this.itemCloseInterceptor})
       : super(key: key, dockingDrag: dockingDrag);
 
   final DockingLayout layout;
   final DockingTabs dockingTabs;
   final OnItemSelection? onItemSelection;
+  final OnItemClose? onItemClose;
+  final ItemCloseInterceptor? itemCloseInterceptor;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +51,7 @@ class DockingTabsWidget extends DraggableWidget {
             }
           }
         },
+        tabCloseInterceptor: _tabCloseInterceptor,
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
           return buildDraggable(dockingTabs.childAt(tabIndex), tabWidget);
         },
@@ -56,7 +62,18 @@ class DockingTabsWidget extends DraggableWidget {
     return content;
   }
 
+  bool _tabCloseInterceptor(int tabIndex) {
+    if (itemCloseInterceptor != null) {
+      return itemCloseInterceptor!(dockingTabs.childAt(tabIndex));
+    }
+    return true;
+  }
+
   void _onTabClose(int tabIndex, TabData tabData) {
-    layout.removeItem(item: dockingTabs.childAt(tabIndex));
+    DockingItem dockingItem = dockingTabs.childAt(tabIndex);
+    layout.removeItem(item: dockingItem);
+    if (onItemClose != null) {
+      onItemClose!(dockingItem);
+    }
   }
 }

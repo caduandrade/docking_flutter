@@ -18,6 +18,8 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 * Item
   * [Non-closable](#non-closable)
   * [Selection listener](#selection-listener)
+  * [Close listener](#close-listener)
+  * [Close interceptor](close-interceptor)
 * [Theme](#theme)
 
 ## Layout
@@ -114,6 +116,57 @@ The root is single and can be any area.
         onItemSelection: (DockingItem item) {
           print(item.name!);
         });
+```
+
+### Close listener
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingItem(name: '2', widget: child2),
+      DockingItem(name: '3', widget: child3)
+    ]));
+    Docking docking = Docking(
+        layout: layout,
+        onItemClose: (DockingItem item) {
+          _onItemClose(context, item);
+        });
+```
+
+```dart
+  void _onItemClose(BuildContext context, DockingItem item) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('item ' + item.name! + ' has been closed'),
+        duration: const Duration(seconds: 3)));
+  }
+```
+
+### Close interceptor
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingItem(name: '2', widget: child2)
+    ]));
+    Docking docking = Docking(
+        layout: layout,
+        itemCloseInterceptor: (DockingItem item) {
+          return _checkItem(context, item);
+        });
+```
+
+```dart
+  bool _checkItem(BuildContext context, DockingItem item) {
+    if (item.name == '1') {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('item 1 can not be closed'),
+          duration: const Duration(seconds: 3)));
+      return false;
+    }
+    return true;
+  }
 ```
 
 ## Theme

@@ -1,5 +1,6 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
@@ -14,12 +15,16 @@ class DockingItemWidget extends DraggableWidget {
       required this.layout,
       required DockingDrag dockingDrag,
       required this.item,
-      this.onItemSelection})
+      this.onItemSelection,
+      this.onItemClose,
+      this.itemCloseInterceptor})
       : super(key: key, dockingDrag: dockingDrag);
 
   final DockingLayout layout;
   final DockingItem item;
   final OnItemSelection? onItemSelection;
+  final OnItemClose? onItemClose;
+  final ItemCloseInterceptor? itemCloseInterceptor;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +49,7 @@ class DockingItemWidget extends DraggableWidget {
 
     Widget content = TabbedView(
         onTabSelection: onTabSelection,
+        tabCloseInterceptor: _tabCloseInterceptor,
         onTabClose: _onTabClose,
         controller: controller,
         draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
@@ -55,7 +61,17 @@ class DockingItemWidget extends DraggableWidget {
     return content;
   }
 
+  bool _tabCloseInterceptor(int tabIndex) {
+    if (itemCloseInterceptor != null) {
+      return itemCloseInterceptor!(item);
+    }
+    return true;
+  }
+
   void _onTabClose(int tabIndex, TabData tabData) {
     layout.removeItem(item: item);
+    if (onItemClose != null) {
+      onItemClose!(item);
+    }
   }
 }

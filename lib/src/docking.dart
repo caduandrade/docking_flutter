@@ -1,5 +1,6 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/widgets/docking_item_widget.dart';
 import 'package:docking/src/widgets/docking_tabs_widget.dart';
@@ -10,11 +11,18 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 /// The docking widget.
 class Docking extends StatefulWidget {
-  const Docking({Key? key, this.layout, this.onItemSelection})
+  const Docking(
+      {Key? key,
+      this.layout,
+      this.onItemSelection,
+      this.onItemClose,
+      this.itemCloseInterceptor})
       : super(key: key);
 
   final DockingLayout? layout;
   final OnItemSelection? onItemSelection;
+  final OnItemClose? onItemClose;
+  final ItemCloseInterceptor? itemCloseInterceptor;
 
   @override
   State<StatefulWidget> createState() => _DockingState();
@@ -52,7 +60,9 @@ class _DockingState extends State<Docking> {
           layout: widget.layout!,
           dockingDrag: _dockingDrag,
           item: area,
-          onItemSelection: widget.onItemSelection);
+          onItemSelection: widget.onItemSelection,
+          itemCloseInterceptor: widget.itemCloseInterceptor,
+          onItemClose: widget.onItemClose);
     } else if (area is DockingRow) {
       return _row(context, area);
     } else if (area is DockingColumn) {
@@ -62,7 +72,9 @@ class _DockingState extends State<Docking> {
           layout: widget.layout!,
           dockingDrag: _dockingDrag,
           dockingTabs: area,
-          onItemSelection: widget.onItemSelection);
+          onItemSelection: widget.onItemSelection,
+          onItemClose: widget.onItemClose,
+          itemCloseInterceptor: widget.itemCloseInterceptor);
     }
     throw UnimplementedError(
         'Unrecognized runtimeType: ' + area.runtimeType.toString());
