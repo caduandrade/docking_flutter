@@ -210,6 +210,8 @@ The root is single and can be any area.
   }
 ```
 
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/item_buttons_v1.png)
+
 ## Theme
 
 The tabs widget is provided by the [tabbed_view](https://pub.dev/packages/tabbed_view) package. Add it to your project to define themes.
