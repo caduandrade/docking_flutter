@@ -35,7 +35,7 @@ class DockingItemWidget extends DraggableWidget {
           text: name,
           content: item.widget,
           closable: item.closable,
-      buttons: item.buttons)
+          buttons: item.buttons)
     ];
     TabbedViewController controller = TabbedViewController(tabs);
 
