@@ -220,16 +220,27 @@ class DockingItem extends DockingArea with DropArea {
       required this.widget,
       this.value,
       this.closable = true,
+      bool keepAlive = false,
       List<TabButton>? buttons})
-      : this.buttons = buttons != null ? List.unmodifiable(buttons) : [];
+      : this.buttons = buttons != null ? List.unmodifiable(buttons) : [],
+        this.globalKey = keepAlive ? GlobalKey() : null;
+
+  DockingItem._(
+      {this.name,
+      required this.widget,
+      this.value,
+      required this.closable,
+      this.buttons,
+      this.globalKey});
 
   factory DockingItem.clone(DockingItem item) {
-    return DockingItem(
+    return DockingItem._(
         name: item.name,
         widget: item.widget,
         value: item.value,
         closable: item.closable,
-        buttons: item.buttons);
+        buttons: item.buttons,
+        globalKey: item.globalKey);
   }
 
   final String? name;
@@ -237,6 +248,7 @@ class DockingItem extends DockingArea with DropArea {
   final dynamic value;
   final bool closable;
   final List<TabButton>? buttons;
+  final GlobalKey? globalKey;
 
   @override
   DockingAreaType get type => DockingAreaType.item;

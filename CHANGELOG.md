@@ -1,3 +1,7 @@
+## [0.6.0]
+
+* Feature to keep the state alive.
+
 ## [0.5.0]
 
 * Dynamic value in *DockingItem*

@@ -30,19 +30,23 @@ class DockingTabsWidget extends DraggableWidget {
   Widget build(BuildContext context) {
     List<TabData> tabs = [];
     dockingTabs.forEach((child) {
+      Widget content = child.widget;
+      if (child.globalKey != null) {
+        content = KeyedSubtree(child: content, key: child.globalKey);
+      }
       tabs.add(TabData(
           value: child,
           text: child.name != null ? child.name! : '',
-          content: child.widget,
+          content: content,
           closable: child.closable,
-          keepAlive: true,
+          keepAlive: child.globalKey != null,
           buttons: child.buttons));
     });
     TabbedViewController controller = TabbedViewController(tabs);
     controller.selectedIndex =
         math.min(dockingTabs.selectedIndex, tabs.length - 1);
 
-    Widget content = TabbedView(
+    Widget tabbedView = TabbedView(
         controller: controller,
         onTabSelection: (int? index) {
           if (index != null) {
@@ -58,9 +62,9 @@ class DockingTabsWidget extends DraggableWidget {
         },
         onTabClose: _onTabClose);
     if (dockingDrag.enable) {
-      return DropWidget.tabs(layout, dockingTabs, content);
+      return DropWidget.tabs(layout, dockingTabs, tabbedView);
     }
-    return content;
+    return tabbedView;
   }
 
   bool _tabCloseInterceptor(int tabIndex) {

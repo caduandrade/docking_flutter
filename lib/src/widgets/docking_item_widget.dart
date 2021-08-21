@@ -29,11 +29,15 @@ class DockingItemWidget extends DraggableWidget {
   @override
   Widget build(BuildContext context) {
     String name = item.name != null ? item.name! : '';
+    Widget content = item.widget;
+    if (item.globalKey != null) {
+      content = KeyedSubtree(child: content, key: item.globalKey);
+    }
     List<TabData> tabs = [
       TabData(
           value: item,
           text: name,
-          content: item.widget,
+          content: content,
           closable: item.closable,
           buttons: item.buttons)
     ];
@@ -48,7 +52,7 @@ class DockingItemWidget extends DraggableWidget {
       };
     }
 
-    Widget content = TabbedView(
+    Widget tabbedView = TabbedView(
         onTabSelection: onTabSelection,
         tabCloseInterceptor: _tabCloseInterceptor,
         onTabClose: _onTabClose,
@@ -57,9 +61,9 @@ class DockingItemWidget extends DraggableWidget {
           return buildDraggable(item, tabWidget);
         });
     if (dockingDrag.enable) {
-      return DropWidget.item(layout, item, content);
+      return DropWidget.item(layout, item, tabbedView);
     }
-    return content;
+    return tabbedView;
   }
 
   bool _tabCloseInterceptor(int tabIndex) {
