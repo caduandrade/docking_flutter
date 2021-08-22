@@ -21,6 +21,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
   * [Close listener](#close-listener)
   * [Close interceptor](#close-interceptor)
   * [Buttons](#item-buttons)
+* [State](#state)
 * [Theme](#theme)
 
 ## Layout
@@ -211,6 +212,16 @@ The root is single and can be any area.
 ```
 
 ![](https://raw.githubusercontent.com/caduandrade/images/main/docking/item_buttons_v1.png)
+
+## State
+
+The drag action can change the tree structure due to a new arrangement of rows, columns or tabs.
+The *keepAlive* parameter keeps the state during the layout change.
+This feature implies using GlobalKeys and keeping the widget in memory even if its tab is not selected.
+
+```dart
+    DockingItem(name: 'myStatefulWidget', widget: myStatefulWidget, keepAlive: true);
+```
 
 ## Theme
 

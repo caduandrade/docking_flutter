@@ -213,6 +213,9 @@ abstract class DockingParentArea extends DockingArea {
 }
 
 /// Represents an area for a single widget.
+/// The [keepAlive] parameter keeps the state during the layout change.
+/// The default value is [FALSE]. This feature implies using GlobalKeys and
+/// keeping the widget in memory even if its tab is not selected.
 class DockingItem extends DockingArea with DropArea {
   /// Builds a [DockingItem].
   DockingItem(
