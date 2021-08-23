@@ -15,6 +15,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
   * [Column](#column)
   * [Tabs](#tabs)
   * [Combined](#combined)
+* [Dependencies](#dependencies)
 * Item
   * [Non-closable](#non-closable)
   * [Selection listener](#selection-listener)
@@ -23,8 +24,9 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
   * [Buttons](#item-buttons)
 * [Docking buttons build](#docking-buttons-build)
 * [State](#state)
-* [Theme](#theme)
-
+* Theme
+  * [Divider](#divider-theme)
+  * [Tabs](#tabs-theme)
 ## Layout
 
 The layout is organized into areas: items (`DockingItem`), columns (`DockingColumn`), rows (`DockingRow`) and tabs (`DockingTabs`).
@@ -89,6 +91,15 @@ The root is single and can be any area.
 ```
 
 ![](https://raw.githubusercontent.com/caduandrade/images/main/docking/combined_v2.png)
+
+## Dependencies
+
+This package uses two important dependencies
+
+* [multi_split_view](https://pub.dev/packages/multi_split_view) to provide horizontal or vertical split views
+* [tabbed_view](https://pub.dev/packages/tabbed_view) to provide grouping of widgets into tabs
+
+To use all the features provided by these dependencies, such as themes, you may need to import them into your project.
 
 ## Item
 
@@ -253,7 +264,39 @@ This feature implies using GlobalKeys and keeping the widget in memory even if t
 
 ## Theme
 
-The tabs widget is provided by the [tabbed_view](https://pub.dev/packages/tabbed_view) package. Add it to your project to define themes.
+### Divider theme
+
+You should use the *MultiSplitViewTheme* widget to apply the theme to all descendant widgets.
+
+Read more information about themes on [multi_split_view](https://pub.dev/packages/multi_split_view).
+
+```dart
+    import 'package:multi_split_view/multi_split_view.dart';
+```
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingColumn([
+        DockingItem(name: '2', widget: child2),
+        DockingItem(name: '3', widget: child3)
+      ])
+    ]));
+    Docking docking = Docking(layout: layout);
+    MultiSplitViewTheme theme = MultiSplitViewTheme(
+        child: docking,
+        data: MultiSplitViewThemeData(
+            dividerColor: Colors.lime, dividerThickness: 15));
+    Container container = Container(
+      child: theme,
+      color: Colors.lime,
+    );
+```
+
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/divider_theme_v1.png)
+
+### Tabs theme
 
 You should use the *TabbedViewTheme* widget to apply the theme to all descendant widgets.
 
@@ -277,4 +320,4 @@ Read more information about themes on [tabbed_view](https://pub.dev/packages/tab
         TabbedViewTheme(child: docking, data: TabbedViewThemeData.mobile());
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/theme_v1.png)
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/tabs_theme_v1.png)
