@@ -21,6 +21,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
   * [Close listener](#close-listener)
   * [Close interceptor](#close-interceptor)
   * [Buttons](#item-buttons)
+* [Docking buttons build](#docking-buttons-build)
 * [State](#state)
 * [Theme](#theme)
 
