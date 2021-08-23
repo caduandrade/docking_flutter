@@ -1,6 +1,7 @@
 ## [0.6.0]
 
 * Feature to keep the state alive.
+* *DockingButtonsBuilder* typedef
 
 ## [0.5.0]
 

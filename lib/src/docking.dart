@@ -1,4 +1,5 @@
 import 'package:docking/src/docking_drag.dart';
+import 'package:docking/src/docking_buttons_builder.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
@@ -16,13 +17,15 @@ class Docking extends StatefulWidget {
       this.layout,
       this.onItemSelection,
       this.onItemClose,
-      this.itemCloseInterceptor})
+      this.itemCloseInterceptor,
+      this.dockingButtonsBuilder})
       : super(key: key);
 
   final DockingLayout? layout;
   final OnItemSelection? onItemSelection;
   final OnItemClose? onItemClose;
   final ItemCloseInterceptor? itemCloseInterceptor;
+  final DockingButtonsBuilder? dockingButtonsBuilder;
 
   @override
   State<StatefulWidget> createState() => _DockingState();
@@ -62,7 +65,8 @@ class _DockingState extends State<Docking> {
           item: area,
           onItemSelection: widget.onItemSelection,
           itemCloseInterceptor: widget.itemCloseInterceptor,
-          onItemClose: widget.onItemClose);
+          onItemClose: widget.onItemClose,
+          dockingButtonsBuilder: widget.dockingButtonsBuilder);
     } else if (area is DockingRow) {
       return _row(context, area);
     } else if (area is DockingColumn) {
@@ -74,7 +78,8 @@ class _DockingState extends State<Docking> {
           dockingTabs: area,
           onItemSelection: widget.onItemSelection,
           onItemClose: widget.onItemClose,
-          itemCloseInterceptor: widget.itemCloseInterceptor);
+          itemCloseInterceptor: widget.itemCloseInterceptor,
+          dockingButtonsBuilder: widget.dockingButtonsBuilder);
     }
     throw UnimplementedError(
         'Unrecognized runtimeType: ' + area.runtimeType.toString());

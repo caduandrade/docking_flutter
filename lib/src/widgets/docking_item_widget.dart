@@ -1,4 +1,5 @@
 import 'package:docking/src/docking_drag.dart';
+import 'package:docking/src/docking_buttons_builder.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
@@ -17,7 +18,8 @@ class DockingItemWidget extends DraggableWidget {
       required this.item,
       this.onItemSelection,
       this.onItemClose,
-      this.itemCloseInterceptor})
+      this.itemCloseInterceptor,
+      this.dockingButtonsBuilder})
       : super(key: key, dockingDrag: dockingDrag);
 
   final DockingLayout layout;
@@ -25,6 +27,7 @@ class DockingItemWidget extends DraggableWidget {
   final OnItemSelection? onItemSelection;
   final OnItemClose? onItemClose;
   final ItemCloseInterceptor? itemCloseInterceptor;
+  final DockingButtonsBuilder? dockingButtonsBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +56,7 @@ class DockingItemWidget extends DraggableWidget {
     }
 
     Widget tabbedView = TabbedView(
+        tabsAreaButtonsBuilder: _tabsAreaButtonsBuilder,
         onTabSelection: onTabSelection,
         tabCloseInterceptor: _tabCloseInterceptor,
         onTabClose: _onTabClose,
@@ -64,6 +68,13 @@ class DockingItemWidget extends DraggableWidget {
       return DropWidget.item(layout, item, tabbedView);
     }
     return tabbedView;
+  }
+
+  List<TabButton> _tabsAreaButtonsBuilder(BuildContext context, int tabsCount) {
+    if (dockingButtonsBuilder != null) {
+      return dockingButtonsBuilder!(context, null, item);
+    }
+    return [];
   }
 
   bool _tabCloseInterceptor(int tabIndex) {

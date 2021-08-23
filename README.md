@@ -204,14 +204,40 @@ The root is single and can be any area.
     Docking docking = Docking(layout: layout);
 ```
 
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/item_buttons_v1.png)
+
+## Docking buttons build
+
 ```dart
-  void _toast(BuildContext context, String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(msg), duration: const Duration(seconds: 1)));
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingTabs([
+        DockingItem(name: '2', widget: child2),
+        DockingItem(name: '3', widget: child3)
+      ])
+    ]));
+    Docking docking =
+        Docking(layout: layout, dockingButtonsBuilder: _buttonsBuilder);
+```
+
+```dart
+  List<TabButton> _buttonsBuilder(BuildContext context,
+      DockingTabs? dockingTabs, DockingItem? dockingItem) {
+    if (dockingTabs != null) {
+      // docking area is a DockingTabs
+      return [
+        TabButton(
+            icon: Icons.tag_faces_outlined, onPressed: () => print('Smile!'))
+      ];
+    } // docking area is a
+    return [
+      TabButton(icon: Icons.access_time, onPressed: () => print('It' 's time!'))
+    ];
   }
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/item_buttons_v1.png)
+![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_buttons_build_v1.png)
 
 ## State
 
