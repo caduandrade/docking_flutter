@@ -245,7 +245,7 @@ The root is single and can be any area.
 
 The drag action can change the tree structure due to a new arrangement of rows, columns or tabs.
 The *keepAlive* parameter keeps the state during the layout change.
-This feature implies using GlobalKeys and keeping the widget in memory even if its tab is not selected.
+This feature implies using GlobalKeys and keeping the widget in memory even if the tab is not selected.
 
 ```dart
     DockingItem(name: 'myStatefulWidget', widget: myStatefulWidget, keepAlive: true);
