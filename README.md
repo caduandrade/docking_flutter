@@ -234,7 +234,7 @@ The root is single and can be any area.
     }
     // docking area is a DockingItem
     return [
-      TabButton(icon: Icons.access_time, onPressed: () => print('It' 's time!'))
+      TabButton(icon: Icons.access_time, onPressed: () => print('Time button!'))
     ];
   }
 ```
