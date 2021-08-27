@@ -1,11 +1,13 @@
 import 'dart:math' as math;
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/docking_buttons_builder.dart';
+import 'package:docking/src/docking_icons.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
@@ -19,7 +21,8 @@ class DockingTabsWidget extends DraggableWidget {
       this.onItemSelection,
       this.onItemClose,
       this.itemCloseInterceptor,
-      this.dockingButtonsBuilder})
+      this.dockingButtonsBuilder,
+      required this.maximizable})
       : super(key: key, dockingDrag: dockingDrag);
 
   final DockingLayout layout;
@@ -28,6 +31,7 @@ class DockingTabsWidget extends DraggableWidget {
   final OnItemClose? onItemClose;
   final ItemCloseInterceptor? itemCloseInterceptor;
   final DockingButtonsBuilder? dockingButtonsBuilder;
+  final bool maximizable;
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +76,14 @@ class DockingTabsWidget extends DraggableWidget {
   }
 
   List<TabButton> _tabsAreaButtonsBuilder(BuildContext context, int tabsCount) {
+    List<TabButton> list = [];
     if (dockingButtonsBuilder != null) {
-      return dockingButtonsBuilder!(context, dockingTabs, null);
+      list.addAll(dockingButtonsBuilder!(context, dockingTabs, null));
     }
-    return [];
+    if (maximizable) {
+      list.add(TabButton(iconPath: DockingIcons.maximize, onPressed: () {}));
+    }
+    return list;
   }
 
   bool _tabCloseInterceptor(int tabIndex) {

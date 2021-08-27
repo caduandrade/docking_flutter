@@ -1,5 +1,6 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/docking_buttons_builder.dart';
+import 'package:docking/src/docking_icons.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
@@ -19,7 +20,8 @@ class DockingItemWidget extends DraggableWidget {
       this.onItemSelection,
       this.onItemClose,
       this.itemCloseInterceptor,
-      this.dockingButtonsBuilder})
+      this.dockingButtonsBuilder,
+      required this.maximizable})
       : super(key: key, dockingDrag: dockingDrag);
 
   final DockingLayout layout;
@@ -28,6 +30,7 @@ class DockingItemWidget extends DraggableWidget {
   final OnItemClose? onItemClose;
   final ItemCloseInterceptor? itemCloseInterceptor;
   final DockingButtonsBuilder? dockingButtonsBuilder;
+  final bool maximizable;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +39,25 @@ class DockingItemWidget extends DraggableWidget {
     if (item.globalKey != null) {
       content = KeyedSubtree(child: content, key: item.globalKey);
     }
+    List<TabButton>? buttons;
+    if (item.buttons != null && item.buttons!.isNotEmpty) {
+      buttons = [];
+      buttons.addAll(item.buttons!);
+    }
+    if (maximizable) {
+      if (buttons == null) {
+        buttons = [];
+      }
+      buttons.add(TabButton(iconPath: DockingIcons.maximize, onPressed: () {}));
+    }
+
     List<TabData> tabs = [
       TabData(
           value: item,
           text: name,
           content: content,
           closable: item.closable,
-          buttons: item.buttons)
+          buttons: buttons)
     ];
     TabbedViewController controller = TabbedViewController(tabs);
 

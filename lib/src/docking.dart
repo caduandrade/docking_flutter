@@ -18,7 +18,9 @@ class Docking extends StatefulWidget {
       this.onItemSelection,
       this.onItemClose,
       this.itemCloseInterceptor,
-      this.dockingButtonsBuilder})
+      this.dockingButtonsBuilder,
+      this.maximizableItem = false,
+      this.maximizableTabs = false})
       : super(key: key);
 
   final DockingLayout? layout;
@@ -26,6 +28,8 @@ class Docking extends StatefulWidget {
   final OnItemClose? onItemClose;
   final ItemCloseInterceptor? itemCloseInterceptor;
   final DockingButtonsBuilder? dockingButtonsBuilder;
+  final bool maximizableItem;
+  final bool maximizableTabs;
 
   @override
   State<StatefulWidget> createState() => _DockingState();
@@ -66,7 +70,8 @@ class _DockingState extends State<Docking> {
           onItemSelection: widget.onItemSelection,
           itemCloseInterceptor: widget.itemCloseInterceptor,
           onItemClose: widget.onItemClose,
-          dockingButtonsBuilder: widget.dockingButtonsBuilder);
+          dockingButtonsBuilder: widget.dockingButtonsBuilder,
+          maximizable: widget.maximizableItem);
     } else if (area is DockingRow) {
       return _row(context, area);
     } else if (area is DockingColumn) {
@@ -79,7 +84,8 @@ class _DockingState extends State<Docking> {
           onItemSelection: widget.onItemSelection,
           onItemClose: widget.onItemClose,
           itemCloseInterceptor: widget.itemCloseInterceptor,
-          dockingButtonsBuilder: widget.dockingButtonsBuilder);
+          dockingButtonsBuilder: widget.dockingButtonsBuilder,
+          maximizable: widget.maximizableTabs);
     }
     throw UnimplementedError(
         'Unrecognized runtimeType: ' + area.runtimeType.toString());
