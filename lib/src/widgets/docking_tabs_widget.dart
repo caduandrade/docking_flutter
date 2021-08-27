@@ -41,13 +41,24 @@ class DockingTabsWidget extends DraggableWidget {
       if (child.globalKey != null) {
         content = KeyedSubtree(child: content, key: child.globalKey);
       }
+      List<TabButton>? buttons;
+      if (child.buttons != null && child.buttons!.isNotEmpty) {
+        buttons = [];
+        buttons.addAll(child.buttons!);
+      }
+      if (maximizable) {
+        if (buttons == null) {
+          buttons = [];
+        }
+        buttons.add(TabButton(iconPath: DockingIcons.maximize, onPressed: () {}));
+      }
       tabs.add(TabData(
           value: child,
           text: child.name != null ? child.name! : '',
           content: content,
           closable: child.closable,
           keepAlive: child.globalKey != null,
-          buttons: child.buttons));
+          buttons: buttons));
     });
     TabbedViewController controller = TabbedViewController(tabs);
     controller.selectedIndex =
