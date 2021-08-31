@@ -50,7 +50,8 @@ class DockingTabsWidget extends DraggableWidget {
         if (buttons == null) {
           buttons = [];
         }
-        buttons.add(TabButton(iconPath: DockingIcons.maximize, onPressed: () {}));
+        buttons.add(TabButton(
+            icon: IconProvider.path(DockingIcons.maximize), onPressed: () {}));
       }
       tabs.add(TabData(
           value: child,
@@ -92,7 +93,8 @@ class DockingTabsWidget extends DraggableWidget {
       list.addAll(dockingButtonsBuilder!(context, dockingTabs, null));
     }
     if (maximizable) {
-      list.add(TabButton(iconPath: DockingIcons.maximize, onPressed: () {}));
+      list.add(TabButton(
+          icon: IconProvider.path(DockingIcons.maximize), onPressed: () {}));
     }
     return list;
   }

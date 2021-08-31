@@ -48,7 +48,8 @@ class DockingItemWidget extends DraggableWidget {
       if (buttons == null) {
         buttons = [];
       }
-      buttons.add(TabButton(iconPath: DockingIcons.maximize, onPressed: () {}));
+      buttons.add(TabButton(
+          icon: IconProvider.path(DockingIcons.restore), onPressed: () {}));
     }
 
     List<TabData> tabs = [

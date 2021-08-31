@@ -224,9 +224,11 @@ class DockingItem extends DockingArea with DropArea {
       this.value,
       this.closable = true,
       bool keepAlive = false,
-      List<TabButton>? buttons})
+      List<TabButton>? buttons,
+      bool maximized = false})
       : this.buttons = buttons != null ? List.unmodifiable(buttons) : [],
-        this.globalKey = keepAlive ? GlobalKey() : null;
+        this.globalKey = keepAlive ? GlobalKey() : null,
+        this.maximized = maximized;
 
   DockingItem._(
       {this.name,
@@ -234,7 +236,8 @@ class DockingItem extends DockingArea with DropArea {
       this.value,
       required this.closable,
       this.buttons,
-      this.globalKey});
+      this.globalKey,
+      required this.maximized});
 
   factory DockingItem.clone(DockingItem item) {
     return DockingItem._(
@@ -243,7 +246,8 @@ class DockingItem extends DockingArea with DropArea {
         value: item.value,
         closable: item.closable,
         buttons: item.buttons,
-        globalKey: item.globalKey);
+        globalKey: item.globalKey,
+        maximized: item.maximized);
   }
 
   final String? name;
@@ -252,6 +256,7 @@ class DockingItem extends DockingArea with DropArea {
   final bool closable;
   final List<TabButton>? buttons;
   final GlobalKey? globalKey;
+  final bool maximized;
 
   @override
   DockingAreaType get type => DockingAreaType.item;

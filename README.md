@@ -94,7 +94,7 @@ The root is single and can be any area.
 
 ## Dependencies
 
-This package uses two important dependencies
+This package uses two dependencies
 
 * [multi_split_view](https://pub.dev/packages/multi_split_view) to provide horizontal or vertical split views
 * [tabbed_view](https://pub.dev/packages/tabbed_view) to provide grouping of widgets into tabs

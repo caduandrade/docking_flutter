@@ -25,8 +25,8 @@ dependencies:
     sdk: flutter
   docking:
     path: ../
-  tabbed_view: #^1.7.0
-    path: ../../tabbed_view/
+  tabbed_view: ^1.9.0
+    #path: ../../tabbed_view/
 
 dev_dependencies:
   flutter_test:
