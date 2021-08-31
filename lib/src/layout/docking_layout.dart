@@ -228,7 +228,7 @@ class DockingItem extends DockingArea with DropArea {
       bool maximized = false})
       : this.buttons = buttons != null ? List.unmodifiable(buttons) : [],
         this.globalKey = keepAlive ? GlobalKey() : null,
-        this.maximized = maximized;
+        this._maximized = maximized;
 
   DockingItem._(
       {this.name,
@@ -237,7 +237,8 @@ class DockingItem extends DockingArea with DropArea {
       required this.closable,
       this.buttons,
       this.globalKey,
-      required this.maximized});
+      required bool maximized})
+      : this._maximized = maximized;
 
   factory DockingItem.clone(DockingItem item) {
     return DockingItem._(
@@ -247,7 +248,7 @@ class DockingItem extends DockingArea with DropArea {
         closable: item.closable,
         buttons: item.buttons,
         globalKey: item.globalKey,
-        maximized: item.maximized);
+        maximized: item._maximized);
   }
 
   final String? name;
@@ -256,7 +257,9 @@ class DockingItem extends DockingArea with DropArea {
   final bool closable;
   final List<TabButton>? buttons;
   final GlobalKey? globalKey;
-  final bool maximized;
+
+  bool _maximized;
+  bool get maximized => _maximized;
 
   @override
   DockingAreaType get type => DockingAreaType.item;
@@ -367,6 +370,13 @@ class DockingLayout extends ChangeNotifier {
   /// Builds a [DockingLayout].
   DockingLayout({DockingArea? root}) : this._root = root {
     _updateHierarchy();
+    layoutAreas().forEach((area) {
+      if (area is DockingItem && area.maximized) {
+        _maximizedArea = area;
+        //TODO check double
+      }
+      //TODO tabs
+    });
   }
 
   /// The id of this layout.
@@ -377,6 +387,9 @@ class DockingLayout extends ChangeNotifier {
 
   /// The root of this layout.
   DockingArea? get root => _root;
+
+  DockingArea? _maximizedArea;
+  DockingArea? get maximizedArea => _maximizedArea;
 
   /// Converts layout's hierarchical structure to String.
   String hierarchy(
@@ -400,11 +413,43 @@ class DockingLayout extends ChangeNotifier {
     _root?._updateHierarchy(null, 1, id);
   }
 
+  /// Maximize a [DockingItem].
+  void maximize(DockingItem dockingItem) {
+    if (dockingItem.layoutId != id) {
+      throw ArgumentError('DockingItem does not belong to this layout.');
+    }
+    if (dockingItem._maximized == false) {
+      _removeMaximizeStatus();
+      dockingItem._maximized = true;
+      _maximizedArea = dockingItem;
+      notifyListeners();
+    }
+  }
+
+  /// Removes any maximize status.
+  void restore() {
+    _removeMaximizeStatus();
+    _maximizedArea = null;
+    notifyListeners();
+  }
+
+  /// Removes the current maximize status.
+  void _removeMaximizeStatus() {
+    if (_maximizedArea != null) {
+      if (_maximizedArea is DockingItem) {
+        DockingItem dockingItem = _maximizedArea as DockingItem;
+        dockingItem._maximized = false;
+      }
+    }
+    //TODO tabs
+  }
+
   /// Moves a DockingItem in this layout.
   void moveItem(
       {required DockingItem draggedItem,
       required DropArea targetArea,
       required DropPosition dropPosition}) {
+    //TODO maximize test
     _rebuild(MoveItem(
         draggedItem: draggedItem,
         targetArea: targetArea,
@@ -413,6 +458,10 @@ class DockingLayout extends ChangeNotifier {
 
   /// Removes a DockingItem from this layout.
   void removeItem({required DockingItem item}) {
+    if (_maximizedArea != null && _maximizedArea == item) {
+      _maximizedArea = null;
+    }
+    item._maximized = false;
     _rebuild(RemoveItem(itemToRemove: item));
   }
 
@@ -421,6 +470,7 @@ class DockingLayout extends ChangeNotifier {
       {required DockingItem newItem,
       required DropArea targetArea,
       required DropPosition dropPosition}) {
+    //TODO maximize test
     _rebuild(AddItem(
         newItem: newItem, targetArea: targetArea, dropPosition: dropPosition));
   }
@@ -440,6 +490,7 @@ class DockingLayout extends ChangeNotifier {
     } else {
       throw StateError('Root is not a DropArea');
     }
+    //TODO maximize test
   }
 
   /// Rebuilds this layout with a modifier.

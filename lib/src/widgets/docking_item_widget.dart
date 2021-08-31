@@ -48,8 +48,15 @@ class DockingItemWidget extends DraggableWidget {
       if (buttons == null) {
         buttons = [];
       }
-      buttons.add(TabButton(
-          icon: IconProvider.path(DockingIcons.restore), onPressed: () {}));
+      if (layout.maximizedArea != null && layout.maximizedArea == this.item) {
+        buttons.add(TabButton(
+            icon: IconProvider.path(DockingIcons.restore),
+            onPressed: () => layout.restore()));
+      } else {
+        buttons.add(TabButton(
+            icon: IconProvider.path(DockingIcons.maximize),
+            onPressed: () => layout.maximize(item)));
+      }
     }
 
     List<TabData> tabs = [
