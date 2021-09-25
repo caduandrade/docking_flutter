@@ -19,8 +19,8 @@ class Docking extends StatefulWidget {
       this.onItemClose,
       this.itemCloseInterceptor,
       this.dockingButtonsBuilder,
-      this.maximizableItem = false,
-      this.maximizableTabs = false})
+      this.maximizableItem = true,
+      this.maximizableTabs = true})
       : super(key: key);
 
   final DockingLayout? layout;

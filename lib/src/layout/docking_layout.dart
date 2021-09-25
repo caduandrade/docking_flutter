@@ -225,6 +225,7 @@ class DockingItem extends DockingArea with DropArea {
       this.closable = true,
       bool keepAlive = false,
       List<TabButton>? buttons,
+      this.maximizable,
       bool maximized = false})
       : this.buttons = buttons != null ? List.unmodifiable(buttons) : [],
         this.globalKey = keepAlive ? GlobalKey() : null,
@@ -237,6 +238,7 @@ class DockingItem extends DockingArea with DropArea {
       required this.closable,
       this.buttons,
       this.globalKey,
+      required this.maximizable,
       required bool maximized})
       : this._maximized = maximized;
 
@@ -248,13 +250,15 @@ class DockingItem extends DockingArea with DropArea {
         closable: item.closable,
         buttons: item.buttons,
         globalKey: item.globalKey,
-        maximized: item.maximized);
+        maximized: item.maximized,
+        maximizable: item.maximizable);
   }
 
   final String? name;
   final Widget widget;
   final dynamic value;
   final bool closable;
+  final bool? maximizable;
   final List<TabButton>? buttons;
   final GlobalKey? globalKey;
   bool _maximized;
@@ -336,9 +340,12 @@ class DockingColumn extends DockingParentArea {
 /// Children will be arranged in tabs.
 class DockingTabs extends DockingParentArea with DropArea {
   /// Builds a [DockingTabs].
-  DockingTabs(List<DockingItem> children, {bool maximized = false})
+  DockingTabs(List<DockingItem> children,
+      {bool maximized = false, this.maximizable})
       : this._maximized = maximized,
         super(children);
+
+  final bool? maximizable;
 
   int selectedIndex = 0;
   bool _maximized;

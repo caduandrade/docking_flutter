@@ -44,8 +44,9 @@ class RemoveItem extends LayoutModifier {
       if (children.length == 1) {
         return children.first;
       }
-      DockingTabs newDockingTabs =
-          DockingTabs(children, maximized: dockingTabs.maximized);
+      DockingTabs newDockingTabs = DockingTabs(children,
+          maximized: dockingTabs.maximized,
+          maximizable: dockingTabs.maximizable);
       newDockingTabs.selectedIndex = dockingTabs.selectedIndex;
       return newDockingTabs;
     } else if (area is DockingParentArea) {

@@ -46,6 +46,9 @@ class DockingTabsWidget extends DraggableWidget {
         buttons = [];
         buttons.addAll(child.buttons!);
       }
+      bool maximizable = dockingTabs.maximizable != null
+          ? dockingTabs.maximizable!
+          : this.maximizable;
       if (maximizable) {
         if (buttons == null) {
           buttons = [];

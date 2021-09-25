@@ -37,17 +37,19 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
         root: DockingRow([
       _build(v++),
       DockingColumn([
-        DockingRow([_build(v++), _build(v++, closable: false)]),
+        DockingRow(
+            [_build(v++, maximizable: false), _build(v++, closable: false)]),
         DockingTabs([_build(v++), _build(v++), _build(v++)]),
         _build(v++)
       ])
     ]));
   }
 
-  DockingItem _build(int value, {bool closable = true}) {
+  DockingItem _build(int value, {bool closable = true, bool? maximizable}) {
     return DockingItem(
         name: value.toString(),
         closable: closable,
+        maximizable: maximizable,
         widget: Container(child: Center(child: Text('Child $value'))));
   }
 
@@ -57,10 +59,6 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
         body: TabbedViewTheme(
             data: TabbedViewThemeData.classic(),
             child: Container(
-                child: Docking(
-                    layout: layout,
-                    maximizableItem: true,
-                    maximizableTabs: true),
-                padding: EdgeInsets.all(16))));
+                child: Docking(layout: layout), padding: EdgeInsets.all(16))));
   }
 }
