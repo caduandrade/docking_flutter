@@ -248,7 +248,7 @@ class DockingItem extends DockingArea with DropArea {
         closable: item.closable,
         buttons: item.buttons,
         globalKey: item.globalKey,
-        maximized: item._maximized);
+        maximized: item.maximized);
   }
 
   final String? name;
@@ -257,8 +257,8 @@ class DockingItem extends DockingArea with DropArea {
   final bool closable;
   final List<TabButton>? buttons;
   final GlobalKey? globalKey;
-
   bool _maximized;
+
   bool get maximized => _maximized;
 
   @override
@@ -336,9 +336,14 @@ class DockingColumn extends DockingParentArea {
 /// Children will be arranged in tabs.
 class DockingTabs extends DockingParentArea with DropArea {
   /// Builds a [DockingTabs].
-  DockingTabs(List<DockingItem> children) : super(children);
+  DockingTabs(List<DockingItem> children, {bool maximized = false})
+      : this._maximized = maximized,
+        super(children);
 
   int selectedIndex = 0;
+  bool _maximized;
+
+  bool get maximized => _maximized;
 
   @override
   DockingItem childAt(int index) => _children[index] as DockingItem;
@@ -370,13 +375,19 @@ class DockingLayout extends ChangeNotifier {
   /// Builds a [DockingLayout].
   DockingLayout({DockingArea? root}) : this._root = root {
     _updateHierarchy();
+    int maximizedCount = 0;
     layoutAreas().forEach((area) {
       if (area is DockingItem && area.maximized) {
+        maximizedCount++;
         _maximizedArea = area;
-        //TODO check double
+      } else if (area is DockingTabs && area.maximized) {
+        maximizedCount++;
+        _maximizedArea = area;
       }
-      //TODO tabs
     });
+    if (maximizedCount > 1) {
+      throw ArgumentError('Multiple maximized areas.');
+    }
   }
 
   /// The id of this layout.
@@ -388,7 +399,10 @@ class DockingLayout extends ChangeNotifier {
   /// The root of this layout.
   DockingArea? get root => _root;
 
+  /// Holds a fast reference to the maximized area.
   DockingArea? _maximizedArea;
+
+  /// Gets the maximized area in this layout.
   DockingArea? get maximizedArea => _maximizedArea;
 
   /// Converts layout's hierarchical structure to String.
@@ -414,34 +428,47 @@ class DockingLayout extends ChangeNotifier {
   }
 
   /// Maximize a [DockingItem].
-  void maximize(DockingItem dockingItem) {
+  void maximizeDockingItem(DockingItem dockingItem) {
     if (dockingItem.layoutId != id) {
       throw ArgumentError('DockingItem does not belong to this layout.');
     }
-    if (dockingItem._maximized == false) {
-      _removeMaximizeStatus();
+    if (dockingItem.maximized == false) {
+      _removesMaximizedStatus();
       dockingItem._maximized = true;
       _maximizedArea = dockingItem;
       notifyListeners();
     }
   }
 
-  /// Removes any maximize status.
-  void restore() {
-    _removeMaximizeStatus();
-    _maximizedArea = null;
-    notifyListeners();
+  /// Maximize a [DockingTabs].
+  void maximizeDockingTabs(DockingTabs dockingTabs) {
+    if (dockingTabs.layoutId != id) {
+      throw ArgumentError('DockingTabs does not belong to this layout.');
+    }
+    if (dockingTabs.maximized == false) {
+      _removesMaximizedStatus();
+      dockingTabs._maximized = true;
+      _maximizedArea = dockingTabs;
+      notifyListeners();
+    }
   }
 
-  /// Removes the current maximize status.
-  void _removeMaximizeStatus() {
-    if (_maximizedArea != null) {
-      if (_maximizedArea is DockingItem) {
-        DockingItem dockingItem = _maximizedArea as DockingItem;
-        dockingItem._maximized = false;
+  /// Removes maximized status from areas.
+  void _removesMaximizedStatus() {
+    layoutAreas().forEach((area) {
+      if (area is DockingItem) {
+        area._maximized = false;
+      } else if (area is DockingTabs) {
+        area._maximized = false;
       }
-    }
-    //TODO tabs
+    });
+    _maximizedArea = null;
+  }
+
+  /// Removes any maximize status.
+  void restore() {
+    _removesMaximizedStatus();
+    notifyListeners();
   }
 
   /// Moves a DockingItem in this layout.
@@ -458,10 +485,6 @@ class DockingLayout extends ChangeNotifier {
 
   /// Removes a DockingItem from this layout.
   void removeItem({required DockingItem item}) {
-    if (_maximizedArea != null && _maximizedArea == item) {
-      _maximizedArea = null;
-    }
-    item._maximized = false;
     _rebuild(RemoveItem(itemToRemove: item));
   }
 
@@ -497,6 +520,14 @@ class DockingLayout extends ChangeNotifier {
   void _rebuild(LayoutModifier modifier) {
     List<DockingArea> toDispose = layoutAreas();
     _root = modifier.newLayout(this);
+    _maximizedArea = null;
+    layoutAreas().forEach((area) {
+      if (area is DockingItem && area.maximized) {
+        _maximizedArea = area;
+      } else if (area is DockingTabs && area.maximized) {
+        _maximizedArea = area;
+      }
+    });
     _updateHierarchy();
     toDispose.forEach((area) => area._dispose());
     notifyListeners();

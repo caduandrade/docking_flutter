@@ -83,7 +83,7 @@ class DropItem extends LayoutModifier {
       if (children.length == 1) {
         newArea = children.first;
       } else {
-        newArea = DockingTabs(children);
+        newArea = DockingTabs(children, maximized: dockingTabs.maximized);
         (newArea as DockingTabs).selectedIndex = dockingTabs.selectedIndex;
       }
       if (dockingTabs == targetArea) {

@@ -54,7 +54,13 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: TabbedViewTheme(data: TabbedViewThemeData.classic(), child: Container(
-            child: Docking(layout: layout, maximizableItem: true, maximizableTabs: true), padding: EdgeInsets.all(16))));
+        body: TabbedViewTheme(
+            data: TabbedViewThemeData.classic(),
+            child: Container(
+                child: Docking(
+                    layout: layout,
+                    maximizableItem: true,
+                    maximizableTabs: true),
+                padding: EdgeInsets.all(16))));
   }
 }

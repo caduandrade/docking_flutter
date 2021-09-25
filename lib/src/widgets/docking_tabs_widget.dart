@@ -50,8 +50,15 @@ class DockingTabsWidget extends DraggableWidget {
         if (buttons == null) {
           buttons = [];
         }
-        buttons.add(TabButton(
-            icon: IconProvider.path(DockingIcons.maximize), onPressed: () {}));
+        if (layout.maximizedArea != null && layout.maximizedArea == child) {
+          buttons.add(TabButton(
+              icon: IconProvider.path(DockingIcons.restore),
+              onPressed: () => layout.restore()));
+        } else {
+          buttons.add(TabButton(
+              icon: IconProvider.path(DockingIcons.maximize),
+              onPressed: () => layout.maximizeDockingItem(child)));
+        }
       }
       tabs.add(TabData(
           value: child,
@@ -88,15 +95,22 @@ class DockingTabsWidget extends DraggableWidget {
   }
 
   List<TabButton> _tabsAreaButtonsBuilder(BuildContext context, int tabsCount) {
-    List<TabButton> list = [];
+    List<TabButton> buttons = [];
     if (dockingButtonsBuilder != null) {
-      list.addAll(dockingButtonsBuilder!(context, dockingTabs, null));
+      buttons.addAll(dockingButtonsBuilder!(context, dockingTabs, null));
     }
     if (maximizable) {
-      list.add(TabButton(
-          icon: IconProvider.path(DockingIcons.maximize), onPressed: () {}));
+      if (layout.maximizedArea != null && layout.maximizedArea == dockingTabs) {
+        buttons.add(TabButton(
+            icon: IconProvider.path(DockingIcons.restore),
+            onPressed: () => layout.restore()));
+      } else {
+        buttons.add(TabButton(
+            icon: IconProvider.path(DockingIcons.maximize),
+            onPressed: () => layout.maximizeDockingTabs(dockingTabs)));
+      }
     }
-    return list;
+    return buttons;
   }
 
   bool _tabCloseInterceptor(int tabIndex) {
