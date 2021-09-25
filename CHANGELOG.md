@@ -1,10 +1,14 @@
+## [0.7.0]
+
+* Feature to maximize docking areas
+
 ## [0.6.1]
 
 * *multi_split_view* dependency updated to 1.7.2
 
 ## [0.6.0]
 
-* Feature to keep the state alive.
+* Feature to keep the state alive
 * *DockingButtonsBuilder* typedef
 
 ## [0.5.0]
