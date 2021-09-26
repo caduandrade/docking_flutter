@@ -16,6 +16,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 * [Dependencies](#dependencies)
 * Item
   * [Non-closable](#non-closable)
+  * [Non-maximizable](#non-maximizable)
   * [Selection listener](#selection-listener)
   * [Close listener](#close-listener)
   * [Close interceptor](#close-interceptor)
@@ -113,6 +114,19 @@ To use all the features provided by these dependencies, such as themes, you may 
 ```
 
 ![](https://caduandrade.github.io/docking_flutter/nonclosable_v2.png)
+
+### Non-maximizable
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', widget: child1),
+      DockingItem(name: '2', widget: child2, maximizable: false)
+    ]));
+    Docking docking = Docking(layout: layout);
+```
+
+![](https://caduandrade.github.io/docking_flutter/nonmaximizable_v1.png)
 
 ### Selection listener
 
