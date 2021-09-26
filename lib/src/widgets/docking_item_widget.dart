@@ -56,7 +56,7 @@ class DockingItemWidget extends DraggableWidget {
             onPressed: () => layout.restore()));
       } else {
         buttons.add(TabButton(
-            icon: IconProvider.path(DockingIcons.maximize),
+            icon: IconProvider.data(Icons.web_asset_sharp),
             onPressed: () => layout.maximizeDockingItem(item)));
       }
     }

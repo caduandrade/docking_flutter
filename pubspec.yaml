@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  tabbed_view: ^1.9.0
+  tabbed_view: ^1.10.0
     #path: ../tabbed_view/
   multi_split_view: ^1.7.2
 
