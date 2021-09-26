@@ -1,12 +1,10 @@
-[![pub](https://img.shields.io/pub/v/docking.svg)](https://pub.dev/packages/docking) ![](https://github.com/caduandrade/docking_flutter/actions/workflows/test.yml/badge.svg) [![](https://img.shields.io/badge/demo-try%20it%20out-blue)](https://caduandrade.github.io/docking_flutter_demo/) [![pub2](https://img.shields.io/badge/Flutter-%E2%9D%A4-red)](https://flutter.dev/) ![pub3](https://img.shields.io/badge/final%20version-as%20soon%20as%20possible-blue)
+[![pub](https://img.shields.io/pub/v/docking.svg)](https://pub.dev/packages/docking) ![](https://github.com/caduandrade/docking_flutter/actions/workflows/test.yml/badge.svg) [![](https://img.shields.io/badge/demo-try%20it%20out-blue)](https://caduandrade.github.io/docking_flutter_demo/) [![pub2](https://img.shields.io/badge/Flutter-%E2%9D%A4-red)](https://flutter.dev/)
 
 # Docking
 
-__*This package is still under developing*__
-
 Layout for placing widgets in docking areas and arrange them into split and tabbed views.
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_v2.png)
+![](https://caduandrade.github.io/docking_flutter/docking_v3.png)
 
 ## Usage
 
@@ -32,7 +30,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 The layout is organized into areas: items (`DockingItem`), columns (`DockingColumn`), rows (`DockingRow`) and tabs (`DockingTabs`).
 The root is single and can be any area.
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_layout_uml_v3.png)
+![](https://caduandrade.github.io/docking_flutter/docking_layout_uml_v3.png)
 
 ### Row
 
@@ -45,7 +43,7 @@ The root is single and can be any area.
     Docking docking = Docking(layout: layout);
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/row_v2.png)
+![](https://caduandrade.github.io/docking_flutter/row_v3.png)
 
 ### Column
 
@@ -58,7 +56,7 @@ The root is single and can be any area.
     Docking docking = Docking(layout: layout);
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/column_v2.png)
+![](https://caduandrade.github.io/docking_flutter/column_v3.png)
 
 ### Tabs
 
@@ -71,7 +69,7 @@ The root is single and can be any area.
     Docking docking = Docking(layout: layout);
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/tabs_v1.png)
+![](https://caduandrade.github.io/docking_flutter/tabs_v2.png)
 
 ### Combined
 
@@ -90,7 +88,7 @@ The root is single and can be any area.
     Docking docking = Docking(layout: layout);
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/combined_v2.png)
+![](https://caduandrade.github.io/docking_flutter/combined_v3.png)
 
 ## Dependencies
 
@@ -114,7 +112,7 @@ To use all the features provided by these dependencies, such as themes, you may 
     Docking docking = Docking(layout: layout);
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/nonclosable_v1.png)
+![](https://caduandrade.github.io/docking_flutter/nonclosable_v2.png)
 
 ### Selection listener
 
@@ -192,31 +190,31 @@ To use all the features provided by these dependencies, such as themes, you may 
 ```dart
     DockingLayout layout = DockingLayout(
         root: DockingRow([
-      DockingItem(name: '1', widget: child1),
-      DockingColumn([
-        DockingItem(name: '2', widget: child2),
-        DockingItem(name: '3', widget: child3, buttons: [
-          TabButton(
-              icon: Icons.add_circle_outline,
-              onPressed: () => _toast(context, 'add button')),
-          TabButton(
-              icon: Icons.arrow_drop_down_outlined,
-              menuBuilder: (context) {
-                return [
-                  TabbedViewMenuItem(
-                      text: 'Option 1',
-                      onSelection: () => _toast(context, '1')),
-                  TabbedViewMenuItem(
-                      text: 'Option 2', onSelection: () => _toast(context, '2'))
-                ];
-              })
-        ])
-      ])
-    ]));
-    Docking docking = Docking(layout: layout);
+          DockingItem(name: '1', widget: child1),
+          DockingColumn([
+            DockingItem(name: '2', widget: child2),
+            DockingItem(name: '3', widget: child3, buttons: [
+              TabButton(
+                      icon: IconProvider.data(Icons.add_circle_outline),
+                      onPressed: () => _toast(context, 'add button')),
+              TabButton(
+                      icon: IconProvider.data(Icons.arrow_drop_down_outlined),
+                      menuBuilder: (context) {
+                        return [
+                          TabbedViewMenuItem(
+                                  text: 'Option 1',
+                                  onSelection: () => _toast(context, '1')),
+                          TabbedViewMenuItem(
+                                  text: 'Option 2', onSelection: () => _toast(context, '2'))
+                        ];
+                      })
+            ])
+          ])
+        ]));
+Docking docking = Docking(layout: layout);
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/item_buttons_v1.png)
+![](https://caduandrade.github.io/docking_flutter/item_buttons_v2.png)
 
 ## Docking buttons build
 
@@ -235,22 +233,25 @@ To use all the features provided by these dependencies, such as themes, you may 
 
 ```dart
   List<TabButton> _buttonsBuilder(BuildContext context,
-      DockingTabs? dockingTabs, DockingItem? dockingItem) {
-    if (dockingTabs != null) {
-      // docking area is a DockingTabs
-      return [
-        TabButton(
-            icon: Icons.tag_faces_outlined, onPressed: () => print('Smile!'))
-      ];
-    }
-    // docking area is a DockingItem
+        DockingTabs? dockingTabs, DockingItem? dockingItem) {
+  if (dockingTabs != null) {
+    // docking area is a DockingTabs
     return [
-      TabButton(icon: Icons.access_time, onPressed: () => print('Time button!'))
+      TabButton(
+              icon: IconProvider.data(Icons.tag_faces_outlined),
+              onPressed: () => print('Smile!'))
     ];
   }
+  // docking area is a DockingItem
+  return [
+    TabButton(
+            icon: IconProvider.data(Icons.access_time),
+            onPressed: () => print('Time button!'))
+  ];
+}
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/docking_buttons_build_v1.png)
+![](https://caduandrade.github.io/docking_flutter/docking_buttons_build_v2.png)
 
 ## State
 
@@ -294,7 +295,7 @@ Read more information about themes on [multi_split_view](https://pub.dev/package
     );
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/divider_theme_v1.png)
+![](https://caduandrade.github.io/docking_flutter/divider_theme_v2.png)
 
 ### Tabs theme
 
@@ -320,4 +321,4 @@ Read more information about themes on [tabbed_view](https://pub.dev/packages/tab
         TabbedViewTheme(child: docking, data: TabbedViewThemeData.mobile());
 ```
 
-![](https://raw.githubusercontent.com/caduandrade/images/main/docking/tabs_theme_v1.png)
+![](https://caduandrade.github.io/docking_flutter/tabs_theme_v2.png)
