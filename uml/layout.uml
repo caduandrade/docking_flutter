@@ -16,6 +16,8 @@ class DockingItem << (C,lightgray) >> #line:black {
 name: String?
 widget: Widget
 closable: bool
+keepAlive: bool
+maximizable: bool
 value: dynamic
 }
 
@@ -30,6 +32,7 @@ forEach(f: void (DockingArea child))
 }
 
 class DockingTabs << (C,lightgray) >> #line:black {
+maximizable: bool
 DockingTabs(children: List<DockingItem>)
 forEach(f: void (DockingItem child))
 }
