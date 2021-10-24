@@ -102,7 +102,7 @@ class _DockingState extends State<Docking> {
       children.add(_buildArea(context, child));
     });
     MultiSplitViewController controller =
-        MultiSplitViewController(weights: row.weights);
+        MultiSplitViewController(initialWeights: row.weights);
     return MultiSplitView(
         children: children,
         axis: Axis.horizontal,
@@ -118,7 +118,7 @@ class _DockingState extends State<Docking> {
       children.add(_buildArea(context, child));
     });
     MultiSplitViewController controller =
-        MultiSplitViewController(weights: column.weights);
+        MultiSplitViewController(initialWeights: column.weights);
     return MultiSplitView(
         children: children,
         axis: Axis.vertical,

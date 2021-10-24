@@ -1,21 +1,25 @@
+## [0.8.0]
+
+* `multi_split_view` dependency updated to 1.9.0
+
 ## [0.7.0]
 
 * Feature to maximize docking areas
 
 ## [0.6.1]
 
-* *multi_split_view* dependency updated to 1.7.2
+* `multi_split_view` dependency updated to 1.7.2
 
 ## [0.6.0]
 
 * Feature to keep the state alive
-* *DockingButtonsBuilder* typedef
+* `DockingButtonsBuilder` typedef
 
 ## [0.5.0]
 
-* Dynamic value in *DockingItem*
-* Non-Closable *DockingItem*
-* *DockingItem*
+* Dynamic value in `DockingItem`
+* Non-Closable `DockingItem`
+* `DockingItem`
   * selection listener
   * close listener
   * close interceptor
