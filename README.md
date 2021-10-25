@@ -302,14 +302,19 @@ Read more information about themes on [multi_split_view](https://pub.dev/package
     MultiSplitViewTheme theme = MultiSplitViewTheme(
         child: docking,
         data: MultiSplitViewThemeData(
-            dividerColor: Colors.lime, dividerThickness: 15));
+            dividerThickness: 15,
+            dividerPainter: DividerPainters.grooved2(
+                backgroundColor: Colors.grey[700]!,
+                color: Colors.grey[400]!,
+                highlightedColor: Colors.white)));
     Container container = Container(
+      padding: EdgeInsets.all(16),
       child: theme,
-      color: Colors.lime,
+      color: Colors.grey[700]!,
     );
 ```
 
-![](https://caduandrade.github.io/docking_flutter/divider_theme_v2.png)
+![](https://caduandrade.github.io/docking_flutter/divider_theme_v3.png)
 
 ### Tabs theme
 
