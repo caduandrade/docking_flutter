@@ -1,7 +1,6 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /// Represents a abstract draggable widget.
 abstract class DraggableWidget extends StatelessWidget {

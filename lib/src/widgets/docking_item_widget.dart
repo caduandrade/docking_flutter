@@ -7,7 +7,6 @@ import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/widgets/draggable_widget.dart';
 import 'package:docking/src/widgets/drop_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
 /// Represents a widget for [DockingItem].

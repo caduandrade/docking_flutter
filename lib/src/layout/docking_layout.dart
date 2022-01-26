@@ -557,4 +557,9 @@ class DockingLayout extends ChangeNotifier {
       parentArea.forEach((child) => _fetchAreas(areas, child));
     }
   }
+
+  void deserialize(
+      String layout, WidgetDeserialization widgetDeserialization) {}
 }
+
+typedef WidgetDeserialization = Widget Function(dynamic itemId);

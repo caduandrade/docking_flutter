@@ -1,6 +1,5 @@
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /// Represents a container for [DockingItem] or [DockingTabs] that creates
 /// drop areas for a [Draggable].
