@@ -59,6 +59,6 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
         body: TabbedViewTheme(
             data: TabbedViewThemeData.classic(),
             child: Container(
-                child: Row(children: [Expanded(child: Docking(layout: layout)), SizedBox(width: 32)],crossAxisAlignment: CrossAxisAlignment.stretch,), padding: EdgeInsets.all(16))));
+                child: Docking(layout: layout), padding: EdgeInsets.all(16))));
   }
 }
