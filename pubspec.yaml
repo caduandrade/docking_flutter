@@ -1,6 +1,6 @@
 name: docking
 description: Flutter layout for placing widgets in docking areas and arrange them into split and tabbed views.
-version: 1.2.0
+version: 1.2.0+1
 homepage: https://github.com/caduandrade/docking_flutter
 
 environment:

@@ -1,3 +1,7 @@
+## 1.2.0+1
+
+* Updating the README
+
 ## 1.2.0
 
 * `multi_split_view` dependency updated to 1.11.0
