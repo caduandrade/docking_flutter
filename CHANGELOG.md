@@ -4,6 +4,7 @@
 * Bugfix
   * Memory leak in DockingLayout listeners.    
 * `tabbed_view` dependency updated to 1.13.0+1
+* `multi_split_view` dependency updated to 2.1.0
 
 ## 1.2.0+1
 
