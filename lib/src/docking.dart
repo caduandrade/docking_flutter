@@ -53,6 +53,15 @@ class _DockingState extends State<Docking> {
   }
 
   @override
+  void didUpdateWidget(Docking oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.layout != widget.layout) {
+      oldWidget.layout?.removeListener(_forceRebuild);
+      _dockingDrag.addListener(_forceRebuild);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.layout != null) {
       if (widget.layout!.maximizedArea != null) {

@@ -1,3 +1,8 @@
+## 1.3.0
+
+* Bugfix
+  * Memory leak in DockingLayout listeners.
+
 ## 1.2.0+1
 
 * Updating the README
