@@ -1,5 +1,6 @@
 ## 1.3.0
 
+* Allow changing DockingLayout root.
 * Bugfix
   * Memory leak in DockingLayout listeners.
 

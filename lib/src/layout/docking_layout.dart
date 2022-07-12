@@ -381,6 +381,26 @@ enum DropPosition { top, bottom, left, right, center }
 class DockingLayout extends ChangeNotifier {
   /// Builds a [DockingLayout].
   DockingLayout({DockingArea? root}) : this._root = root {
+    _reset();
+  }
+
+  /// The id of this layout.
+  int get id => this.hashCode;
+
+  /// The protected root of this layout.
+  DockingArea? _root;
+
+  /// The root of this layout.
+  DockingArea? get root => _root;
+
+  /// Set a new root.
+  set root(DockingArea? root) {
+    _root = root;
+    _reset();
+    notifyListeners();
+  }
+
+  void _reset() {
     _updateHierarchy();
     int maximizedCount = 0;
     layoutAreas().forEach((area) {
@@ -396,15 +416,6 @@ class DockingLayout extends ChangeNotifier {
       throw ArgumentError('Multiple maximized areas.');
     }
   }
-
-  /// The id of this layout.
-  int get id => this.hashCode;
-
-  /// The protected root of this layout.
-  DockingArea? _root;
-
-  /// The root of this layout.
-  DockingArea? get root => _root;
 
   /// Holds a fast reference to the maximized area.
   DockingArea? _maximizedArea;

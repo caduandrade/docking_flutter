@@ -26,14 +26,14 @@ class DockingExamplePage extends StatefulWidget {
 }
 
 class _DockingExamplePageState extends State<DockingExamplePage> {
-  late DockingLayout layout;
+  late DockingLayout _layout;
 
   @override
   void initState() {
     super.initState();
 
     int v = 1;
-    layout = DockingLayout(
+    _layout = DockingLayout(
         root: DockingRow([
       _build(v++),
       DockingColumn([
@@ -59,6 +59,6 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
         body: TabbedViewTheme(
             data: TabbedViewThemeData.classic(),
             child: Container(
-                child: Docking(layout: layout), padding: EdgeInsets.all(16))));
+                child: Docking(layout: _layout), padding: EdgeInsets.all(16))));
   }
 }
