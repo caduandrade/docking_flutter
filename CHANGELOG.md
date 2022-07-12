@@ -2,7 +2,8 @@
 
 * Allow changing DockingLayout root.
 * Bugfix
-  * Memory leak in DockingLayout listeners.
+  * Memory leak in DockingLayout listeners.    
+* `tabbed_view` dependency updated to 1.13.0+1
 
 ## 1.2.0+1
 

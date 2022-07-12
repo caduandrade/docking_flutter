@@ -7,6 +7,7 @@ abstract class DraggableWidget extends StatelessWidget {
   DraggableWidget({Key? key, required this.dockingDrag}) : super(key: key);
 
   final DockingDrag dockingDrag;
+
   Draggable buildDraggable(DockingItem item, Widget child) {
     String name = item.name != null ? item.name! : '';
     return Draggable<DockingItem>(
