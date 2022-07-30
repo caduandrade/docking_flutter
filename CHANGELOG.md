@@ -1,4 +1,4 @@
-## 1.3.1
+## 1.4.0
 
 * New `Docking` parameter: `maximizableTabsArea`
 * `Docking.maximizableTabs` parameter has been renamed to `Docking.maximizableTab` 
