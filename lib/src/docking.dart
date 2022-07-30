@@ -19,7 +19,8 @@ class Docking extends StatefulWidget {
       this.itemCloseInterceptor,
       this.dockingButtonsBuilder,
       this.maximizableItem = true,
-      this.maximizableTabs = true})
+      this.maximizableTab = true,
+      this.maximizableTabsArea = true})
       : super(key: key);
 
   final DockingLayout? layout;
@@ -28,7 +29,8 @@ class Docking extends StatefulWidget {
   final ItemCloseInterceptor? itemCloseInterceptor;
   final DockingButtonsBuilder? dockingButtonsBuilder;
   final bool maximizableItem;
-  final bool maximizableTabs;
+  final bool maximizableTab;
+  final bool maximizableTabsArea;
 
   @override
   State<StatefulWidget> createState() => _DockingState();
@@ -98,7 +100,8 @@ class _DockingState extends State<Docking> {
           onItemClose: widget.onItemClose,
           itemCloseInterceptor: widget.itemCloseInterceptor,
           dockingButtonsBuilder: widget.dockingButtonsBuilder,
-          maximizable: widget.maximizableTabs);
+          maximizableTab: widget.maximizableTab,
+          maximizableTabsArea: widget.maximizableTabsArea);
     }
     throw UnimplementedError(
         'Unrecognized runtimeType: ' + area.runtimeType.toString());

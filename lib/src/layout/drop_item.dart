@@ -42,14 +42,14 @@ class DropItem extends LayoutModifier {
   /// Builds a new root.
   DockingArea? _buildLayout(DockingArea area) {
     if (area is DockingItem) {
-      DockingItem dockingItem = area;
+      final DockingItem dockingItem = area;
       if (dockingItem == dropItem && dockingItem == targetArea) {
         throw StateError('DockingItem is dragged and target at same time.');
       } else if (dockingItem == dropItem) {
         // ignore
         return null;
       } else if (dockingItem == targetArea) {
-        DockingItem newDraggedItem = DockingItem.clone(dropItem);
+        final DockingItem newDraggedItem = DockingItem.clone(dropItem);
         if (dropPosition == DropPosition.center) {
           return DockingTabs([DockingItem.clone(dockingItem), newDraggedItem]);
         } else if (dropPosition == DropPosition.top) {
@@ -69,7 +69,7 @@ class DropItem extends LayoutModifier {
       }
       return DockingItem.clone(area);
     } else if (area is DockingTabs) {
-      DockingTabs dockingTabs = area;
+      final DockingTabs dockingTabs = area;
       List<DockingItem> children = [];
       dockingTabs.forEach((child) {
         if (child == targetArea) {
@@ -79,7 +79,7 @@ class DropItem extends LayoutModifier {
           children.add(DockingItem.clone(child));
         }
       });
-      DockingArea? newArea;
+      final DockingArea? newArea;
       if (children.length == 1) {
         newArea = children.first;
       } else {

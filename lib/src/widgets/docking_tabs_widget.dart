@@ -21,7 +21,8 @@ class DockingTabsWidget extends DraggableWidget {
       this.onItemClose,
       this.itemCloseInterceptor,
       this.dockingButtonsBuilder,
-      required this.maximizable})
+      required this.maximizableTab,
+      required this.maximizableTabsArea})
       : super(key: key, dockingDrag: dockingDrag);
 
   final DockingLayout layout;
@@ -30,7 +31,8 @@ class DockingTabsWidget extends DraggableWidget {
   final OnItemClose? onItemClose;
   final ItemCloseInterceptor? itemCloseInterceptor;
   final DockingButtonsBuilder? dockingButtonsBuilder;
-  final bool maximizable;
+  final bool maximizableTab;
+  final bool maximizableTabsArea;
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +47,8 @@ class DockingTabsWidget extends DraggableWidget {
         buttons = [];
         buttons.addAll(child.buttons!);
       }
-      bool maximizable = dockingTabs.maximizable != null
-          ? dockingTabs.maximizable!
-          : this.maximizable;
+      final bool maximizable =
+          child.maximizable != null ? child.maximizable! : this.maximizableTab;
       if (maximizable) {
         if (buttons == null) {
           buttons = [];
@@ -101,6 +102,9 @@ class DockingTabsWidget extends DraggableWidget {
     if (dockingButtonsBuilder != null) {
       buttons.addAll(dockingButtonsBuilder!(context, dockingTabs, null));
     }
+    final bool maximizable = dockingTabs.maximizable != null
+        ? dockingTabs.maximizable!
+        : this.maximizableTabsArea;
     if (maximizable) {
       if (layout.maximizedArea != null && layout.maximizedArea == dockingTabs) {
         buttons.add(TabButton(

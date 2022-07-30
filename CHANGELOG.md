@@ -1,3 +1,10 @@
+## 1.3.1
+
+* New `Docking` parameter: `maximizableTabsArea`
+* `Docking.maximizableTabs` parameter has been renamed to `Docking.maximizableTab` 
+* Bugfix
+  * Non maximizable `DockingItem` can be maximized.
+  
 ## 1.3.0
 
 * Allow changing DockingLayout root.
