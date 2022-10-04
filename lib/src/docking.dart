@@ -67,7 +67,19 @@ class _DockingState extends State<Docking> {
   Widget build(BuildContext context) {
     if (widget.layout != null) {
       if (widget.layout!.maximizedArea != null) {
-        return _buildArea(context, widget.layout!.maximizedArea!);
+        List<DockingArea> areas = widget.layout!.layoutAreas();
+        List<Widget> children = [];
+        for (DockingArea area in areas) {
+          if (area != widget.layout!.maximizedArea!) {
+            if (area is DockingItem && area.globalKey != null) {
+              // keeping alive other areas
+              children.add(ExcludeFocus(
+                  child: Offstage(child: _buildArea(context, area))));
+            }
+          }
+        }
+        children.add(_buildArea(context, widget.layout!.maximizedArea!));
+        return Stack(children: children);
       }
       if (widget.layout!.root != null) {
         return _buildArea(context, widget.layout!.root!);
