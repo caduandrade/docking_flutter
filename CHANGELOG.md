@@ -1,3 +1,9 @@
+## 1.4.1
+
+* Bugfix
+  * Maximizing DockingItem disposes DockingItem's where keepAlive is set true.
+* `tabbed_view` dependency updated to 1.14.0
+
 ## 1.4.0
 
 * New `Docking` parameter: `maximizableTabsArea`
