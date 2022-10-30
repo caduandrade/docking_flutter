@@ -1,3 +1,7 @@
+## 1.4.1+1
+
+* `tabbed_view` dependency updated to 1.14.0+1
+
 ## 1.4.1
 
 * Bugfix
