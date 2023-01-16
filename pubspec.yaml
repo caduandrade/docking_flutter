@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  tabbed_view: ^1.15.0
+  tabbed_view: ^1.16.0
     #path: ../tabbed_view/
   multi_split_view: ^2.1.0
     #path: ../multi_split_view/
@@ -19,7 +19,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

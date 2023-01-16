@@ -1,3 +1,8 @@
+## 1.6.0
+
+* `tabbed_view` dependency updated to 1.16.0
+  * Tab leading widget 
+
 ## 1.5.0
 
 * `tabbed_view` dependency updated to 1.15.0

@@ -69,6 +69,7 @@ class DockingTabsWidget extends DraggableWidget {
           content: content,
           closable: child.closable,
           keepAlive: child.globalKey != null,
+          leading: child.leading,
           buttons: buttons));
     });
     TabbedViewController controller = TabbedViewController(tabs);

@@ -226,20 +226,22 @@ class DockingItem extends DockingArea with DropArea {
       bool keepAlive = false,
       List<TabButton>? buttons,
       this.maximizable,
-      bool maximized = false})
+      bool maximized = false,
+      this.leading})
       : this.buttons = buttons != null ? List.unmodifiable(buttons) : [],
         this.globalKey = keepAlive ? GlobalKey() : null,
         this._maximized = maximized;
 
   DockingItem._(
-      {this.name,
+      {required this.name,
       required this.widget,
-      this.value,
+      required this.value,
       required this.closable,
-      this.buttons,
-      this.globalKey,
+      required this.buttons,
+      required this.globalKey,
       required this.maximizable,
-      required bool maximized})
+      required bool maximized,
+      required this.leading})
       : this._maximized = maximized;
 
   factory DockingItem.clone(DockingItem item) {
@@ -251,7 +253,8 @@ class DockingItem extends DockingArea with DropArea {
         buttons: item.buttons,
         globalKey: item.globalKey,
         maximized: item.maximized,
-        maximizable: item.maximizable);
+        maximizable: item.maximizable,
+        leading: item.leading);
   }
 
   final String? name;
@@ -261,6 +264,7 @@ class DockingItem extends DockingArea with DropArea {
   final bool? maximizable;
   final List<TabButton>? buttons;
   final GlobalKey? globalKey;
+  final TabLeadingBuilder? leading;
   bool _maximized;
 
   bool get maximized => _maximized;
