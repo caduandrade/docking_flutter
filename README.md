@@ -14,8 +14,8 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 
 The following dependencies are exported along with this package:
 
-* ![tabbed_view:1.16.0](https://pub.dev/packages/tabbed_view)
-* ![multi_split_view:2.2.0](https://pub.dev/packages/multi_split_view)
+* [tabbed_view:1.16.0](https://pub.dev/packages/tabbed_view)
+* [multi_split_view:2.2.0](https://pub.dev/packages/multi_split_view)
 
 ## Usage
 
