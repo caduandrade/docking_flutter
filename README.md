@@ -31,6 +31,7 @@ The following dependencies are exported along with this package:
   * [Close listener](#close-listener)
   * [Close interceptor](#close-interceptor)
   * [Buttons](#item-buttons)
+  * [Leading widget](#item-leading-widget)
 * [Docking buttons build](#docking-buttons-build)
 * [State](#state)
 * Theme
@@ -232,6 +233,22 @@ Docking docking = Docking(layout: layout);
 ```
 
 ![](https://caduandrade.github.io/docking_flutter/item_buttons_v2.png)
+
+### Item leading widget
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(
+          name: '1',
+          widget: child1,
+          leading: (context, status) => Icon(Icons.star, size: 16)),
+      DockingItem(name: '2', widget: child2)
+    ]));
+    Docking docking = Docking(layout: layout);
+```
+
+![](https://caduandrade.github.io/docking_flutter/item_leading_v1.png)
 
 ## Docking buttons build
 
