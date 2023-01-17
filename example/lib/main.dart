@@ -1,6 +1,5 @@
 import 'package:docking/docking.dart';
 import 'package:flutter/material.dart';
-import 'package:tabbed_view/tabbed_view.dart';
 
 void main() {
   runApp(DockingExampleApp());

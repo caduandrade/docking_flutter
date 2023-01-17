@@ -10,6 +10,13 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 
 ![](https://caduandrade.github.io/docking_flutter/docking_v3.png)
 
+## Dependencies
+
+The following dependencies are exported along with this package:
+
+* ![tabbed_view:1.16.0](https://pub.dev/packages/tabbed_view)
+* ![multi_split_view:2.2.0](https://pub.dev/packages/multi_split_view)
+
 ## Usage
 
 * [Layout](#layout)
@@ -292,10 +299,6 @@ You should use the *MultiSplitViewTheme* widget to apply the theme to all descen
 Read more information about themes on [multi_split_view](https://pub.dev/packages/multi_split_view).
 
 ```dart
-    import 'package:multi_split_view/multi_split_view.dart';
-```
-
-```dart
     DockingLayout layout = DockingLayout(
         root: DockingRow([
       DockingItem(name: '1', widget: child1),
@@ -327,10 +330,6 @@ Read more information about themes on [multi_split_view](https://pub.dev/package
 You should use the *TabbedViewTheme* widget to apply the theme to all descendant widgets.
 
 Read more information about themes on [tabbed_view](https://pub.dev/packages/tabbed_view).
-
-```dart
-    import 'package:tabbed_view/tabbed_view.dart';
-```
 
 ```dart
     DockingLayout layout = DockingLayout(
