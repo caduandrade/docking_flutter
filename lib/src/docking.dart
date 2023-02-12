@@ -1,5 +1,5 @@
-import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/docking_buttons_builder.dart';
+import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
@@ -20,7 +20,8 @@ class Docking extends StatefulWidget {
       this.dockingButtonsBuilder,
       this.maximizableItem = true,
       this.maximizableTab = true,
-      this.maximizableTabsArea = true})
+      this.maximizableTabsArea = true,
+      this.antiAliasingWorkaround = true})
       : super(key: key);
 
   final DockingLayout? layout;
@@ -31,6 +32,7 @@ class Docking extends StatefulWidget {
   final bool maximizableItem;
   final bool maximizableTab;
   final bool maximizableTabsArea;
+  final bool antiAliasingWorkaround;
 
   @override
   State<StatefulWidget> createState() => _DockingState();
@@ -137,7 +139,8 @@ class _DockingState extends State<Docking> {
         onWeightChange: () {
           row.weights = [];
           controller.areas.forEach((area) => row.weights.add(area.weight!));
-        });
+        },
+        antiAliasingWorkaround: widget.antiAliasingWorkaround);
   }
 
   Widget _column(BuildContext context, DockingColumn column) {
@@ -158,7 +161,8 @@ class _DockingState extends State<Docking> {
         onWeightChange: () {
           column.weights = [];
           controller.areas.forEach((area) => column.weights.add(area.weight!));
-        });
+        },
+        antiAliasingWorkaround: widget.antiAliasingWorkaround);
   }
 
   void _forceRebuild() {

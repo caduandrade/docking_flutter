@@ -1,3 +1,11 @@
+## 1.7.0
+
+* `multi_split_view` dependency updated to 2.3.1
+* `Docking`
+  * New parameter: `antiAliasingWorkaround`.
+* Bugfix
+  * The anti-aliasing workaround is clipping a pixel.
+
 ## 1.6.0
 
 * `multi_split_view` dependency updated to 2.2.0
