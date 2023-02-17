@@ -101,10 +101,9 @@ packages:
   multi_split_view:
     dependency: transitive
     description:
-      name: multi_split_view
-      sha256: f39fdb5559538cd1ff0ca16b9c9d1ac3c059489cceb152c88de451e9365c519d
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../multi_split_view"
+      relative: true
+    source: path
     version: "2.3.1"
   path:
     dependency: transitive

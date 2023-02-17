@@ -37,7 +37,7 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
       _build(v++),
       DockingColumn([
         DockingRow(
-            [_build(v++, maximizable: false), _build(v++, closable: false)]),
+            [_build(99, maximizable: false), DockingItem(name: 'non-closable', closable: false, widget: CenterText(text: 'non-closable'))]),
         DockingTabs([_build(v++), _build(v++), _build(v++)]),
         _build(v++)
       ])
@@ -46,6 +46,7 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
 
   DockingItem _build(int value, {bool closable = true, bool? maximizable}) {
     return DockingItem(
+      weight: (value!=99)?null:0.2,
         name: value.toString(),
         closable: closable,
         maximizable: maximizable,
@@ -59,5 +60,17 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
             data: TabbedViewThemeData.classic(),
             child: Container(
                 child: Docking(layout: _layout), padding: EdgeInsets.all(16))));
+  }
+}
+
+class CenterText extends StatelessWidget{
+
+  const CenterText({Key? key, required this.text}) : super(key: key);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text(text));
   }
 }

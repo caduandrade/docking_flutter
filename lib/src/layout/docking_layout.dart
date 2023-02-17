@@ -4,13 +4,23 @@ import 'package:docking/src/layout/move_item.dart';
 import 'package:docking/src/layout/remove_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:multi_split_view/multi_split_view.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
 mixin DropArea {}
 
 /// Represents any area of the layout.
-abstract class DockingArea {
-  DockingArea();
+abstract class DockingArea extends Area {
+  DockingArea(
+      {double? size,
+      double? weight,
+      double? minimalWeight,
+      double? minimalSize})
+      : super(
+            size: size,
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize);
 
   int _layoutId = -1;
 
@@ -227,10 +237,19 @@ class DockingItem extends DockingArea with DropArea {
       List<TabButton>? buttons,
       this.maximizable,
       bool maximized = false,
-      this.leading})
+      this.leading,
+      double? size,
+      double? weight,
+      double? minimalWeight,
+      double? minimalSize})
       : this.buttons = buttons != null ? List.unmodifiable(buttons) : [],
         this.globalKey = keepAlive ? GlobalKey() : null,
-        this._maximized = maximized;
+        this._maximized = maximized,
+        super(
+            size: size,
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize);
 
   DockingItem._(
       {required this.name,
@@ -241,8 +260,17 @@ class DockingItem extends DockingArea with DropArea {
       required this.globalKey,
       required this.maximizable,
       required bool maximized,
-      required this.leading})
-      : this._maximized = maximized;
+      required this.leading,
+      double? size,
+      double? weight,
+      double? minimalWeight,
+      double? minimalSize})
+      : this._maximized = maximized,
+        super(
+            size: size,
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize);
 
   factory DockingItem.clone(DockingItem item) {
     return DockingItem._(
@@ -254,7 +282,11 @@ class DockingItem extends DockingArea with DropArea {
         globalKey: item.globalKey,
         maximized: item.maximized,
         maximizable: item.maximizable,
-        leading: item.leading);
+        leading: item.leading,
+        size: item.size,
+        weight: item.weight,
+        minimalWeight: item.minimalWeight,
+        minimalSize: item.minimalSize);
   }
 
   final String? name;
@@ -294,9 +326,9 @@ class DockingItem extends DockingArea with DropArea {
 /// Children will be arranged horizontally.
 class DockingRow extends DockingParentArea {
   /// Builds a [DockingRow].
-  DockingRow._(List<DockingArea> children) : super(children);
-
-  List<double> weights = [];
+  DockingRow._(List<DockingArea> children) : super(children) {
+    controller = MultiSplitViewController(areas: children);
+  }
 
   /// Builds a [DockingRow].
   factory DockingRow(List<DockingArea> children) {
@@ -311,6 +343,8 @@ class DockingRow extends DockingParentArea {
     return DockingRow._(newChildren);
   }
 
+  late MultiSplitViewController controller;
+
   @override
   DockingAreaType get type => DockingAreaType.row;
 }
@@ -319,9 +353,9 @@ class DockingRow extends DockingParentArea {
 /// Children will be arranged vertically.
 class DockingColumn extends DockingParentArea {
   /// Builds a [DockingColumn].
-  DockingColumn._(List<DockingArea> children) : super(children);
-
-  List<double> weights = [];
+  DockingColumn._(List<DockingArea> children) : super(children) {
+    controller = MultiSplitViewController(areas: children);
+  }
 
   /// Builds a [DockingColumn].
   factory DockingColumn(List<DockingArea> children) {
@@ -335,6 +369,8 @@ class DockingColumn extends DockingParentArea {
     }
     return DockingColumn._(newChildren);
   }
+
+  late MultiSplitViewController controller;
 
   @override
   DockingAreaType get type => DockingAreaType.column;

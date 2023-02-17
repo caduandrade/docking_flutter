@@ -12,8 +12,8 @@ dependencies:
     sdk: flutter
   tabbed_view: ^1.16.0
     #path: ../tabbed_view/
-  multi_split_view: ^2.3.1
-    #path: ../multi_split_view/
+  multi_split_view: #^2.3.1
+    path: ../multi_split_view/
 
 dev_dependencies:
   flutter_test:
