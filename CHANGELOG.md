@@ -1,3 +1,8 @@
+## 1.8.0
+
+* `DockingArea`
+  * Allowing to configure the initial and minimum size and weight.
+
 ## 1.7.0
 
 * `multi_split_view` dependency updated to 2.3.1

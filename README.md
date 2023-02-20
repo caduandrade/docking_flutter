@@ -14,7 +14,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 The following dependencies are exported along with this package:
 
 * [tabbed_view (1.16.0)](https://pub.dev/packages/tabbed_view) to provide grouping of widgets into tabs
-* [multi_split_view (2.2.0)](https://pub.dev/packages/multi_split_view) to provide horizontal or vertical split views
+* [multi_split_view (2.4.0)](https://pub.dev/packages/multi_split_view) to provide horizontal or vertical split views
   
 ## Usage
 
@@ -31,6 +31,10 @@ The following dependencies are exported along with this package:
   * [Close interceptor](#close-interceptor)
   * [Buttons](#item-buttons)
   * [Leading widget](#item-leading-widget)
+* Size
+  * [Minimal size](#minimal-size)
+  * [Initial size](#initial-size)
+  * [Initial weight](#initial-weight)
 * [Docking buttons build](#docking-buttons-build)
 * [State](#state)
 * Theme
@@ -43,7 +47,7 @@ The following dependencies are exported along with this package:
 The layout is organized into areas: items (`DockingItem`), columns (`DockingColumn`), rows (`DockingRow`) and tabs (`DockingTabs`).
 The root is single and can be any area.
 
-![](https://caduandrade.github.io/docking_flutter/docking_layout_uml_v4.png)
+![](https://caduandrade.github.io/docking_flutter/docking_layout_uml_v5.png)
 
 ### Row
 
@@ -248,6 +252,38 @@ Docking docking = Docking(layout: layout);
 ```
 
 ![](https://caduandrade.github.io/docking_flutter/item_leading_v1.png)
+
+## Size
+
+### Minimal size
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', minimalSize: 200, widget: child1),
+      DockingItem(name: '2', widget: child2)
+    ]));
+```
+
+### Initial size
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', size: 100, widget: child1),
+      DockingItem(name: '2', widget: child2)
+    ]));
+```
+
+### Initial weight
+
+```dart
+    DockingLayout layout = DockingLayout(
+        root: DockingRow([
+      DockingItem(name: '1', weight: .2, widget: child1),
+      DockingItem(name: '2', widget: child2)
+    ]));
+```
 
 ## Docking buttons build
 

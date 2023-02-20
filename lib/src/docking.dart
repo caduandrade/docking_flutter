@@ -127,19 +127,10 @@ class _DockingState extends State<Docking> {
       children.add(_buildArea(context, child));
     });
 
-    List<Area> areas = [];
-    row.weights.forEach((weight) => areas.add(Area(weight: weight)));
-    MultiSplitViewController controller =
-        MultiSplitViewController(areas: areas);
-
     return MultiSplitView(
         children: children,
         axis: Axis.horizontal,
-        controller: controller,
-        onWeightChange: () {
-          row.weights = [];
-          controller.areas.forEach((area) => row.weights.add(area.weight!));
-        },
+        controller: row.controller,
         antiAliasingWorkaround: widget.antiAliasingWorkaround);
   }
 
@@ -149,19 +140,10 @@ class _DockingState extends State<Docking> {
       children.add(_buildArea(context, child));
     });
 
-    List<Area> areas = [];
-    column.weights.forEach((weight) => areas.add(Area(weight: weight)));
-    MultiSplitViewController controller =
-        MultiSplitViewController(areas: areas);
-
     return MultiSplitView(
         children: children,
         axis: Axis.vertical,
-        controller: controller,
-        onWeightChange: () {
-          column.weights = [];
-          controller.areas.forEach((area) => column.weights.add(area.weight!));
-        },
+        controller: column.controller,
         antiAliasingWorkaround: widget.antiAliasingWorkaround);
   }
 

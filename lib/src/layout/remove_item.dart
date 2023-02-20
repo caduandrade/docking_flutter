@@ -63,13 +63,9 @@ class RemoveItem extends LayoutModifier {
         return children.first;
       }
       if (area is DockingRow) {
-        DockingRow row = DockingRow(children);
-        row.weights = area.weights;
-        return row;
+        return DockingRow(children);
       } else if (area is DockingColumn) {
-        DockingColumn column = DockingColumn(children);
-        column.weights = area.weights;
-        return column;
+        return DockingColumn(children);
       }
       throw ArgumentError(
           'DockingArea class not recognized: ' + area.runtimeType.toString());
