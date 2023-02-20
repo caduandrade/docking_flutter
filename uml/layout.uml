@@ -37,6 +37,14 @@ DockingTabs(children: List<DockingItem>)
 forEach(f: void (DockingItem child))
 }
 
+class Area <multi_split_view> << (C,lightgray) >> #line:black {
+minimalWeight: double?
+minimalSize: double?
+size: double?
+weight: double?
+}
+
+Area <|-- DockingArea #line:black
 DockingArea <|-- DockingParentArea #line:black
 DockingArea <|-- DockingItem #line:black
 DockingParentArea <|-- DockingRow #line:black

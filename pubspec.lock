@@ -110,10 +110,11 @@ packages:
   multi_split_view:
     dependency: "direct main"
     description:
-      path: "../multi_split_view"
-      relative: true
-    source: path
-    version: "2.3.1"
+      name: multi_split_view
+      sha256: d68e129bff71fc9e6b66de59e1b79deaf4b91f30940130bfbd2d704c1c713499
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   path:
     dependency: transitive
     description:
