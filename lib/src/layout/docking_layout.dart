@@ -130,7 +130,17 @@ abstract class DockingArea extends Area {
 
 /// Represents an abstract area for a collection of widgets.
 abstract class DockingParentArea extends DockingArea {
-  DockingParentArea(List<DockingArea> children) : this._children = children {
+  DockingParentArea(List<DockingArea> children,
+      {double? size,
+      double? weight,
+      double? minimalWeight,
+      double? minimalSize})
+      : this._children = children,
+        super(
+            size: size,
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize) {
     for (DockingArea child in this._children) {
       if (child.runtimeType == this.runtimeType) {
         throw ArgumentError(
@@ -326,12 +336,25 @@ class DockingItem extends DockingArea with DropArea {
 /// Children will be arranged horizontally.
 class DockingRow extends DockingParentArea {
   /// Builds a [DockingRow].
-  DockingRow._(List<DockingArea> children) : super(children) {
+  DockingRow._(List<DockingArea> children,
+      {double? size,
+      double? weight,
+      double? minimalWeight,
+      double? minimalSize})
+      : super(children,
+            size: size,
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize) {
     controller = MultiSplitViewController(areas: children);
   }
 
   /// Builds a [DockingRow].
-  factory DockingRow(List<DockingArea> children) {
+  factory DockingRow(List<DockingArea> children,
+      {double? size,
+      double? weight,
+      double? minimalWeight,
+      double? minimalSize}) {
     List<DockingArea> newChildren = [];
     for (DockingArea child in children) {
       if (child is DockingRow) {
@@ -340,7 +363,11 @@ class DockingRow extends DockingParentArea {
         newChildren.add(child);
       }
     }
-    return DockingRow._(newChildren);
+    return DockingRow._(newChildren,
+        size: size,
+        weight: weight,
+        minimalWeight: minimalWeight,
+        minimalSize: minimalSize);
   }
 
   late MultiSplitViewController controller;
@@ -353,12 +380,25 @@ class DockingRow extends DockingParentArea {
 /// Children will be arranged vertically.
 class DockingColumn extends DockingParentArea {
   /// Builds a [DockingColumn].
-  DockingColumn._(List<DockingArea> children) : super(children) {
+  DockingColumn._(List<DockingArea> children,
+      {double? size,
+      double? weight,
+      double? minimalWeight,
+      double? minimalSize})
+      : super(children,
+            size: size,
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize) {
     controller = MultiSplitViewController(areas: children);
   }
 
   /// Builds a [DockingColumn].
-  factory DockingColumn(List<DockingArea> children) {
+  factory DockingColumn(List<DockingArea> children,
+      {double? size,
+      double? weight,
+      double? minimalWeight,
+      double? minimalSize}) {
     List<DockingArea> newChildren = [];
     for (DockingArea child in children) {
       if (child is DockingColumn) {
@@ -367,7 +407,11 @@ class DockingColumn extends DockingParentArea {
         newChildren.add(child);
       }
     }
-    return DockingColumn._(newChildren);
+    return DockingColumn._(newChildren,
+        size: size,
+        weight: weight,
+        minimalWeight: minimalWeight,
+        minimalSize: minimalSize);
   }
 
   late MultiSplitViewController controller;
@@ -381,9 +425,18 @@ class DockingColumn extends DockingParentArea {
 class DockingTabs extends DockingParentArea with DropArea {
   /// Builds a [DockingTabs].
   DockingTabs(List<DockingItem> children,
-      {bool maximized = false, this.maximizable})
+      {bool maximized = false,
+      this.maximizable,
+      double? size,
+      double? weight,
+      double? minimalWeight,
+      double? minimalSize})
       : this._maximized = maximized,
-        super(children);
+        super(children,
+            size: size,
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize);
 
   final bool? maximizable;
 

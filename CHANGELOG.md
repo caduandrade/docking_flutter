@@ -1,3 +1,8 @@
+## 1.9.0
+
+* `DockingRow`, `DockingColumn` and `DockingTabs`
+  * New constructor optional parameters: `size`, `weight`, `minimalWeight` and `minimalSize` 
+
 ## 1.8.0
 
 * `DockingArea`
