@@ -3,6 +3,7 @@
 * DockingItem
   * Allow changing attributes.
   * The `clone` method has been removed.
+  * New method: `findDockingItem`.
 
 ## 1.9.0
 

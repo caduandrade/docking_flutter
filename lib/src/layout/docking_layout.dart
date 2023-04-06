@@ -236,7 +236,8 @@ abstract class DockingParentArea extends DockingArea {
 class DockingItem extends DockingArea with DropArea {
   /// Builds a [DockingItem].
   DockingItem(
-      {this.name,
+      {this.id,
+      this.name,
       required this.widget,
       this.value,
       this.closable = true,
@@ -258,6 +259,7 @@ class DockingItem extends DockingArea with DropArea {
             minimalWeight: minimalWeight,
             minimalSize: minimalSize);
 
+  final dynamic id;
   String? name;
   Widget widget;
   dynamic value;
@@ -506,6 +508,28 @@ class DockingLayout extends ChangeNotifier {
   /// index and layoutId in each [DockingArea].
   _updateHierarchy() {
     _root?._updateHierarchy(null, 1, id);
+  }
+
+  /// Finds a [DockingItem] given an id.
+  DockingItem? findDockingItem(dynamic id) {
+    return _findDockingItem(parent: root, id: id);
+  }
+
+  /// Recursively finds a [DockingItem] given an id.
+  DockingItem? _findDockingItem({DockingArea? parent, dynamic id}) {
+    if (parent != null) {
+      if (parent is DockingItem && parent.id == id) {
+        return parent;
+      } else if (parent is DockingParentArea) {
+        for (DockingArea child in parent._children) {
+          DockingItem? item = _findDockingItem(parent: child, id: id);
+          if (item != null) {
+            return item;
+          }
+        }
+      }
+    }
+    return null;
   }
 
   /// Maximize a [DockingItem].
