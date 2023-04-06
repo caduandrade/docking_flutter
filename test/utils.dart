@@ -68,9 +68,9 @@ void testHierarchy(DockingLayout layout, String hierarchy) {
 
 void testOldAreas(List<DockingArea> layoutAreas, {DockingItem? disposedItem}) {
   layoutAreas.forEach((area) {
-    if(area is DockingItem && area != disposedItem) {
-      expect(area.layoutId>-1, true, reason: 'has layoutId');
-      expect(area.index>-1, true, reason: 'has index');
+    if (area is DockingItem && area != disposedItem) {
+      expect(area.layoutId > -1, true, reason: 'has layoutId');
+      expect(area.index > -1, true, reason: 'has index');
     } else {
       testDisposed(area);
     }

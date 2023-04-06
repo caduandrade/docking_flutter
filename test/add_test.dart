@@ -18,7 +18,8 @@ void main() {
       DockingItem itemB = dockingItem('b');
       DockingRow row = DockingRow([itemA, itemB]);
       DockingLayout layout = DockingLayout(root: row);
-      expect(()=>addItemOn(layout, itemB, itemA, DropPosition.right),dockingAreaInSomeLayoutException());
+      expect(() => addItemOn(layout, itemB, itemA, DropPosition.right),
+          dockingAreaInSomeLayoutException());
     });
   });
 
