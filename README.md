@@ -23,6 +23,7 @@ The following dependencies are exported along with this package:
   * [Column](#column)
   * [Tabs](#tabs)
   * [Combined](#combined)
+  * [Finding DockingItem by id](#finding-dockingitem-by-id)
 * Item
   * [Non-closable](#non-closable)
   * [Non-maximizable](#non-maximizable)
@@ -31,6 +32,7 @@ The following dependencies are exported along with this package:
   * [Close interceptor](#close-interceptor)
   * [Buttons](#item-buttons)
   * [Leading widget](#item-leading-widget)
+  * [Changing attributes](#changing-attributes)
 * Size
   * [Minimal size](#minimal-size)
   * [Initial size](#initial-size)
@@ -106,6 +108,12 @@ The root is single and can be any area.
 ```
 
 ![](https://caduandrade.github.io/docking_flutter/combined_v3.png)
+
+### Finding DockingItem by id
+
+```dart
+DockingItem? item = _layout.findDockingItem('id');
+```
 
 ## Item
 
@@ -252,6 +260,16 @@ Docking docking = Docking(layout: layout);
 ```
 
 ![](https://caduandrade.github.io/docking_flutter/item_leading_v1.png)
+
+### Changing attributes
+
+```dart
+    DockingItem? item = _layout.findDockingItem('id');
+    if (item != null) {
+      Random random = Random();
+      item.name = random.nextInt(9999).toString();
+      _layout.rebuild();
+```
 
 ## Size
 

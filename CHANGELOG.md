@@ -1,8 +1,9 @@
 ## 1.10.0
 
-* DockingItem
+* `DockingItem`
   * Allow changing attributes.
   * The `clone` method has been removed.
+* `DockingLayout`
   * New method: `findDockingItem`.
 
 ## 1.9.0
