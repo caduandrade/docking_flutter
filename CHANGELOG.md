@@ -1,6 +1,7 @@
 ## 1.10.0
 
 * DockingItem
+  * Allow changing attributes.
   * The `clone` method has been removed.
 
 ## 1.9.0

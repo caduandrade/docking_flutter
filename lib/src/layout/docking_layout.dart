@@ -258,14 +258,14 @@ class DockingItem extends DockingArea with DropArea {
             minimalWeight: minimalWeight,
             minimalSize: minimalSize);
 
-  final String? name;
-  final Widget widget;
-  final dynamic value;
-  final bool closable;
+  String? name;
+  Widget widget;
+  dynamic value;
+  bool closable;
   final bool? maximizable;
-  final List<TabButton>? buttons;
+  List<TabButton>? buttons;
   final GlobalKey? globalKey;
-  final TabLeadingBuilder? leading;
+  TabLeadingBuilder? leading;
   bool _maximized;
 
   bool get maximized => _maximized;
@@ -455,6 +455,11 @@ class DockingLayout extends ChangeNotifier {
   set root(DockingArea? root) {
     _root = root;
     _reset();
+    notifyListeners();
+  }
+
+  /// Notifies the UI to rebuild the layout.
+  void rebuild() {
     notifyListeners();
   }
 
