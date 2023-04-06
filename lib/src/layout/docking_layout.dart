@@ -44,7 +44,7 @@ abstract class DockingArea extends Area {
 
   bool get disposed => _disposed;
 
-  /// Disposes recursively.
+  /// Disposes.
   void _dispose() {
     _parent = null;
     _layoutId = -1;
@@ -100,6 +100,10 @@ abstract class DockingArea extends Area {
       throw StateError('Disposed area');
     }
     _parent = parentArea;
+    if (_layoutId != -1 && _layoutId != layoutId) {
+      throw ArgumentError(
+          'DockingParentArea already belongs to another layout');
+    }
     _layoutId = layoutId;
     _index = nextIndex++;
     return nextIndex;
@@ -149,9 +153,6 @@ abstract class DockingParentArea extends DockingArea {
       if (child.disposed) {
         throw ArgumentError('DockingParentArea cannot have disposed child');
       }
-      if (child.layoutId != -1) {
-        throw ArgumentError('Child already belongs to another layout');
-      }
     }
     if (this._children.length < 2) {
       throw ArgumentError('Insufficient number of children');
@@ -184,20 +185,16 @@ abstract class DockingParentArea extends DockingArea {
   }
 
   @override
-  void _dispose() {
-    super._dispose();
-    for (DockingArea area in _children) {
-      area._dispose();
-    }
-  }
-
-  @override
   int _updateHierarchy(
       DockingParentArea? parentArea, int nextIndex, int layoutId) {
     if (this.disposed) {
       throw StateError('Disposed area');
     }
     _parent = parentArea;
+    if (_layoutId != -1 && _layoutId != layoutId) {
+      throw ArgumentError(
+          'DockingParentArea already belongs to another layout');
+    }
     _layoutId = layoutId;
     _index = nextIndex++;
     for (DockingArea area in _children) {
@@ -261,44 +258,6 @@ class DockingItem extends DockingArea with DropArea {
             minimalWeight: minimalWeight,
             minimalSize: minimalSize);
 
-  DockingItem._(
-      {required this.name,
-      required this.widget,
-      required this.value,
-      required this.closable,
-      required this.buttons,
-      required this.globalKey,
-      required this.maximizable,
-      required bool maximized,
-      required this.leading,
-      double? size,
-      double? weight,
-      double? minimalWeight,
-      double? minimalSize})
-      : this._maximized = maximized,
-        super(
-            size: size,
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize);
-
-  factory DockingItem.clone(DockingItem item) {
-    return DockingItem._(
-        name: item.name,
-        widget: item.widget,
-        value: item.value,
-        closable: item.closable,
-        buttons: item.buttons,
-        globalKey: item.globalKey,
-        maximized: item.maximized,
-        maximizable: item.maximizable,
-        leading: item.leading,
-        size: item.size,
-        weight: item.weight,
-        minimalWeight: item.minimalWeight,
-        minimalSize: item.minimalSize);
-  }
-
   final String? name;
   final Widget widget;
   final dynamic value;
@@ -313,6 +272,12 @@ class DockingItem extends DockingArea with DropArea {
 
   @override
   DockingAreaType get type => DockingAreaType.item;
+
+  /// Reset parent and index in layout.
+  void _resetLocationInLayout() {
+    _parent = null;
+    _index = -1;
+  }
 
   @override
   String hierarchy(
@@ -629,7 +594,12 @@ class DockingLayout extends ChangeNotifier {
 
   /// Rebuilds this layout with a modifier.
   void _rebuild(LayoutModifier modifier) {
-    List<DockingArea> toDispose = layoutAreas();
+    List<DockingArea> olderAreas = layoutAreas();
+    olderAreas.forEach((area) {
+      if (area is DockingItem) {
+        area._resetLocationInLayout();
+      }
+    });
     _root = modifier.newLayout(this);
     _maximizedArea = null;
     layoutAreas().forEach((area) {
@@ -640,7 +610,15 @@ class DockingLayout extends ChangeNotifier {
       }
     });
     _updateHierarchy();
-    toDispose.forEach((area) => area._dispose());
+    olderAreas.forEach((area) {
+      if (area is DockingParentArea) {
+        area._dispose();
+      } else if (area is DockingItem) {
+        if (area.index == -1) {
+          area._dispose();
+        }
+      }
+    });
     notifyListeners();
   }
 

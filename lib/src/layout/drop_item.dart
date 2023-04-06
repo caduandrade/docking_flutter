@@ -49,25 +49,23 @@ class DropItem extends LayoutModifier {
         // ignore
         return null;
       } else if (dockingItem == targetArea) {
-        final DockingItem newDraggedItem = DockingItem.clone(dropItem);
+        final DockingItem newDraggedItem = dropItem;
         if (dropPosition == DropPosition.center) {
-          return DockingTabs([DockingItem.clone(dockingItem), newDraggedItem]);
+          return DockingTabs([dockingItem, newDraggedItem]);
         } else if (dropPosition == DropPosition.top) {
-          return DockingColumn(
-              [newDraggedItem, DockingItem.clone(dockingItem)]);
+          return DockingColumn([newDraggedItem, dockingItem]);
         } else if (dropPosition == DropPosition.bottom) {
-          return DockingColumn(
-              [DockingItem.clone(dockingItem), newDraggedItem]);
+          return DockingColumn([dockingItem, newDraggedItem]);
         } else if (dropPosition == DropPosition.left) {
-          return DockingRow([newDraggedItem, DockingItem.clone(dockingItem)]);
+          return DockingRow([newDraggedItem, dockingItem]);
         } else if (dropPosition == DropPosition.right) {
-          return DockingRow([DockingItem.clone(dockingItem), newDraggedItem]);
+          return DockingRow([dockingItem, newDraggedItem]);
         } else {
           throw ArgumentError(
               'DropPosition not recognized: ' + dropPosition.toString());
         }
       }
-      return DockingItem.clone(area);
+      return area;
     } else if (area is DockingTabs) {
       final DockingTabs dockingTabs = area;
       List<DockingItem> children = [];
@@ -76,7 +74,7 @@ class DropItem extends LayoutModifier {
           throw ArgumentError('Nested tabbed panels are not allowed.');
         }
         if (child != dropItem) {
-          children.add(DockingItem.clone(child));
+          children.add(child);
         }
       });
       final DockingArea? newArea;
@@ -89,7 +87,7 @@ class DropItem extends LayoutModifier {
         (newArea as DockingTabs).selectedIndex = dockingTabs.selectedIndex;
       }
       if (dockingTabs == targetArea) {
-        DockingItem newDraggedItem = DockingItem.clone(dropItem);
+        DockingItem newDraggedItem = dropItem;
         if (dropPosition == DropPosition.center) {
           children.add(newDraggedItem);
           DockingTabs newDockingTabs = DockingTabs(children);

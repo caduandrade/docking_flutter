@@ -1,17 +1,32 @@
 import 'package:docking/docking.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'exceptions.dart';
 import 'utils.dart';
 
 void main() {
-  group('move item', () {
+  group('move item - exceptions', () {
     test('draggedItem == targetArea ', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
       expect(() => moveItem(layout, item, item, DropPosition.bottom),
-          throwsArgumentError);
+          sameDraggedItemAndTargetAreaException());
     });
 
+    test('nested tabbed panel', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingItem itemC = dockingItem('c');
+      DockingTabs tabs = DockingTabs([itemB, itemC]);
+      DockingRow row = DockingRow([itemA, tabs]);
+      DockingLayout layout = DockingLayout(root: row);
+
+      expect(() => moveItem(layout, itemA, itemB, DropPosition.center),
+          throwsArgumentError);
+    });
+  });
+
+  group('move item', () {
     test('row - no change', () {
       DockingItem itemA = dockingItem('a');
       DockingItem itemB = dockingItem('b');
@@ -78,18 +93,6 @@ void main() {
       moveItem(layout, itemA, tabs, DropPosition.center);
 
       testHierarchy(layout, 'T(Ib,Ic,Ia)');
-    });
-
-    test('nested tabbed panel', () {
-      DockingItem itemA = dockingItem('a');
-      DockingItem itemB = dockingItem('b');
-      DockingItem itemC = dockingItem('c');
-      DockingTabs tabs = DockingTabs([itemB, itemC]);
-      DockingRow row = DockingRow([itemA, tabs]);
-      DockingLayout layout = DockingLayout(root: row);
-
-      expect(() => moveItem(layout, itemA, itemB, DropPosition.center),
-          throwsArgumentError);
     });
 
     test('complex 1', () {

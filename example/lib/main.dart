@@ -27,49 +27,22 @@ class DockingExamplePage extends StatefulWidget {
 class _DockingExamplePageState extends State<DockingExamplePage> {
   late DockingLayout _layout;
 
+  late DockingItem _itemToRemove;
+  late DockingItem _dropArea;
+
   @override
   void initState() {
     super.initState();
     int v = 1;
+
+    _itemToRemove = _buildItem('remove');
+    _dropArea = _buildItem('dropArea');
     _layout = DockingLayout(
-        root: DockingRow([
-      _buildItem(v++, weight: .2),
-      DockingColumn([
-        DockingRow([_nonMaximizableItem, _nonClosableItem, _minimalSizeItem]),
-        DockingTabs([_buildItem(v++), _buildItem(v++)]),
-        _minimalWeightItem
-      ])
-    ]));
+        root: DockingRow([_buildItem('item'), _itemToRemove, _dropArea]));
   }
 
-  DockingItem get _minimalWeightItem => DockingItem(
-      name: 'minimalSize',
-      minimalWeight: .15,
-      widget: CenterText(text: 'minimalWeight: .15'));
-
-  DockingItem get _minimalSizeItem => DockingItem(
-      name: 'minimalSize',
-      minimalSize: 150,
-      widget: CenterText(text: 'minimalSize: 150'));
-
-  DockingItem get _nonMaximizableItem => DockingItem(
-      name: 'non-maximizable',
-      maximizable: false,
-      widget: CenterText(text: 'non-maximizable'));
-
-  DockingItem get _nonClosableItem => DockingItem(
-      name: 'non-closable',
-      closable: false,
-      widget: CenterText(text: 'non-closable'));
-
-  DockingItem _buildItem(int value,
-      {double? weight, bool closable = true, bool? maximizable}) {
-    return DockingItem(
-        weight: weight,
-        name: value.toString(),
-        closable: closable,
-        maximizable: maximizable,
-        widget: Container(child: Center(child: Text('$value'))));
+  DockingItem _buildItem(String value) {
+    return DockingItem(name: value, widget: Center(child: Text('$value')));
   }
 
   @override
@@ -77,8 +50,30 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
     return Scaffold(
         body: TabbedViewTheme(
             data: TabbedViewThemeData.classic(),
-            child: Container(
-                child: Docking(layout: _layout), padding: EdgeInsets.all(16))));
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton(onPressed: _remove, child: Text('remove')),
+                  SizedBox(height: 16),
+                  ElevatedButton(onPressed: _add, child: Text('add')),
+                  Expanded(
+                      child: Container(
+                          child: Docking(layout: _layout),
+                          padding: EdgeInsets.all(16)))
+                ])));
+  }
+
+  void _remove() {
+    if (!_itemToRemove.disposed) {
+      _layout.removeItem(item: _itemToRemove);
+    }
+  }
+
+  void _add() {
+    _layout.addItemOn(
+        newItem: _buildItem('newItem'),
+        targetArea: _dropArea,
+        dropPosition: DropPosition.bottom);
   }
 }
 

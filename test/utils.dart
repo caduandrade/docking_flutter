@@ -9,7 +9,7 @@ DockingItem dockingItem(String? name) {
 void removeItem(DockingLayout layout, DockingItem item) {
   List<DockingArea> areas = layout.layoutAreas();
   layout.removeItem(item: item);
-  testDisposedList(areas);
+  testOldAreas(areas, disposedItem: item);
 }
 
 void moveItem(DockingLayout layout, DockingItem draggedItem,
@@ -19,14 +19,14 @@ void moveItem(DockingLayout layout, DockingItem draggedItem,
       draggedItem: draggedItem,
       targetArea: targetArea,
       dropPosition: dropPosition);
-  testDisposedList(areas);
+  testOldAreas(areas);
 }
 
 void addItemOnRoot(
     DockingLayout layout, DockingItem newItem, DropPosition dropPosition) {
   List<DockingArea> areas = layout.layoutAreas();
   layout.addItemOnRoot(newItem: newItem, dropPosition: dropPosition);
-  testDisposedList(areas);
+  testOldAreas(areas);
 }
 
 void addItemOn(DockingLayout layout, DockingItem newItem, DropArea targetArea,
@@ -34,7 +34,7 @@ void addItemOn(DockingLayout layout, DockingItem newItem, DropArea targetArea,
   List<DockingArea> areas = layout.layoutAreas();
   layout.addItemOn(
       newItem: newItem, targetArea: targetArea, dropPosition: dropPosition);
-  testDisposedList(areas);
+  testOldAreas(areas);
 }
 
 int _testAreasAttributes(DockingArea parent, bool value, int level, int index) {
@@ -66,8 +66,15 @@ void testHierarchy(DockingLayout layout, String hierarchy) {
   }
 }
 
-void testDisposedList(List<DockingArea> layoutAreas) {
-  layoutAreas.forEach((area) => testDisposed(area));
+void testOldAreas(List<DockingArea> layoutAreas, {DockingItem? disposedItem}) {
+  layoutAreas.forEach((area) {
+    if(area is DockingItem && area != disposedItem) {
+      expect(area.layoutId>-1, true, reason: 'has layoutId');
+      expect(area.index>-1, true, reason: 'has index');
+    } else {
+      testDisposed(area);
+    }
+  });
 }
 
 void testDockingArea(DockingArea area,

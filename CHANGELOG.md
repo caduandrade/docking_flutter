@@ -1,3 +1,8 @@
+## 1.10.0
+
+* DockingItem
+  * The `clone` method has been removed.
+
 ## 1.9.0
 
 * `DockingRow`, `DockingColumn` and `DockingTabs`

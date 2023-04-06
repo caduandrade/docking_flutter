@@ -32,13 +32,13 @@ class RemoveItem extends LayoutModifier {
       if (dockingItem == itemToRemove) {
         return null;
       }
-      return DockingItem.clone(dockingItem);
+      return dockingItem;
     } else if (area is DockingTabs) {
       DockingTabs dockingTabs = area;
       List<DockingItem> children = [];
       dockingTabs.forEach((child) {
         if (child != itemToRemove) {
-          children.add(DockingItem.clone(child));
+          children.add(child);
         }
       });
       if (children.length == 1) {
