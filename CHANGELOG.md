@@ -2,6 +2,8 @@
 
 * `DockingLayout`
   * New method: `removeItemByIds`
+* Bugfix
+  * `Docking` is not updating itself after being instantiated with new `DockingLayout`
 
 ## 1.10.0
 

@@ -61,7 +61,7 @@ class _DockingState extends State<Docking> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.layout != widget.layout) {
       oldWidget.layout?.removeListener(_forceRebuild);
-      _dockingDrag.addListener(_forceRebuild);
+      widget.layout?.addListener(_forceRebuild);
     }
   }
 
