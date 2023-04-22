@@ -582,10 +582,12 @@ class DockingLayout extends ChangeNotifier {
       required DropArea targetArea,
       required DropPosition dropPosition}) {
     //TODO maximize test
-    _rebuild([MoveItem(
-        draggedItem: draggedItem,
-        targetArea: targetArea,
-        dropPosition: dropPosition)]);
+    _rebuild([
+      MoveItem(
+          draggedItem: draggedItem,
+          targetArea: targetArea,
+          dropPosition: dropPosition)
+    ]);
   }
 
   /// Removes a DockingItem from this layout.
@@ -599,8 +601,10 @@ class DockingLayout extends ChangeNotifier {
       required DropArea targetArea,
       required DropPosition dropPosition}) {
     //TODO maximize test
-    _rebuild([AddItem(
-        newItem: newItem, targetArea: targetArea, dropPosition: dropPosition)]);
+    _rebuild([
+      AddItem(
+          newItem: newItem, targetArea: targetArea, dropPosition: dropPosition)
+    ]);
   }
 
   /// Adds a DockingItem to the root of this layout.
@@ -611,10 +615,12 @@ class DockingLayout extends ChangeNotifier {
     }
     if (root is DropArea) {
       DropArea targetArea = root! as DropArea;
-      _rebuild([AddItem(
-          newItem: newItem,
-          targetArea: targetArea,
-          dropPosition: dropPosition)]);
+      _rebuild([
+        AddItem(
+            newItem: newItem,
+            targetArea: targetArea,
+            dropPosition: dropPosition)
+      ]);
     } else {
       throw StateError('Root is not a DropArea');
     }
@@ -629,7 +635,7 @@ class DockingLayout extends ChangeNotifier {
         area._resetLocationInLayout();
       }
     });
-    for(LayoutModifier modifier in modifiers) {
+    for (LayoutModifier modifier in modifiers) {
       _root = modifier.newLayout(this);
       _updateHierarchy();
     }
