@@ -1,10 +1,10 @@
 import 'package:docking/src/docking_buttons_builder.dart';
 import 'package:docking/src/docking_drag.dart';
+import 'package:docking/src/internal/widgets/docking_item_widget.dart';
+import 'package:docking/src/internal/widgets/docking_tabs_widget.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
-import 'package:docking/src/widgets/docking_item_widget.dart';
-import 'package:docking/src/widgets/docking_tabs_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:multi_split_view/multi_split_view.dart';

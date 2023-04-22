@@ -1,7 +1,9 @@
+import 'package:docking/src/internal/layout/drop_item.dart';
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/layout/drop_item.dart';
+import 'package:meta/meta.dart';
 
 /// Rearranges the layout given a new location for a [DockingItem].
+@internal
 class MoveItem extends DropItem {
   MoveItem(
       {required DockingItem draggedItem,

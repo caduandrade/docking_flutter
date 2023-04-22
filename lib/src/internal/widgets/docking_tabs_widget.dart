@@ -2,11 +2,11 @@ import 'dart:math' as math;
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/docking_buttons_builder.dart';
 import 'package:docking/src/docking_icons.dart';
+import 'package:docking/src/internal/widgets/draggable_widget.dart';
+import 'package:docking/src/internal/widgets/drop_widget.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
-import 'package:docking/src/widgets/draggable_widget.dart';
-import 'package:docking/src/widgets/drop_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 

@@ -1,7 +1,9 @@
+import 'package:docking/src/internal/layout/layout_modifier.dart';
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/layout/layout_modifier.dart';
+import 'package:meta/meta.dart';
 
 /// Drops a [DockingItem] in the layout.
+@internal
 class DropItem extends LayoutModifier {
   DropItem(
       {required this.dropItem,

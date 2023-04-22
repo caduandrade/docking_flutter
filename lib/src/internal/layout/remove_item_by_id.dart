@@ -1,24 +1,16 @@
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/layout/layout_modifier.dart';
+import 'package:docking/src/internal/layout/layout_modifier.dart';
+import 'package:meta/meta.dart';
 
-/// Removes [DockingItem] from this layout.
-class RemoveItem extends LayoutModifier {
-  RemoveItem({required this.itemToRemove});
+/// Removes [DockingItem] by id from this layout.
+@internal
+class RemoveItemById extends LayoutModifier {
+  RemoveItemById({required this.id});
 
-  final DockingItem itemToRemove;
-
-  @override
-  void validate(DockingLayout layout, DockingArea area) {
-    super.validate(layout, area);
-    if (area.layoutId != layout.id) {
-      throw ArgumentError(
-          'DockingArea belongs to another layout. Keep the layout in the state of your StatefulWidget.');
-    }
-  }
+  final dynamic id;
 
   @override
   DockingArea? newLayout(DockingLayout layout) {
-    validate(layout, itemToRemove);
     if (layout.root != null) {
       return _buildLayout(layout.root!);
     }
@@ -29,7 +21,7 @@ class RemoveItem extends LayoutModifier {
   DockingArea? _buildLayout(DockingArea area) {
     if (area is DockingItem) {
       DockingItem dockingItem = area;
-      if (dockingItem == itemToRemove) {
+      if (dockingItem.id == id) {
         return null;
       }
       return dockingItem;
@@ -37,7 +29,7 @@ class RemoveItem extends LayoutModifier {
       DockingTabs dockingTabs = area;
       List<DockingItem> children = [];
       dockingTabs.forEach((child) {
-        if (child != itemToRemove) {
+        if (child.id != id) {
           children.add(child);
         }
       });

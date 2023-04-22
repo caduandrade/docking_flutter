@@ -1,7 +1,8 @@
-import 'package:docking/src/layout/add_item.dart';
-import 'package:docking/src/layout/layout_modifier.dart';
-import 'package:docking/src/layout/move_item.dart';
-import 'package:docking/src/layout/remove_item.dart';
+import 'package:docking/src/internal/layout/add_item.dart';
+import 'package:docking/src/internal/layout/layout_modifier.dart';
+import 'package:docking/src/internal/layout/move_item.dart';
+import 'package:docking/src/internal/layout/remove_item.dart';
+import 'package:docking/src/internal/layout/remove_item_by_id.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:multi_split_view/multi_split_view.dart';
@@ -590,6 +591,15 @@ class DockingLayout extends ChangeNotifier {
     ]);
   }
 
+  /// Removes multiple DockingItem by id from this layout.
+  void removeItemByIds(List<dynamic> ids) {
+    List<LayoutModifier> modifiers = [];
+    for (dynamic id in ids) {
+      modifiers.add(RemoveItemById(id: id));
+    }
+    _rebuild(modifiers);
+  }
+
   /// Removes a DockingItem from this layout.
   void removeItem({required DockingItem item}) {
     _rebuild([RemoveItem(itemToRemove: item)]);
@@ -630,14 +640,26 @@ class DockingLayout extends ChangeNotifier {
   /// Rebuilds this layout with modifiers.
   void _rebuild(List<LayoutModifier> modifiers) {
     List<DockingArea> olderAreas = layoutAreas();
-    olderAreas.forEach((area) {
-      if (area is DockingItem) {
-        area._resetLocationInLayout();
-      }
-    });
+
     for (LayoutModifier modifier in modifiers) {
+      layoutAreas().forEach((area) {
+        if (area is DockingItem) {
+          area._resetLocationInLayout();
+        }
+      });
+
       _root = modifier.newLayout(this);
       _updateHierarchy();
+
+      olderAreas.forEach((area) {
+        if (area is DockingParentArea) {
+          area._dispose();
+        } else if (area is DockingItem) {
+          if (area.index == -1) {
+            area._dispose();
+          }
+        }
+      });
     }
     _maximizedArea = null;
     layoutAreas().forEach((area) {
@@ -647,15 +669,7 @@ class DockingLayout extends ChangeNotifier {
         _maximizedArea = area;
       }
     });
-    olderAreas.forEach((area) {
-      if (area is DockingParentArea) {
-        area._dispose();
-      } else if (area is DockingItem) {
-        if (area.index == -1) {
-          area._dispose();
-        }
-      }
-    });
+
     notifyListeners();
   }
 

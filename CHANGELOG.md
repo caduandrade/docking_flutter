@@ -1,3 +1,8 @@
+## 1.11.0
+
+* `DockingLayout`
+  * New method: `removeItemByIds`
+
 ## 1.10.0
 
 * `DockingItem`

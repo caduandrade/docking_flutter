@@ -2,8 +2,34 @@ import 'package:docking/docking.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-DockingItem dockingItem(String? name) {
-  return DockingItem(name: name, widget: Container());
+DockingItem dockingItem(String? name, {dynamic id}) {
+  return DockingItem(id: id, name: name, widget: Container());
+}
+
+void removeItemById(DockingLayout layout, List<dynamic> ids) {
+  List<DockingItem> itemsToDispose = [];
+  for (dynamic id in ids) {
+    DockingItem? item = layout.findDockingItem(id);
+    if (item != null) {
+      itemsToDispose.add(item);
+    }
+  }
+  List<DockingArea> areas = layout.layoutAreas();
+  layout.removeItemByIds(ids);
+  areas.forEach((area) {
+    bool areaIsDisposedItem = false;
+    for (DockingItem disposedItem in itemsToDispose) {
+      if (area == disposedItem) {
+        areaIsDisposedItem = true;
+        break;
+      }
+    }
+    if (area is DockingItem && !areaIsDisposedItem) {
+      testNonDisposedArea(area);
+    } else {
+      testDisposed(area);
+    }
+  });
 }
 
 void removeItem(DockingLayout layout, DockingItem item) {
@@ -66,11 +92,15 @@ void testHierarchy(DockingLayout layout, String hierarchy) {
   }
 }
 
+void testNonDisposedArea(DockingArea area) {
+  expect(area.layoutId > -1, true, reason: 'has layoutId');
+  expect(area.index > -1, true, reason: 'has index');
+}
+
 void testOldAreas(List<DockingArea> layoutAreas, {DockingItem? disposedItem}) {
   layoutAreas.forEach((area) {
     if (area is DockingItem && area != disposedItem) {
-      expect(area.layoutId > -1, true, reason: 'has layoutId');
-      expect(area.index > -1, true, reason: 'has index');
+      testNonDisposedArea(area);
     } else {
       testDisposed(area);
     }
