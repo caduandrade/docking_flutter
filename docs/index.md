@@ -1,4 +1,4 @@
-# Docking (1.10.0)
+# Docking (1.11.0)
 
 Layout for placing widgets in docking areas and arrange them into split and tabbed views.
 
@@ -19,6 +19,7 @@ The following dependencies are exported along with this package:
   * [Tabs](#tabs)
   * [Combined](#combined)
   * [Finding DockingItem by id](#finding-dockingitem-by-id)
+  * [Removing DockingItem by id](#removing-dockingitem-by-id)
 * Item
   * [Non-closable](#non-closable)
   * [Non-maximizable](#non-maximizable)
@@ -108,6 +109,12 @@ The root is single and can be any area.
 
 ```dart
 DockingItem? item = _layout.findDockingItem('id');
+```
+
+### Removing DockingItem by id
+
+```dart
+_layout.removeItemByIds([2, 4]);
 ```
 
 ## Item
