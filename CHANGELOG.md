@@ -1,3 +1,8 @@
+## 1.11.1
+
+* Bugfix
+  * Newer tabbed_view dependency being used causing incompatibility.
+
 ## 1.11.0
 
 * `DockingLayout`
