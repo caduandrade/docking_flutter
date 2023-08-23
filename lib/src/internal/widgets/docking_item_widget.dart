@@ -1,8 +1,9 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/docking_buttons_builder.dart';
 import 'package:docking/src/docking_icons.dart';
-import 'package:docking/src/internal/widgets/draggable_widget.dart';
-import 'package:docking/src/internal/widgets/drop_widget.dart';
+import 'package:docking/src/internal/widgets/draggable_config_mixin.dart';
+import 'package:docking/src/internal/widgets/drop/content_wrapper.dart';
+import 'package:docking/src/internal/widgets/drop/drop_feedback_widget.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
@@ -12,18 +13,17 @@ import 'package:tabbed_view/tabbed_view.dart';
 
 /// Represents a widget for [DockingItem].
 @internal
-class DockingItemWidget extends DraggableWidget {
-  DockingItemWidget(
-      {Key? key,
-      required this.layout,
-      required DockingDrag dockingDrag,
-      required this.item,
-      this.onItemSelection,
-      this.onItemClose,
-      this.itemCloseInterceptor,
-      this.dockingButtonsBuilder,
-      required this.maximizable})
-      : super(key: key, dockingDrag: dockingDrag);
+class DockingItemWidget extends StatefulWidget {
+  DockingItemWidget({Key? key,
+    required this.layout,
+    required this.dockingDrag,
+    required this.item,
+    this.onItemSelection,
+    this.onItemClose,
+    this.itemCloseInterceptor,
+    this.dockingButtonsBuilder,
+    required this.maximizable})
+      : super(key: key);
 
   final DockingLayout layout;
   final DockingItem item;
@@ -32,52 +32,62 @@ class DockingItemWidget extends DraggableWidget {
   final ItemCloseInterceptor? itemCloseInterceptor;
   final DockingButtonsBuilder? dockingButtonsBuilder;
   final bool maximizable;
+  final DockingDrag dockingDrag;
+
+  @override
+  State<StatefulWidget> createState() =>DockingItemWidgetState();
+
+}
+
+class DockingItemWidgetState extends State<DockingItemWidget> with DraggableConfigMixin{
+
+  DropPosition? _activeDropPosition;
 
   @override
   Widget build(BuildContext context) {
-    String name = item.name != null ? item.name! : '';
-    Widget content = item.widget;
-    if (item.globalKey != null) {
-      content = KeyedSubtree(child: content, key: item.globalKey);
+    String name = widget.item.name != null ? widget.item.name! : '';
+    Widget content = widget.item.widget;
+    if (widget.item.globalKey != null) {
+      content = KeyedSubtree(child: content, key: widget.item.globalKey);
     }
     List<TabButton>? buttons;
-    if (item.buttons != null && item.buttons!.isNotEmpty) {
+    if (widget.item.buttons != null && widget.item.buttons!.isNotEmpty) {
       buttons = [];
-      buttons.addAll(item.buttons!);
+      buttons.addAll(widget.item.buttons!);
     }
     final bool maximizable =
-        item.maximizable != null ? item.maximizable! : this.maximizable;
+    widget.item.maximizable != null ? widget.item.maximizable! : widget.maximizable;
     if (maximizable) {
       if (buttons == null) {
         buttons = [];
       }
-      if (layout.maximizedArea != null && layout.maximizedArea == this.item) {
+      if (widget.layout.maximizedArea != null && widget.layout.maximizedArea == widget.item) {
         buttons.add(TabButton(
             icon: IconProvider.path(DockingIcons.restore),
-            onPressed: () => layout.restore()));
+            onPressed: () => widget.layout.restore()));
       } else {
         buttons.add(TabButton(
             icon: IconProvider.data(Icons.web_asset_sharp),
-            onPressed: () => layout.maximizeDockingItem(item)));
+            onPressed: () => widget.layout.maximizeDockingItem(widget.item)));
       }
     }
 
     List<TabData> tabs = [
       TabData(
-          value: item,
+          value: widget.item,
           text: name,
           content: content,
-          closable: item.closable,
-          leading: item.leading,
+          closable: widget.item.closable,
+          leading: widget.item.leading,
           buttons: buttons)
     ];
     TabbedViewController controller = TabbedViewController(tabs);
 
     OnTabSelection? onTabSelection;
-    if (onItemSelection != null) {
+    if (widget.onItemSelection != null) {
       onTabSelection = (int? index) {
         if (index != null) {
-          onItemSelection!(item);
+          widget.onItemSelection!(widget.item);
         }
       };
     }
@@ -88,33 +98,47 @@ class DockingItemWidget extends DraggableWidget {
         tabCloseInterceptor: _tabCloseInterceptor,
         onTabClose: _onTabClose,
         controller: controller,
-        draggableTabBuilder: (int tabIndex, TabData tab, Widget tabWidget) {
-          return buildDraggable(item, tabWidget);
-        });
-    if (dockingDrag.enable) {
-      return DropWidget.item(layout, item, tabbedView);
+        onDraggableBuild: (TabbedViewController controller, int tabIndex, TabData tabData){
+          return buildDraggableConfig(dockingDrag: widget.dockingDrag,tabData: tabData);
+        },
+        contentBuilder: (context, tabIndex) => ItemContentWrapper(
+            listener: _updateActiveDropPosition,
+            layout: widget.layout,
+            dockingItem: widget.item,
+            child: controller.tabs[tabIndex].content!));
+    if (widget.dockingDrag.enable) {
+      return DropFeedbackWidget(
+          dropPosition: _activeDropPosition, child: tabbedView);
     }
     return tabbedView;
   }
 
+  void _updateActiveDropPosition(DropPosition? dropPosition) {
+    if (_activeDropPosition != dropPosition) {
+      setState(() {
+        _activeDropPosition = dropPosition;
+      });
+    }
+  }
+
   List<TabButton> _tabsAreaButtonsBuilder(BuildContext context, int tabsCount) {
-    if (dockingButtonsBuilder != null) {
-      return dockingButtonsBuilder!(context, null, item);
+    if (widget.dockingButtonsBuilder != null) {
+      return widget.dockingButtonsBuilder!(context, null, widget.item);
     }
     return [];
   }
 
   bool _tabCloseInterceptor(int tabIndex) {
-    if (itemCloseInterceptor != null) {
-      return itemCloseInterceptor!(item);
+    if (widget.itemCloseInterceptor != null) {
+      return widget.itemCloseInterceptor!(widget.item);
     }
     return true;
   }
 
   void _onTabClose(int tabIndex, TabData tabData) {
-    layout.removeItem(item: item);
-    if (onItemClose != null) {
-      onItemClose!(item);
+    widget.layout.removeItem(item: widget.item);
+    if (widget.onItemClose != null) {
+      widget.onItemClose!(widget.item);
     }
   }
 }

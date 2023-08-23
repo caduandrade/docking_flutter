@@ -1,6 +1,6 @@
 name: docking
 description: Flutter layout for placing widgets in docking areas and arrange them into split and tabbed views.
-version: 1.11.1
+version: 1.12.0
 homepage: https://caduandrade.github.io/docking_flutter/
 repository: https://github.com/caduandrade/docking_flutter
 
@@ -12,8 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.7.0
-  tabbed_view: 1.16.0+1
-    #path: ../tabbed_view/
+  tabbed_view: #1.16.0+1
+    path: ../tabbed_view/
   multi_split_view: 2.4.0
     #path: ../multi_split_view/
 
@@ -21,7 +21,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
