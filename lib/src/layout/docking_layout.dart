@@ -168,6 +168,11 @@ abstract class DockingParentArea extends DockingArea {
   /// Gets a child for a given index.
   DockingArea childAt(int index) => _children[index];
 
+  /// The first index of [dockingArea] in this container.
+  ///
+  /// Returns -1 if [dockingArea] is not found.
+  int indexOf(DockingArea dockingArea) => _children.indexOf(dockingArea);
+
   /// Whether the [DockingParentArea] contains a child equal to [area].
   bool contains(DockingArea area) {
     return _children.contains(area);
@@ -432,7 +437,7 @@ enum DockingAreaType { item, tabs, row, column }
 
 /// Represents all positions available for a drop event that will
 /// rearrange the layout.
-enum DropPosition { top, bottom, left, right, center }
+enum DropPosition { top, bottom, left, right }
 
 /// Represents a layout.
 ///
@@ -581,13 +586,15 @@ class DockingLayout extends ChangeNotifier {
   void moveItem(
       {required DockingItem draggedItem,
       required DropArea targetArea,
-      required DropPosition dropPosition}) {
+      DropPosition? dropPosition,
+      int? dropIndex}) {
     //TODO maximize test
     _rebuild([
       MoveItem(
           draggedItem: draggedItem,
           targetArea: targetArea,
-          dropPosition: dropPosition)
+          dropPosition: dropPosition,
+          dropIndex: dropIndex)
     ]);
   }
 
@@ -613,7 +620,10 @@ class DockingLayout extends ChangeNotifier {
     //TODO maximize test
     _rebuild([
       AddItem(
-          newItem: newItem, targetArea: targetArea, dropPosition: dropPosition)
+          newItem: newItem,
+          targetArea: targetArea,
+          dropPosition: dropPosition,
+          dropIndex: null)
     ]);
   }
 
@@ -629,7 +639,8 @@ class DockingLayout extends ChangeNotifier {
         AddItem(
             newItem: newItem,
             targetArea: targetArea,
-            dropPosition: dropPosition)
+            dropPosition: dropPosition,
+            dropIndex: null)
       ]);
     } else {
       throw StateError('Root is not a DropArea');

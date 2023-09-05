@@ -14,15 +14,16 @@ import 'package:tabbed_view/tabbed_view.dart';
 /// Represents a widget for [DockingItem].
 @internal
 class DockingItemWidget extends StatefulWidget {
-  DockingItemWidget({Key? key,
-    required this.layout,
-    required this.dockingDrag,
-    required this.item,
-    this.onItemSelection,
-    this.onItemClose,
-    this.itemCloseInterceptor,
-    this.dockingButtonsBuilder,
-    required this.maximizable})
+  DockingItemWidget(
+      {Key? key,
+      required this.layout,
+      required this.dockingDrag,
+      required this.item,
+      this.onItemSelection,
+      this.onItemClose,
+      this.itemCloseInterceptor,
+      this.dockingButtonsBuilder,
+      required this.maximizable})
       : super(key: key);
 
   final DockingLayout layout;
@@ -35,12 +36,11 @@ class DockingItemWidget extends StatefulWidget {
   final DockingDrag dockingDrag;
 
   @override
-  State<StatefulWidget> createState() =>DockingItemWidgetState();
-
+  State<StatefulWidget> createState() => DockingItemWidgetState();
 }
 
-class DockingItemWidgetState extends State<DockingItemWidget> with DraggableConfigMixin{
-
+class DockingItemWidgetState extends State<DockingItemWidget>
+    with DraggableConfigMixin {
   DropPosition? _activeDropPosition;
 
   @override
@@ -55,13 +55,15 @@ class DockingItemWidgetState extends State<DockingItemWidget> with DraggableConf
       buttons = [];
       buttons.addAll(widget.item.buttons!);
     }
-    final bool maximizable =
-    widget.item.maximizable != null ? widget.item.maximizable! : widget.maximizable;
+    final bool maximizable = widget.item.maximizable != null
+        ? widget.item.maximizable!
+        : widget.maximizable;
     if (maximizable) {
       if (buttons == null) {
         buttons = [];
       }
-      if (widget.layout.maximizedArea != null && widget.layout.maximizedArea == widget.item) {
+      if (widget.layout.maximizedArea != null &&
+          widget.layout.maximizedArea == widget.item) {
         buttons.add(TabButton(
             icon: IconProvider.path(DockingIcons.restore),
             onPressed: () => widget.layout.restore()));
@@ -98,19 +100,34 @@ class DockingItemWidgetState extends State<DockingItemWidget> with DraggableConf
         tabCloseInterceptor: _tabCloseInterceptor,
         onTabClose: _onTabClose,
         controller: controller,
-        onDraggableBuild: (TabbedViewController controller, int tabIndex, TabData tabData){
-          return buildDraggableConfig(dockingDrag: widget.dockingDrag,tabData: tabData);
+        onDraggableBuild:
+            (TabbedViewController controller, int tabIndex, TabData tabData) {
+          return buildDraggableConfig(
+              dockingDrag: widget.dockingDrag, tabData: tabData);
         },
         contentBuilder: (context, tabIndex) => ItemContentWrapper(
             listener: _updateActiveDropPosition,
             layout: widget.layout,
             dockingItem: widget.item,
-            child: controller.tabs[tabIndex].content!));
+            child: controller.tabs[tabIndex].content!),
+        onBeforeDropAccept: _onBeforeDropAccept);
     if (widget.dockingDrag.enable) {
       return DropFeedbackWidget(
           dropPosition: _activeDropPosition, child: tabbedView);
     }
     return tabbedView;
+  }
+
+  bool _onBeforeDropAccept(
+      DraggableData source, TabbedViewController target, int newIndex) {
+    DockingItem dockingItem = source.tabData.value;
+    if (dockingItem != widget.item) {
+      widget.layout.moveItem(
+          draggedItem: dockingItem,
+          targetArea: widget.item,
+          dropIndex: newIndex);
+    }
+    return true;
   }
 
   void _updateActiveDropPosition(DropPosition? dropPosition) {

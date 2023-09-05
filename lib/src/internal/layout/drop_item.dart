@@ -8,11 +8,19 @@ class DropItem extends LayoutModifier {
   DropItem(
       {required this.dropItem,
       required this.targetArea,
-      required this.dropPosition});
+      required this.dropPosition,
+      required this.dropIndex}) {
+    if ((dropIndex == null && dropPosition == null) ||
+        (dropIndex != null && dropPosition != null)) {
+      throw ArgumentError(
+          'Only one of the dropIndex and dropPosition parameters can be set.');
+    }
+  }
 
   final DockingItem dropItem;
   final DropArea targetArea;
-  final DropPosition dropPosition;
+  final DropPosition? dropPosition;
+  final int? dropIndex;
 
   @override
   DockingArea? newLayout(DockingLayout layout) {
@@ -52,7 +60,9 @@ class DropItem extends LayoutModifier {
         return null;
       } else if (dockingItem == targetArea) {
         final DockingItem newDraggedItem = dropItem;
-        if (dropPosition == DropPosition.center) {
+        if (dropIndex == 0) {
+          return DockingTabs([newDraggedItem, dockingItem]);
+        } else if (dropIndex == 1) {
           return DockingTabs([dockingItem, newDraggedItem]);
         } else if (dropPosition == DropPosition.top) {
           return DockingColumn([newDraggedItem, dockingItem]);
@@ -71,14 +81,22 @@ class DropItem extends LayoutModifier {
     } else if (area is DockingTabs) {
       final DockingTabs dockingTabs = area;
       List<DockingItem> children = [];
-      dockingTabs.forEach((child) {
+      DockingItem? oldSelection;
+      int oldIndex = -1;
+      for (int index = 0; index < dockingTabs.childrenCount; index++) {
+        DockingItem child = dockingTabs.childAt(index);
         if (child == targetArea) {
           throw ArgumentError('Nested tabbed panels are not allowed.');
         }
         if (child != dropItem) {
           children.add(child);
+        } else {
+          oldIndex = index;
         }
-      });
+        if (index == dockingTabs.selectedIndex) {
+          oldSelection = child;
+        }
+      }
       final DockingArea? newArea;
       if (children.length == 1) {
         newArea = children.first;
@@ -86,14 +104,30 @@ class DropItem extends LayoutModifier {
         newArea = DockingTabs(children,
             maximized: dockingTabs.maximized,
             maximizable: dockingTabs.maximizable);
-        (newArea as DockingTabs).selectedIndex = dockingTabs.selectedIndex;
+        if (oldSelection != null) {
+          int newSelectedIndex = children.indexOf(oldSelection);
+          (newArea as DockingTabs).selectedIndex =
+              newSelectedIndex > -1 ? newSelectedIndex : 0;
+        }
       }
       if (dockingTabs == targetArea) {
         DockingItem newDraggedItem = dropItem;
-        if (dropPosition == DropPosition.center) {
-          children.add(newDraggedItem);
+        if (dropIndex != null) {
+          int newIndex = dropIndex!;
+          if (oldIndex > -1) {
+            if (newIndex > 0) {
+              newIndex--;
+            }
+            children.insert(newIndex, newDraggedItem);
+          } else {
+            children.insert(newIndex, newDraggedItem);
+          }
           DockingTabs newDockingTabs = DockingTabs(children);
-          newDockingTabs.selectedIndex = dockingTabs.selectedIndex;
+          if (oldSelection != null) {
+            int newSelectedIndex = children.indexOf(oldSelection);
+            newDockingTabs.selectedIndex =
+                newSelectedIndex > -1 ? newSelectedIndex : 0;
+          }
           return newDockingTabs;
         } else if (dropPosition == DropPosition.top) {
           return DockingColumn([newDraggedItem, newArea]);

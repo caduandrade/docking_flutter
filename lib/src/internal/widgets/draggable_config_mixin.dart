@@ -6,10 +6,9 @@ import 'package:tabbed_view/tabbed_view.dart';
 
 /// Represents a draggable widget mixin.
 @internal
-mixin DraggableConfigMixin  {
-
-
-  DraggableConfig buildDraggableConfig({required DockingDrag dockingDrag,required TabData tabData}) {
+mixin DraggableConfigMixin {
+  DraggableConfig buildDraggableConfig(
+      {required DockingDrag dockingDrag, required TabData tabData}) {
     DockingItem item = tabData.value;
     String name = item.name != null ? item.name! : '';
     return DraggableConfig(

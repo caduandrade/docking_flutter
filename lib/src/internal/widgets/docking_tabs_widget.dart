@@ -112,7 +112,7 @@ class DockingTabsWidgetState extends State<DockingTabsWidget>
             layout: widget.layout,
             dockingTabs: widget.dockingTabs,
             child: controller.tabs[tabIndex].content!),
-    onBeforeDropAccept: _onBeforeDropAccept);
+        onBeforeDropAccept: _onBeforeDropAccept);
     if (widget.dockingDrag.enable) {
       return DropFeedbackWidget(
           dropPosition: _activeDropPosition, child: tabbedView);
@@ -128,8 +128,13 @@ class DockingTabsWidgetState extends State<DockingTabsWidget>
     }
   }
 
-  bool _onBeforeDropAccept(DraggableData source, TabbedViewController target) {
-    print('_onBeforeDropAccept');
+  bool _onBeforeDropAccept(
+      DraggableData source, TabbedViewController target, int newIndex) {
+    DockingItem dockingItem = source.tabData.value;
+    widget.layout.moveItem(
+        draggedItem: dockingItem,
+        targetArea: widget.dockingTabs,
+        dropIndex: newIndex);
     return true;
   }
 

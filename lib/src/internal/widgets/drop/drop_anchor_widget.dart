@@ -10,8 +10,8 @@ typedef DropWidgetListener = void Function(DropPosition? dropPosition);
 abstract class DropAnchorBaseWidget extends StatelessWidget {
   const DropAnchorBaseWidget(
       {required this.layout,
-        required this.dropPosition,
-        required this.listener});
+      required this.dropPosition,
+      required this.listener});
 
   final DockingLayout layout;
   final DropPosition dropPosition;
@@ -22,8 +22,8 @@ abstract class DropAnchorBaseWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DragTarget<DraggableData>(
         builder: _buildDropWidget,
-        onLeave: (data)=>listener(null),
-        onMove: (details)=>listener(dropPosition),
+        onLeave: (data) => listener(null),
+        onMove: (details) => listener(dropPosition),
         onWillAccept: (DraggableData? draggableData) {
           final TabData? draggedTabData = draggableData?.tabData;
           final DockingItem? draggedItem = draggedTabData?.value;
@@ -45,14 +45,14 @@ abstract class DropAnchorBaseWidget extends StatelessWidget {
 
   Widget _buildDropWidget(BuildContext context,
       List<DraggableData?> candidateTabData, List<dynamic> rejectedData) {
-    if(DockingDebug.dropAreaVisible) {
-      Color color= Colors.deepOrange;
-      if(dropPosition==DropPosition.top) {
-        color=Colors.blue;
-      } else if(dropPosition==DropPosition.bottom) {
-        color=Colors.green;
-      } else if(dropPosition==DropPosition.left) {
-        color=Colors.purple;
+    if (DockingDebug.dropAreaVisible) {
+      Color color = Colors.deepOrange;
+      if (dropPosition == DropPosition.top) {
+        color = Colors.blue;
+      } else if (dropPosition == DropPosition.bottom) {
+        color = Colors.green;
+      } else if (dropPosition == DropPosition.left) {
+        color = Colors.purple;
       }
       return Container(child: Placeholder(color: color));
     }
@@ -60,14 +60,13 @@ abstract class DropAnchorBaseWidget extends StatelessWidget {
   }
 }
 
-
 @internal
 class ItemDropAnchorWidget extends DropAnchorBaseWidget {
   const ItemDropAnchorWidget(
       {required DockingLayout layout,
-        required DropPosition dropPosition,
-        required DropWidgetListener listener,
-        required DockingItem dockingItem})
+      required DropPosition dropPosition,
+      required DropWidgetListener listener,
+      required DockingItem dockingItem})
       : _dockingItem = dockingItem,
         super(layout: layout, dropPosition: dropPosition, listener: listener);
 
@@ -87,14 +86,13 @@ class ItemDropAnchorWidget extends DropAnchorBaseWidget {
   }
 }
 
-
 @internal
 class TabsDropAnchorWidget extends DropAnchorBaseWidget {
   const TabsDropAnchorWidget(
       {required DockingLayout layout,
-        required DropPosition dropPosition,
-        required DropWidgetListener listener,
-        required DockingTabs dockingTabs})
+      required DropPosition dropPosition,
+      required DropWidgetListener listener,
+      required DockingTabs dockingTabs})
       : _dockingTabs = dockingTabs,
         super(layout: layout, dropPosition: dropPosition, listener: listener);
 
@@ -110,9 +108,6 @@ class TabsDropAnchorWidget extends DropAnchorBaseWidget {
 
   @override
   bool onWillAccept(DockingItem draggedItem) {
-    if (_dockingTabs.contains(draggedItem)) {
-      return dropPosition != DropPosition.center;
-    }
     return true;
   }
 }
