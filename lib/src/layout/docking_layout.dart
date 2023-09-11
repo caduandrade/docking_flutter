@@ -616,20 +616,22 @@ class DockingLayout extends ChangeNotifier {
   void addItemOn(
       {required DockingItem newItem,
       required DropArea targetArea,
-      required DropPosition dropPosition}) {
+        DropPosition? dropPosition,
+        int? dropIndex}) {
     //TODO maximize test
     _rebuild([
       AddItem(
           newItem: newItem,
           targetArea: targetArea,
           dropPosition: dropPosition,
-          dropIndex: null)
+          dropIndex: dropIndex)
     ]);
   }
 
   /// Adds a DockingItem to the root of this layout.
   void addItemOnRoot(
-      {required DockingItem newItem, required DropPosition dropPosition}) {
+      {required DockingItem newItem,  DropPosition? dropPosition,
+         int? dropIndex}) {
     if (root == null) {
       throw StateError('Root is null');
     }
@@ -640,7 +642,7 @@ class DockingLayout extends ChangeNotifier {
             newItem: newItem,
             targetArea: targetArea,
             dropPosition: dropPosition,
-            dropIndex: null)
+            dropIndex: dropIndex)
       ]);
     } else {
       throw StateError('Root is not a DropArea');
@@ -701,9 +703,5 @@ class DockingLayout extends ChangeNotifier {
       parentArea.forEach((child) => _fetchAreas(areas, child));
     }
   }
-
-  void deserialize(
-      String layout, WidgetDeserialization widgetDeserialization) {}
 }
 
-typedef WidgetDeserialization = Widget Function(dynamic itemId);

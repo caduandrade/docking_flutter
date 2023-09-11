@@ -9,9 +9,10 @@ void main() {
     test('draggedItem == targetArea ', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
-      expect(() => moveItem(layout, item, item, DropPosition.bottom),
+      expect(() => moveItemToPosition(layout, item, item, DropPosition.bottom),
           sameDraggedItemAndTargetAreaException());
     });
+
 
     test('nested tabbed panel', () {
       DockingItem itemA = dockingItem('a');
@@ -21,9 +22,10 @@ void main() {
       DockingRow row = DockingRow([itemA, tabs]);
       DockingLayout layout = DockingLayout(root: row);
 
-      expect(() => moveItem(layout, itemA, itemB, DropPosition.center),
+      expect(() => moveItemToPosition(layout, itemA, itemB, DropPosition.center),
           throwsArgumentError);
     });
+
   });
 
   group('move item', () {
@@ -33,7 +35,7 @@ void main() {
       DockingRow row = DockingRow([itemA, itemB]);
       DockingLayout layout = DockingLayout(root: row);
 
-      moveItem(layout, itemA, itemB, DropPosition.left);
+      moveItemToPosition(layout, itemA, itemB, DropPosition.left);
 
       testHierarchy(layout, 'R(Ia,Ib)');
     });
@@ -44,7 +46,7 @@ void main() {
       DockingRow row = DockingRow([itemA, itemB]);
       DockingLayout layout = DockingLayout(root: row);
 
-      moveItem(layout, itemA, itemB, DropPosition.right);
+      moveItemToPosition(layout, itemA, itemB, DropPosition.right);
 
       testHierarchy(layout, 'R(Ib,Ia)');
     });
@@ -55,7 +57,7 @@ void main() {
       DockingRow row = DockingRow([itemA, itemB]);
       DockingLayout layout = DockingLayout(root: row);
 
-      moveItem(layout, itemA, itemB, DropPosition.top);
+      moveItemToPosition(layout, itemA, itemB, DropPosition.top);
 
       testHierarchy(layout, 'C(Ia,Ib)');
     });
@@ -66,10 +68,11 @@ void main() {
       DockingRow row = DockingRow([itemA, itemB]);
       DockingLayout layout = DockingLayout(root: row);
 
-      moveItem(layout, itemA, itemB, DropPosition.bottom);
+      moveItemToPosition(layout, itemA, itemB, DropPosition.bottom);
 
       testHierarchy(layout, 'C(Ib,Ia)');
     });
+
 
     test('row - to tabs 1', () {
       DockingItem itemA = dockingItem('a');
@@ -77,10 +80,11 @@ void main() {
       DockingRow row = DockingRow([itemA, itemB]);
       DockingLayout layout = DockingLayout(root: row);
 
-      moveItem(layout, itemA, itemB, DropPosition.center);
+      moveItemToPosition(layout, itemA, itemB, DropPosition.center);
 
       testHierarchy(layout, 'T(Ib,Ia)');
     });
+
 
     test('row - to tabs 2', () {
       DockingItem itemA = dockingItem('a');
@@ -90,10 +94,11 @@ void main() {
       DockingRow row = DockingRow([itemA, tabs]);
       DockingLayout layout = DockingLayout(root: row);
 
-      moveItem(layout, itemA, tabs, DropPosition.center);
+      moveItemToPosition(layout, itemA, tabs, DropPosition.center);
 
       testHierarchy(layout, 'T(Ib,Ic,Ia)');
     });
+
 
     test('complex 1', () {
       DockingItem itemA = dockingItem('a');
@@ -107,7 +112,7 @@ void main() {
       DockingColumn column = DockingColumn([row, tabs]);
       DockingLayout layout = DockingLayout(root: column);
 
-      moveItem(layout, itemA, itemC, DropPosition.center);
+      moveItemToPosition(layout, itemA, itemC, DropPosition.center);
 
       testHierarchy(layout, 'C(Ib,T(Ic,Ia),T(Id,Ie))');
     });
@@ -125,7 +130,7 @@ void main() {
       DockingColumn column = DockingColumn([row, tabs, itemF]);
       DockingLayout layout = DockingLayout(root: column);
 
-      moveItem(layout, itemA, itemC, DropPosition.center);
+      moveItemToPosition(layout, itemA, itemC, DropPosition.center);
 
       testHierarchy(layout, 'C(Ib,T(Ic,Ia),T(Id,Ie),If)');
     });
@@ -145,9 +150,10 @@ void main() {
       DockingRow row2 = DockingRow([itemG, column]);
       DockingLayout layout = DockingLayout(root: row2);
 
-      moveItem(layout, itemA, itemC, DropPosition.center);
+      moveItemToPosition(layout, itemA, itemC, DropPosition.center);
 
       testHierarchy(layout, 'R(Ig,C(Ib,T(Ic,Ia),T(Id,Ie),If))');
     });
+
   });
 }

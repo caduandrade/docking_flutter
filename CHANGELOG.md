@@ -1,3 +1,12 @@
+## 1.12.0
+
+* `DropPosition`
+  * The `center` value has been removed.
+* `DockingLayout`
+  * Methods `addItemOnRoot`, `addItemOn` and `moveItem`
+    * New optional parameter: `dropIndex`
+    * The `dropPostion` parameter has become optional.
+
 ## 1.11.1
 
 * Bugfix

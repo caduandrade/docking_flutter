@@ -20,23 +20,31 @@ abstract class DropAnchorBaseWidget extends StatelessWidget {
   @nonVirtual
   @override
   Widget build(BuildContext context) {
-    return DragTarget<DraggableData>(
-        builder: _buildDropWidget,
-        onLeave: (data) => listener(null),
-        onMove: (details) => listener(dropPosition),
-        onWillAccept: (DraggableData? draggableData) {
-          final TabData? draggedTabData = draggableData?.tabData;
-          final DockingItem? draggedItem = draggedTabData?.value;
-          if (draggedItem != null) {
-            return onWillAccept(draggedItem);
-          }
-          return false;
-        },
-        onAccept: (DraggableData draggableData) {
-          final TabData tabData = draggableData.tabData;
-          final DockingItem draggableItem = tabData.value;
-          onAccept(draggableItem);
-        });
+    return MouseRegion(
+        onExit: (e) => listener(null),
+        child: DragTarget<DraggableData>(
+            builder: _buildDropWidget,
+            onWillAccept: (DraggableData? draggableData) {
+              final TabData? draggedTabData = draggableData?.tabData;
+              final DockingItem? draggedItem = draggedTabData?.value;
+              if (draggedItem != null) {
+                bool willAccept = onWillAccept(draggedItem);
+                if (willAccept) {
+                  listener(dropPosition);
+                } else {
+                  listener(null);
+                }
+                return willAccept;
+              } else {
+                listener(null);
+              }
+              return false;
+            },
+            onAccept: (DraggableData draggableData) {
+              final TabData tabData = draggableData.tabData;
+              final DockingItem draggableItem = tabData.value;
+              onAccept(draggableItem);
+            }));
   }
 
   bool onWillAccept(DockingItem draggedItem);
