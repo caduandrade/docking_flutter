@@ -7,6 +7,11 @@
     * New optional parameter: `dropIndex`
     * The `dropPostion` parameter has become optional.
 
+## 1.12.2
+
+* Bugfix
+  * Error with GlobalKey when expanding a DockingTabs.
+
 ## 1.11.1
 
 * Bugfix
