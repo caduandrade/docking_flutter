@@ -73,7 +73,9 @@ class _DockingState extends State<Docking> {
         List<Widget> children = [];
         for (DockingArea area in areas) {
           if (area != widget.layout!.maximizedArea!) {
-            if (area is DockingItem && area.globalKey != null) {
+            if (area is DockingItem &&
+                area.globalKey != null &&
+                area.parent != widget.layout?.maximizedArea) {
               // keeping alive other areas
               children.add(ExcludeFocus(
                   child: Offstage(child: _buildArea(context, area))));
