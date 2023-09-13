@@ -1,5 +1,7 @@
 ## 1.12.0
 
+* `tabbed_view` dependency updated to 1.18.0
+  * Tab reordering
 * `DropPosition`
   * The `center` value has been removed.
 * `DockingLayout`
@@ -7,7 +9,7 @@
     * New optional parameter: `dropIndex`
     * The `dropPostion` parameter has become optional.
 
-## 1.12.2
+## 1.11.2
 
 * Bugfix
   * Error with GlobalKey when expanding a DockingTabs.
