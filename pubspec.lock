@@ -155,9 +155,10 @@ packages:
   tabbed_view:
     dependency: "direct main"
     description:
-      path: "../tabbed_view"
-      relative: true
-    source: path
+      name: tabbed_view
+      sha256: "467fff7781d38592f47ce06bd48347b97d26e2823650a736fa6fcaaefe88e894"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.18.0"
   term_glyph:
     dependency: transitive

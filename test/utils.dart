@@ -52,9 +52,7 @@ void moveItemToIndex(DockingLayout layout, DockingItem draggedItem,
     DropArea targetArea, int dropIndex) {
   List<DockingArea> areas = layout.layoutAreas();
   layout.moveItem(
-      draggedItem: draggedItem,
-      targetArea: targetArea,
-      dropIndex: dropIndex);
+      draggedItem: draggedItem, targetArea: targetArea, dropIndex: dropIndex);
   testOldAreas(areas);
 }
 
