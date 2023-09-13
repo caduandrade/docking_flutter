@@ -21,6 +21,7 @@ abstract class DropAnchorBaseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
+        hitTestBehavior: HitTestBehavior.translucent,
         onExit: (e) => listener(null),
         child: DragTarget<DraggableData>(
             builder: _buildDropWidget,
