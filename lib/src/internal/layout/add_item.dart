@@ -8,8 +8,8 @@ class AddItem extends DropItem {
   AddItem(
       {required DockingItem newItem,
       required DropArea targetArea,
-       DropPosition? dropPosition,
-       int? dropIndex})
+      DropPosition? dropPosition,
+      int? dropIndex})
       : super(
             dropItem: newItem,
             targetArea: targetArea,

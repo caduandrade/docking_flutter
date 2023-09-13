@@ -45,5 +45,6 @@ class _CustomPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _CustomPainter oldDelegate) =>  dropPosition != oldDelegate.dropPosition;
+  bool shouldRepaint(covariant _CustomPainter oldDelegate) =>
+      dropPosition != oldDelegate.dropPosition;
 }

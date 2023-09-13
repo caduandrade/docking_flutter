@@ -616,8 +616,8 @@ class DockingLayout extends ChangeNotifier {
   void addItemOn(
       {required DockingItem newItem,
       required DropArea targetArea,
-        DropPosition? dropPosition,
-        int? dropIndex}) {
+      DropPosition? dropPosition,
+      int? dropIndex}) {
     //TODO maximize test
     _rebuild([
       AddItem(
@@ -630,8 +630,9 @@ class DockingLayout extends ChangeNotifier {
 
   /// Adds a DockingItem to the root of this layout.
   void addItemOnRoot(
-      {required DockingItem newItem,  DropPosition? dropPosition,
-         int? dropIndex}) {
+      {required DockingItem newItem,
+      DropPosition? dropPosition,
+      int? dropIndex}) {
     if (root == null) {
       throw StateError('Root is null');
     }
@@ -704,4 +705,3 @@ class DockingLayout extends ChangeNotifier {
     }
   }
 }
-
