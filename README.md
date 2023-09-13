@@ -9,13 +9,6 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 
 ![](https://caduandrade.github.io/docking_flutter/docking_v3.png)
 
-## Dependencies
-
-The following dependencies are exported along with this package:
-
-* [tabbed_view (1.16.0)](https://pub.dev/packages/tabbed_view) to provide grouping of widgets into tabs
-* [multi_split_view (2.4.0)](https://pub.dev/packages/multi_split_view) to provide horizontal or vertical split views
-
 ---
 
 See full documentation at [https://caduandrade.github.io/docking_flutter/](https://caduandrade.github.io/docking_flutter/)

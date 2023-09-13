@@ -1,4 +1,4 @@
-# Docking (1.11.0)
+# Docking (1.12.0)
 
 Layout for placing widgets in docking areas and arrange them into split and tabbed views.
 
@@ -8,7 +8,7 @@ Layout for placing widgets in docking areas and arrange them into split and tabb
 
 The following dependencies are exported along with this package:
 
-* [tabbed_view (1.16.0)](https://pub.dev/packages/tabbed_view) to provide grouping of widgets into tabs
+* [tabbed_view (1.18.0)](https://pub.dev/packages/tabbed_view) to provide grouping of widgets into tabs
 * [multi_split_view (2.4.0)](https://pub.dev/packages/multi_split_view) to provide horizontal or vertical split views
 
 ## Usage
