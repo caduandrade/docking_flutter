@@ -38,7 +38,7 @@ void removeItem(DockingLayout layout, DockingItem item) {
   testOldAreas(areas, disposedItem: item);
 }
 
-void moveItem(DockingLayout layout, DockingItem draggedItem,
+void moveItemToPosition(DockingLayout layout, DockingItem draggedItem,
     DropArea targetArea, DropPosition dropPosition) {
   List<DockingArea> areas = layout.layoutAreas();
   layout.moveItem(
@@ -48,10 +48,25 @@ void moveItem(DockingLayout layout, DockingItem draggedItem,
   testOldAreas(areas);
 }
 
-void addItemOnRoot(
+void moveItemToIndex(DockingLayout layout, DockingItem draggedItem,
+    DropArea targetArea, int dropIndex) {
+  List<DockingArea> areas = layout.layoutAreas();
+  layout.moveItem(
+      draggedItem: draggedItem, targetArea: targetArea, dropIndex: dropIndex);
+  testOldAreas(areas);
+}
+
+void addItemOnRootPosition(
     DockingLayout layout, DockingItem newItem, DropPosition dropPosition) {
   List<DockingArea> areas = layout.layoutAreas();
   layout.addItemOnRoot(newItem: newItem, dropPosition: dropPosition);
+  testOldAreas(areas);
+}
+
+void addItemOnRootIndex(
+    DockingLayout layout, DockingItem newItem, int dropIndex) {
+  List<DockingArea> areas = layout.layoutAreas();
+  layout.addItemOnRoot(newItem: newItem, dropIndex: dropIndex);
   testOldAreas(areas);
 }
 

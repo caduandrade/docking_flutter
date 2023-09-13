@@ -1,30 +1,27 @@
 import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
+import 'package:tabbed_view/tabbed_view.dart';
 
-/// Represents a abstract draggable widget.
-abstract class DraggableWidget extends StatelessWidget {
-  DraggableWidget({Key? key, required this.dockingDrag}) : super(key: key);
-
-  final DockingDrag dockingDrag;
-
-  Draggable buildDraggable(DockingItem item, Widget child) {
+/// Represents a draggable widget mixin.
+@internal
+mixin DraggableConfigMixin {
+  DraggableConfig buildDraggableConfig(
+      {required DockingDrag dockingDrag, required TabData tabData}) {
+    DockingItem item = tabData.value;
     String name = item.name != null ? item.name! : '';
-    return Draggable<DockingItem>(
-        data: item,
+    return DraggableConfig(
+        feedback: buildFeedback(name),
+        dragAnchorStrategy: (Draggable<Object> draggable, BuildContext context,
+                Offset position) =>
+            Offset(20, 20),
         onDragStarted: () {
           dockingDrag.enable = true;
         },
         onDragCompleted: () {
           dockingDrag.enable = false;
-        },
-        onDragEnd: (details) {},
-        onDraggableCanceled: (Velocity velocity, Offset offset) {},
-        child: child,
-        feedback: buildFeedback(name),
-        dragAnchorStrategy: (Draggable<Object> draggable, BuildContext context,
-                Offset position) =>
-            Offset(20, 20));
+        });
   }
 
   Widget buildFeedback(String name) {

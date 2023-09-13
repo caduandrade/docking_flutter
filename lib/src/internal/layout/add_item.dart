@@ -8,11 +8,13 @@ class AddItem extends DropItem {
   AddItem(
       {required DockingItem newItem,
       required DropArea targetArea,
-      required DropPosition dropPosition})
+      DropPosition? dropPosition,
+      int? dropIndex})
       : super(
             dropItem: newItem,
             targetArea: targetArea,
-            dropPosition: dropPosition);
+            dropPosition: dropPosition,
+            dropIndex: dropIndex);
 
   @override
   void validateDropItem(DockingLayout layout, DockingArea area) {

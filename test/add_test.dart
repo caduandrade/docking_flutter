@@ -9,7 +9,7 @@ void main() {
     test('dropItem == targetArea', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
-      expect(() => addItemOnRoot(layout, item, DropPosition.left),
+      expect(() => addItemOnRootPosition(layout, item, DropPosition.left),
           sameDraggedItemAndTargetAreaException());
     });
 
@@ -27,35 +27,42 @@ void main() {
     test('item on root - left', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
-      addItemOnRoot(layout, dockingItem('b'), DropPosition.left);
+      addItemOnRootPosition(layout, dockingItem('b'), DropPosition.left);
       testHierarchy(layout, 'R(Ib,Ia)');
     });
 
     test('item on root - right', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
-      addItemOnRoot(layout, dockingItem('b'), DropPosition.right);
+      addItemOnRootPosition(layout, dockingItem('b'), DropPosition.right);
       testHierarchy(layout, 'R(Ia,Ib)');
     });
 
     test('item on root - top', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
-      addItemOnRoot(layout, dockingItem('b'), DropPosition.top);
+      addItemOnRootPosition(layout, dockingItem('b'), DropPosition.top);
       testHierarchy(layout, 'C(Ib,Ia)');
     });
 
     test('item on root - bottom', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
-      addItemOnRoot(layout, dockingItem('b'), DropPosition.bottom);
+      addItemOnRootPosition(layout, dockingItem('b'), DropPosition.bottom);
       testHierarchy(layout, 'C(Ia,Ib)');
     });
 
-    test('item on root - center', () {
+    test('item on root - index 0', () {
       DockingItem item = dockingItem('a');
       DockingLayout layout = DockingLayout(root: item);
-      addItemOnRoot(layout, dockingItem('b'), DropPosition.center);
+      addItemOnRootIndex(layout, dockingItem('b'), 0);
+      testHierarchy(layout, 'T(Ib,Ia)');
+    });
+
+    test('item on root - index 1', () {
+      DockingItem item = dockingItem('a');
+      DockingLayout layout = DockingLayout(root: item);
+      addItemOnRootIndex(layout, dockingItem('b'), 1);
       testHierarchy(layout, 'T(Ia,Ib)');
     });
 

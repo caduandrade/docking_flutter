@@ -8,11 +8,13 @@ class MoveItem extends DropItem {
   MoveItem(
       {required DockingItem draggedItem,
       required DropArea targetArea,
-      required DropPosition dropPosition})
+      required DropPosition? dropPosition,
+      required int? dropIndex})
       : super(
             dropItem: draggedItem,
             targetArea: targetArea,
-            dropPosition: dropPosition);
+            dropPosition: dropPosition,
+            dropIndex: dropIndex);
 
   @override
   void validate(DockingLayout layout, DockingArea area) {
