@@ -1,3 +1,7 @@
+## 1.13.0
+
+* Allow `DockingTabs` to be initialized with only 1 child.
+
 ## 1.12.0
 
 * `tabbed_view` dependency updated to 1.18.0

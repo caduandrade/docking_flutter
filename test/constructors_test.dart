@@ -28,7 +28,6 @@ void main() {
     });
 
     test('tabs children count', () {
-      expect(() => DockingTabs([dockingItem('a')]), throwsArgumentError);
       expect(() => DockingTabs([]), throwsArgumentError);
     });
   });

@@ -82,6 +82,18 @@ void main() {
       testHierarchy(layout, 'Ib');
     });
 
+    test('tabs single item', () {
+      DockingItem itemA = dockingItem('a');
+      DockingTabs tabs = DockingTabs([itemA]);
+      DockingLayout layout = DockingLayout(root: tabs);
+
+      testHierarchy(layout, 'T(Ia)');
+
+      removeItem(layout, itemA);
+
+      testHierarchy(layout, '');
+    });
+
     test('tabs item 1', () {
       DockingItem itemA = dockingItem('a');
       DockingItem itemB = dockingItem('b');

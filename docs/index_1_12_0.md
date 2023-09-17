@@ -1,4 +1,4 @@
-# Docking (1.13.0)
+# Docking (1.12.0)
 
 Layout for placing widgets in docking areas and arrange them into split and tabbed views.
 
@@ -38,7 +38,6 @@ The following dependencies are exported along with this package:
 * Theme
   * [Divider](#divider-theme)
   * [Tabs](#tabs-theme)
-* [Old versions](#old-versions)
 * [Support this project](#support-this-project)
 
 ## Layout
@@ -409,10 +408,6 @@ Read more information about themes on [tabbed_view](https://pub.dev/packages/tab
 ```
 
 ![](tabs_theme_v2.png)
-
-## Old versions
-
-Find documentation for older versions [here](old_versions.md).
 
 ## Support this project
 
