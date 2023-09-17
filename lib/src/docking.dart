@@ -108,6 +108,17 @@ class _DockingState extends State<Docking> {
     } else if (area is DockingColumn) {
       return _column(context, area);
     } else if (area is DockingTabs) {
+      if (area.childrenCount == 1) {
+        return DockingItemWidget(
+            layout: widget.layout!,
+            dockingDrag: _dockingDrag,
+            item: area.childAt(0),
+            onItemSelection: widget.onItemSelection,
+            itemCloseInterceptor: widget.itemCloseInterceptor,
+            onItemClose: widget.onItemClose,
+            dockingButtonsBuilder: widget.dockingButtonsBuilder,
+            maximizable: widget.maximizableItem);
+      }
       return DockingTabsWidget(
           layout: widget.layout!,
           dockingDrag: _dockingDrag,

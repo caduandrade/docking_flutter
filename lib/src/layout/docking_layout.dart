@@ -155,9 +155,6 @@ abstract class DockingParentArea extends DockingArea {
         throw ArgumentError('DockingParentArea cannot have disposed child');
       }
     }
-    if (this._children.length < 2) {
-      throw ArgumentError('Insufficient number of children');
-    }
   }
 
   final List<DockingArea> _children;
@@ -320,6 +317,9 @@ class DockingRow extends DockingParentArea {
             minimalWeight: minimalWeight,
             minimalSize: minimalSize) {
     controller = MultiSplitViewController(areas: children);
+    if (this._children.length < 2) {
+      throw ArgumentError('Insufficient number of children');
+    }
   }
 
   /// Builds a [DockingRow].
@@ -364,6 +364,9 @@ class DockingColumn extends DockingParentArea {
             minimalWeight: minimalWeight,
             minimalSize: minimalSize) {
     controller = MultiSplitViewController(areas: children);
+    if (this._children.length < 2) {
+      throw ArgumentError('Insufficient number of children');
+    }
   }
 
   /// Builds a [DockingColumn].
@@ -409,7 +412,11 @@ class DockingTabs extends DockingParentArea with DropArea {
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
-            minimalSize: minimalSize);
+            minimalSize: minimalSize) {
+    if (this._children.length == 0) {
+      throw ArgumentError('DockingTabs cannot be empty');
+    }
+  }
 
   final bool? maximizable;
 
