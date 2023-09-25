@@ -57,8 +57,8 @@ class LayoutParser {
   /// V1:1:1(1;I;.2;;100;5;my_id;7;my_name;8;my_value;T;;F)
   String stringify(
       {required DockingLayout layout,
-       IdToString? idToString,
-       ValueToString? valueToString}) {
+      IdToString? idToString,
+      ValueToString? valueToString}) {
     final List<DockingArea> areas = layout.layoutAreas();
 
     String str = 'V1:${areas.length}:';
@@ -197,6 +197,9 @@ class LayoutParser {
     List<String> indexes = [];
     for (int i = 0; i < parent.childrenCount; i++) {
       final DockingArea child = parent.childAt(i);
+      if (child.index == -1) {
+        throw StateError('Child does not belong to any layout.');
+      }
       indexes.add(child.index.toString());
     }
     return indexes.join(',');
