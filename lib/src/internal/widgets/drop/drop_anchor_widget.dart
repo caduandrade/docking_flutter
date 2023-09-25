@@ -1,5 +1,6 @@
 import 'package:docking/src/internal/debug.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/layout/drop_position.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:tabbed_view/tabbed_view.dart';

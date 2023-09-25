@@ -1,5 +1,6 @@
 import 'package:docking/src/internal/layout/layout_modifier.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/layout/drop_position.dart';
 import 'package:meta/meta.dart';
 
 /// Drops a [DockingItem] in the layout.

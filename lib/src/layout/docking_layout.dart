@@ -3,6 +3,8 @@ import 'package:docking/src/internal/layout/layout_modifier.dart';
 import 'package:docking/src/internal/layout/move_item.dart';
 import 'package:docking/src/internal/layout/remove_item.dart';
 import 'package:docking/src/internal/layout/remove_item_by_id.dart';
+import 'package:docking/src/layout/docking_area_type.dart';
+import 'package:docking/src/layout/drop_position.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:multi_split_view/multi_split_view.dart';
@@ -110,6 +112,7 @@ abstract class DockingArea extends Area {
     return nextIndex;
   }
 
+  /// Converts layout's hierarchical structure to a debug String.
   String hierarchy(
       {bool indexInfo = false,
       bool levelInfo = false,
@@ -131,6 +134,8 @@ abstract class DockingArea extends Area {
     }
     return str;
   }
+
+  String get areaAcronym;
 }
 
 /// Represents an abstract area for a collection of widgets.
@@ -300,6 +305,9 @@ class DockingItem extends DockingArea with DropArea {
     }
     return str;
   }
+
+  @override
+  String get areaAcronym => 'I';
 }
 
 /// Represents an area for a collection of widgets.
@@ -347,6 +355,9 @@ class DockingRow extends DockingParentArea {
 
   @override
   DockingAreaType get type => DockingAreaType.row;
+
+  @override
+  String get areaAcronym => 'R';
 }
 
 /// Represents an area for a collection of widgets.
@@ -394,6 +405,9 @@ class DockingColumn extends DockingParentArea {
 
   @override
   DockingAreaType get type => DockingAreaType.column;
+
+  @override
+  String get areaAcronym => 'C';
 }
 
 /// Represents an area for a collection of widgets.
@@ -437,14 +451,10 @@ class DockingTabs extends DockingParentArea with DropArea {
 
   @override
   DockingAreaType get type => DockingAreaType.tabs;
+
+  @override
+  String get areaAcronym => 'T';
 }
-
-/// Represents the [DockingArea] type.
-enum DockingAreaType { item, tabs, row, column }
-
-/// Represents all positions available for a drop event that will
-/// rearrange the layout.
-enum DropPosition { top, bottom, left, right }
 
 /// Represents a layout.
 ///
@@ -501,7 +511,7 @@ class DockingLayout extends ChangeNotifier {
   /// Gets the maximized area in this layout.
   DockingArea? get maximizedArea => _maximizedArea;
 
-  /// Converts layout's hierarchical structure to String.
+  /// Converts layout's hierarchical structure to a debug String.
   String hierarchy(
       {bool indexInfo = false,
       bool levelInfo = false,
