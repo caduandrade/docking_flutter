@@ -101,11 +101,16 @@ class LayoutParser {
   String stringifyArea({required DockingArea area}) {
     List<String> data = [];
     // WEIGHT
-    data.add('${area.minimalWeight?.toString()}');
+    final String weight = area.weight != null ? area.weight.toString() : '';
+    data.add(weight);
     // MINIMAL_SIZE
-    data.add('${area.minimalWeight?.toString()}');
+    final String minimalWeight =
+        area.minimalWeight != null ? area.minimalWeight.toString() : '';
+    data.add(minimalWeight);
     // MINIMAL_SIZE
-    data.add('${area.minimalSize?.toString()}');
+    final String minimalSize =
+        area.minimalSize != null ? area.minimalSize!.toStringAsFixed(0) : '';
+    data.add(minimalSize);
 
     return data.join(';');
   }
