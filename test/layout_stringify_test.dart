@@ -5,6 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'exceptions.dart';
 import 'utils.dart';
 
+class IdClass {
+  IdClass(this.value);
+
+  final String value;
+}
+
 void main() {
   final LayoutParser parser = LayoutParser();
 
@@ -125,6 +131,57 @@ void main() {
               idToString: LayoutParser.defaultIdToString,
               valueToString: LayoutParser.defaultValueToString),
           '3;id;;2;f;;6;value;;T;;F');
+    });
+    test('stringifyItem - idToString', () {
+      DockingItem itemA = DockingItem(id: 1.2, widget: Container());
+      DockingItem itemB = DockingItem(id: null, widget: Container());
+      DockingItem itemC = DockingItem(widget: Container());
+      DockingItem itemD =
+          DockingItem(id: IdClass('id-class'), widget: Container());
+
+      DockingRow row = DockingRow([itemA, itemB, itemC, itemD]);
+
+      DockingLayout(root: row);
+
+      expect(
+          parser.stringifyItem(
+              item: itemA,
+              idToString: (id) => (id + 1).toString(),
+              valueToString: LayoutParser.defaultValueToString),
+          '3;2.2;0;;0;;T;;F');
+      expect(
+          parser.stringifyItem(
+              item: itemB,
+              idToString: (id) {
+                if (id == null) {
+                  return 'X';
+                }
+                return id.toString();
+              },
+              valueToString: LayoutParser.defaultValueToString),
+          '1;X;0;;0;;T;;F');
+      expect(
+          parser.stringifyItem(
+              item: itemC,
+              idToString: (id) {
+                if (id == null) {
+                  return 'Y';
+                }
+                return id.toString();
+              },
+              valueToString: LayoutParser.defaultValueToString),
+          '1;Y;0;;0;;T;;F');
+      expect(
+          parser.stringifyItem(
+              item: itemD,
+              idToString: (id) {
+                if (id is IdClass) {
+                  return id.value;
+                }
+                return '';
+              },
+              valueToString: LayoutParser.defaultValueToString),
+          '8;id-class;0;;0;;T;;F');
     });
   });
 }
