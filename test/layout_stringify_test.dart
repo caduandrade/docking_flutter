@@ -55,5 +55,76 @@ void main() {
       expect(parser.stringifyArea(area: itemD), ';0.2;');
       expect(parser.stringifyArea(area: itemE), '0.3;0.2;');
     });
+    test('stringifyTabs', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingItem itemC = dockingItem('c');
+      DockingItem itemD = dockingItem('d');
+      DockingItem itemE = dockingItem('e');
+      DockingRow row = DockingRow([itemB, itemC]);
+      DockingTabs tabs = DockingTabs([itemD, itemE], maximizable: false);
+      DockingColumn column = DockingColumn([itemA, row, tabs]);
+
+      DockingLayout(root: column);
+
+      expect(parser.stringifyTabs(tabs: tabs), 'F;F');
+    });
+    test('stringifyItem', () {
+      DockingItem itemA = DockingItem(name: 'a', widget: Container());
+      DockingItem itemB =
+          DockingItem(id: 'id-b', name: 'b', widget: Container());
+      DockingItem itemC =
+          DockingItem(name: 'c', value: 'value-c', widget: Container());
+      DockingItem itemD = DockingItem(
+          id: 'id-d', name: 'd', value: 'value-d', widget: Container());
+      DockingItem itemE = DockingItem(
+          name: 'e',
+          closable: false,
+          maximizable: true,
+          maximized: true,
+          widget: Container());
+      DockingItem itemF = DockingItem(
+          id: 'id;', name: 'f;', value: 'value;', widget: Container());
+      DockingRow row = DockingRow([itemA, itemB, itemC, itemD, itemE, itemF]);
+
+      DockingLayout(root: row);
+
+      expect(
+          parser.stringifyItem(
+              item: itemA,
+              idToString: LayoutParser.defaultIdToString,
+              valueToString: LayoutParser.defaultValueToString),
+          '0;;1;a;0;;T;;F');
+      expect(
+          parser.stringifyItem(
+              item: itemB,
+              idToString: LayoutParser.defaultIdToString,
+              valueToString: LayoutParser.defaultValueToString),
+          '4;id-b;1;b;0;;T;;F');
+      expect(
+          parser.stringifyItem(
+              item: itemC,
+              idToString: LayoutParser.defaultIdToString,
+              valueToString: LayoutParser.defaultValueToString),
+          '0;;1;c;7;value-c;T;;F');
+      expect(
+          parser.stringifyItem(
+              item: itemD,
+              idToString: LayoutParser.defaultIdToString,
+              valueToString: LayoutParser.defaultValueToString),
+          '4;id-d;1;d;7;value-d;T;;F');
+      expect(
+          parser.stringifyItem(
+              item: itemE,
+              idToString: LayoutParser.defaultIdToString,
+              valueToString: LayoutParser.defaultValueToString),
+          '0;;1;e;0;;F;T;T');
+      expect(
+          parser.stringifyItem(
+              item: itemF,
+              idToString: LayoutParser.defaultIdToString,
+              valueToString: LayoutParser.defaultValueToString),
+          '3;id;;2;f;;6;value;;T;;F');
+    });
   });
 }
