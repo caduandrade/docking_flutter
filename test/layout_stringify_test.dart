@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'exceptions.dart';
 import 'utils.dart';
 
-class IdClass {
-  IdClass(this.value);
+class CustomClass {
+  CustomClass(this.value);
 
   final String value;
 }
@@ -137,7 +137,7 @@ void main() {
       DockingItem itemB = DockingItem(id: null, widget: Container());
       DockingItem itemC = DockingItem(widget: Container());
       DockingItem itemD =
-          DockingItem(id: IdClass('id-class'), widget: Container());
+          DockingItem(id: CustomClass('id-class'), widget: Container());
 
       DockingRow row = DockingRow([itemA, itemB, itemC, itemD]);
 
@@ -175,13 +175,45 @@ void main() {
           parser.stringifyItem(
               item: itemD,
               idToString: (id) {
-                if (id is IdClass) {
+                if (id is CustomClass) {
                   return id.value;
                 }
                 return '';
               },
               valueToString: LayoutParser.defaultValueToString),
           '8;id-class;0;;0;;T;;F');
+    });
+    test('stringifyItem - valueToString', () {
+      DockingItem itemA =
+          DockingItem(value: CustomClass('value'), widget: Container());
+      DockingItem itemB = DockingItem(value: 1.5, widget: Container());
+
+      DockingRow row = DockingRow([itemA, itemB]);
+
+      DockingLayout(root: row);
+
+      expect(
+          parser.stringifyItem(
+              item: itemA,
+              idToString: LayoutParser.defaultIdToString,
+              valueToString: (value) {
+                if (value is CustomClass) {
+                  return value.value;
+                }
+                return '';
+              }),
+          '0;;0;;5;value;T;;F');
+      expect(
+          parser.stringifyItem(
+              item: itemB,
+              idToString: LayoutParser.defaultIdToString,
+              valueToString: (value) {
+                if (value is double) {
+                  return (value + 2).toString();
+                }
+                return '';
+              }),
+          '0;;0;;3;3.5;T;;F');
     });
   });
 }
