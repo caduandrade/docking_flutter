@@ -69,14 +69,16 @@ class LayoutParser {
       final DockingArea area = areas[i];
       str += '${area.index}(';
       str += '${area.areaAcronym};';
-      str += '${stringifyArea(area: area)};';
+      str += '${stringifyArea(area: area)}';
 
       if (area is DockingItem) {
+        str += ';';
         str += stringifyItem(
             item: area,
             idToString: idToString ?? defaultIdToString,
             valueToString: valueToString ?? defaultValueToString);
       } else if (area is DockingTabs) {
+        str += ';';
         str += stringifyTabs(tabs: area);
       }
 

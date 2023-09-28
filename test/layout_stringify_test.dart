@@ -215,5 +215,18 @@ void main() {
               }),
           '0;;0;;3;3.5;T;;F');
     });
+    test('stringify - simple', () {
+      DockingItem itemA =
+          DockingItem(id: 'idA', value: 'valueA', widget: Container());
+      DockingItem itemB = DockingItem(
+          id: 'idB', value: 'valueB', minimalWeight: .5, widget: Container());
+
+      DockingRow row = DockingRow([itemA, itemB], weight: 1, minimalSize: 50);
+
+      DockingLayout layout = DockingLayout(root: row);
+
+      expect(parser.stringify(layout: layout),
+          'V1:3:1(R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)');
+    });
   });
 }
