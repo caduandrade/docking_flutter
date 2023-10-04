@@ -1,9 +1,22 @@
 import 'package:docking/src/layout/docking_layout.dart';
-import 'package:docking/src/layout/typedef_parsers.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/widgets.dart';
 
 /// Parser from DockingLayout to String.
-class LayoutParser {
+abstract class LayoutParser {
+  late String _layout;
+
+  /// Converts ID to String.
+  String idToString(dynamic id);
+
+  /// Converts String to ID.
+  dynamic stringToId(String id);
+
+  /// Converts value to String.
+  String valueToString(dynamic value);
+
+  /// Converts String to value.
+  dynamic stringToValue(String value);
+
   /// Converts a layout into a String to be stored.
   ///
   /// The String will have the following structure:
@@ -55,10 +68,7 @@ class LayoutParser {
   ///
   /// Example:
   /// V1:1:1(1;I;.2;;100;5;my_id;7;my_name;8;my_value;T;;F)
-  String stringify(
-      {required DockingLayout layout,
-      IdToString? idToString,
-      ValueToString? valueToString}) {
+  String stringify({required DockingLayout layout}) {
     final List<DockingArea> areas = layout.layoutAreas();
 
     String str = 'V1:${areas.length}:';
@@ -73,10 +83,7 @@ class LayoutParser {
 
       if (area is DockingItem) {
         str += ';';
-        str += stringifyItem(
-            item: area,
-            idToString: idToString ?? defaultIdToString,
-            valueToString: valueToString ?? defaultValueToString);
+        str += stringifyItem(item: area);
       } else if (area is DockingTabs) {
         str += ';';
         str += stringifyTabs(tabs: area);
@@ -134,10 +141,7 @@ class LayoutParser {
   /// Example:
   /// 5;my_id;7;my_name;8;my_value;T;;F
   @visibleForTesting
-  String stringifyItem(
-      {required DockingItem item,
-      required IdToString idToString,
-      required ValueToString valueToString}) {
+  String stringifyItem({required DockingItem item}) {
     List<String> data = [];
 
     // ID_LENGTH and ID
@@ -212,19 +216,213 @@ class LayoutParser {
     return indexes.join(',');
   }
 
-  /// Default conversion from ID to String.
-  static String defaultIdToString(dynamic id) {
-    if (id == null) {
-      return '';
+  // 'V1:3:1(R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
+  DockingLayout layoutFrom(String layout) {
+    if (layout.startsWith('V1:')) {
+      _layout = layout.substring(3);
+
+      // '3:1(R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
+      final int areasLength = _removeFirstRequiredInt(
+          stop: ':',
+          errorMessage: 'The number of areas could not be identified.');
+
+      Map<int, AreaConfig> areas = {};
+
+      // '1(R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
+      for (int areaIndex = 1; areaIndex <= areasLength; areaIndex++) {
+        final int indexFromLayout = _removeFirstRequiredInt(
+            stop: '(', errorMessage: 'The area index could not be identified.');
+        if (areaIndex != indexFromLayout) {
+          throw StateError('Unexpected index: $indexFromLayout');
+        }
+        // 'R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
+        final String acronym = _removeFirstToken(
+            stop: ';',
+            errorMessage: 'The area acronym could not be identified.');
+        // '1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
+        final double? weight = _removeFirstOptionalDouble(
+            stop: ';', errorMessage: 'Invalid weight.');
+        final double? minimalWeight = _removeFirstOptionalDouble(
+            stop: ';', errorMessage: 'Invalid minimal weight.');
+        final double? minimalSize = _removeFirstOptionalDouble(
+            stop: ';', errorMessage: 'Invalid minimal size.');
+        // '2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
+
+        if (acronym == 'I') {
+          //3;idA;0;;6;valueA;T;;F)
+        } else if (acronym == 'R') {
+          List<int> childrenIndexes = _removeChildrenIndexes();
+          areas[areaIndex] = RowConfig(
+              weight: weight,
+              minimalWeight: minimalWeight,
+              minimalSize: minimalSize,
+              childrenIndexes: childrenIndexes);
+        } else if (acronym == 'C') {
+          List<int> childrenIndexes = _removeChildrenIndexes();
+          areas[areaIndex] = ColumnConfig(
+              weight: weight,
+              minimalWeight: minimalWeight,
+              minimalSize: minimalSize,
+              childrenIndexes: childrenIndexes);
+        } else if (acronym == 'T') {
+          List<int> childrenIndexes = _removeChildrenIndexes();
+        } else {
+          throw StateError('Invalid area acronym: $acronym');
+        }
+
+        // ',2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
+        if (areaIndex == areasLength - 1) {
+          if (_removeNext() != ',') {
+            throw StateError('?????');
+          }
+        }
+      }
+
+      if (_layout.isNotEmpty) {
+        throw StateError('?????');
+      }
+
+      return DockingLayout();
+    } else {
+      if (layout.startsWith('V')) {
+        throw StateError('Unsupported layout version.');
+      }
+      throw StateError('Unable to identify layout version.');
     }
-    return id.toString();
   }
 
-  /// Default conversion from ID to String.
-  static String defaultValueToString(dynamic value) {
-    if (value == null) {
-      return '';
+  String _removeNext() {
+    if (_layout.isEmpty) {
+      throw new StateError('Insufficient characters.');
     }
-    return value.toString();
+    final String next = _layout.substring(0, 1);
+    _layout = _layout.substring(1);
+    return next;
   }
+
+  List<int> _removeChildrenIndexes() {
+    final String token =
+        _removeFirstToken(stop: ')', errorMessage: 'Invalid children indexes.');
+    if (token.isEmpty) {
+      throw StateError('Parent without child.');
+    }
+    List<int> indexes = [];
+    token.split(',').forEach((str) {
+      int? index = int.tryParse(str);
+      if (index == null) {
+        throw StateError('Invalid index: $str');
+      }
+      indexes.add(index);
+    });
+    return indexes;
+  }
+
+  double? _removeFirstOptionalDouble(
+      {required String stop, required String errorMessage}) {
+    final String token =
+        _removeFirstToken(stop: stop, errorMessage: errorMessage);
+    if (token.isEmpty) {
+      return null;
+    }
+    final double? number = double.tryParse(token);
+    if (number == null) {
+      throw StateError(errorMessage);
+    }
+    return number;
+  }
+
+  int _removeFirstRequiredInt(
+      {required String stop, required String errorMessage}) {
+    final String token =
+        _removeFirstToken(stop: stop, errorMessage: errorMessage);
+    final int? number = int.tryParse(token);
+    if (number == null) {
+      throw StateError(errorMessage);
+    }
+    return number;
+  }
+
+  String _removeFirstToken(
+      {required String stop, required String errorMessage}) {
+    final int index = _layout.indexOf(stop);
+    if (index == -1) {
+      throw StateError(errorMessage);
+    }
+    final String token = _layout.substring(0, index);
+    _layout = _layout.substring(index + 1);
+    return token;
+  }
+}
+
+mixin DefaultLayoutParserMixin {
+  /// Default conversion from ID to String.
+  String idToString(dynamic id) {
+    return id == null ? '' : id.toString();
+  }
+
+  /// Default conversion from value to String.
+  String valueToString(dynamic value) {
+    return value == null ? '' : value.toString();
+  }
+
+  /// Default conversion from String to ID.
+  dynamic stringToId(String id) {
+    return id == '' ? null : id;
+  }
+
+  /// Default conversion from String to value.
+  dynamic stringToValue(String value) {
+    return value == '' ? null : value;
+  }
+}
+
+class AreaConfig {
+  AreaConfig(
+      {required this.weight,
+      required this.minimalWeight,
+      required this.minimalSize});
+
+  double? weight;
+  double? minimalWeight;
+  double? minimalSize;
+}
+
+class ParentConfig extends AreaConfig {
+  ParentConfig(
+      {required double? weight,
+      required double? minimalWeight,
+      required double? minimalSize,
+      required this.childrenIndexes})
+      : super(
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize);
+
+  List<int> childrenIndexes;
+}
+
+class RowConfig extends ParentConfig {
+  RowConfig(
+      {required double? weight,
+      required double? minimalWeight,
+      required double? minimalSize,
+      required List<int> childrenIndexes})
+      : super(
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize,
+            childrenIndexes: childrenIndexes);
+}
+
+class ColumnConfig extends ParentConfig {
+  ColumnConfig(
+      {required double? weight,
+      required double? minimalWeight,
+      required double? minimalSize,
+      required List<int> childrenIndexes})
+      : super(
+            weight: weight,
+            minimalWeight: minimalWeight,
+            minimalSize: minimalSize,
+            childrenIndexes: childrenIndexes);
 }

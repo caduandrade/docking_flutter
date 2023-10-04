@@ -5,15 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'exceptions.dart';
 import 'utils.dart';
 
-class CustomClass {
-  CustomClass(this.value);
-
-  final String value;
-}
-
 void main() {
-  final LayoutParser parser = LayoutParser();
-
   group('LayoutParser - stringify', () {
     test('stringifyParent', () {
       DockingItem itemA = dockingItem('a');
@@ -24,6 +16,8 @@ void main() {
       DockingRow row = DockingRow([itemB, itemC]);
       DockingTabs tabs = DockingTabs([itemD, itemE]);
       DockingColumn column = DockingColumn([itemA, row, tabs]);
+
+      final LayoutParser parser = DefaultLayoutParser();
 
       expect(() => parser.stringifyParent(parent: column),
           childNotBelongAnyLayoutException());
@@ -52,6 +46,8 @@ void main() {
 
       DockingLayout(root: column);
 
+      final LayoutParser parser = DefaultLayoutParser();
+
       expect(parser.stringifyArea(area: column), ';0.5;');
       expect(parser.stringifyArea(area: row), '0.4;;');
       expect(parser.stringifyArea(area: tabs), ';;200');
@@ -72,6 +68,8 @@ void main() {
       DockingColumn column = DockingColumn([itemA, row, tabs]);
 
       DockingLayout(root: column);
+
+      final LayoutParser parser = DefaultLayoutParser();
 
       expect(parser.stringifyTabs(tabs: tabs), 'F;F');
     });
@@ -95,42 +93,14 @@ void main() {
 
       DockingLayout(root: row);
 
-      expect(
-          parser.stringifyItem(
-              item: itemA,
-              idToString: LayoutParser.defaultIdToString,
-              valueToString: LayoutParser.defaultValueToString),
-          '0;;1;a;0;;T;;F');
-      expect(
-          parser.stringifyItem(
-              item: itemB,
-              idToString: LayoutParser.defaultIdToString,
-              valueToString: LayoutParser.defaultValueToString),
-          '4;id-b;1;b;0;;T;;F');
-      expect(
-          parser.stringifyItem(
-              item: itemC,
-              idToString: LayoutParser.defaultIdToString,
-              valueToString: LayoutParser.defaultValueToString),
-          '0;;1;c;7;value-c;T;;F');
-      expect(
-          parser.stringifyItem(
-              item: itemD,
-              idToString: LayoutParser.defaultIdToString,
-              valueToString: LayoutParser.defaultValueToString),
-          '4;id-d;1;d;7;value-d;T;;F');
-      expect(
-          parser.stringifyItem(
-              item: itemE,
-              idToString: LayoutParser.defaultIdToString,
-              valueToString: LayoutParser.defaultValueToString),
-          '0;;1;e;0;;F;T;T');
-      expect(
-          parser.stringifyItem(
-              item: itemF,
-              idToString: LayoutParser.defaultIdToString,
-              valueToString: LayoutParser.defaultValueToString),
-          '3;id;;2;f;;6;value;;T;;F');
+      final LayoutParser parser = DefaultLayoutParser();
+
+      expect(parser.stringifyItem(item: itemA), '0;;1;a;0;;T;;F');
+      expect(parser.stringifyItem(item: itemB), '4;id-b;1;b;0;;T;;F');
+      expect(parser.stringifyItem(item: itemC), '0;;1;c;7;value-c;T;;F');
+      expect(parser.stringifyItem(item: itemD), '4;id-d;1;d;7;value-d;T;;F');
+      expect(parser.stringifyItem(item: itemE), '0;;1;e;0;;F;T;T');
+      expect(parser.stringifyItem(item: itemF), '3;id;;2;f;;6;value;;T;;F');
     });
     test('stringifyItem - idToString', () {
       DockingItem itemA = DockingItem(id: 1.2, widget: Container());
@@ -143,45 +113,13 @@ void main() {
 
       DockingLayout(root: row);
 
-      expect(
-          parser.stringifyItem(
-              item: itemA,
-              idToString: (id) => (id + 1).toString(),
-              valueToString: LayoutParser.defaultValueToString),
-          '3;2.2;0;;0;;T;;F');
-      expect(
-          parser.stringifyItem(
-              item: itemB,
-              idToString: (id) {
-                if (id == null) {
-                  return 'X';
-                }
-                return id.toString();
-              },
-              valueToString: LayoutParser.defaultValueToString),
-          '1;X;0;;0;;T;;F');
-      expect(
-          parser.stringifyItem(
-              item: itemC,
-              idToString: (id) {
-                if (id == null) {
-                  return 'Y';
-                }
-                return id.toString();
-              },
-              valueToString: LayoutParser.defaultValueToString),
-          '1;Y;0;;0;;T;;F');
-      expect(
-          parser.stringifyItem(
-              item: itemD,
-              idToString: (id) {
-                if (id is CustomClass) {
-                  return id.value;
-                }
-                return '';
-              },
-              valueToString: LayoutParser.defaultValueToString),
-          '8;id-class;0;;0;;T;;F');
+      LayoutParser parser = CustomIdParser();
+
+      expect(parser.stringifyItem(item: itemA), '3;2.2;0;;0;;T;;F');
+
+      parser = CustomIdClassParser();
+
+      expect(parser.stringifyItem(item: itemD), '8;id-class;0;;0;;T;;F');
     });
     test('stringifyItem - valueToString', () {
       DockingItem itemA =
@@ -192,28 +130,13 @@ void main() {
 
       DockingLayout(root: row);
 
-      expect(
-          parser.stringifyItem(
-              item: itemA,
-              idToString: LayoutParser.defaultIdToString,
-              valueToString: (value) {
-                if (value is CustomClass) {
-                  return value.value;
-                }
-                return '';
-              }),
-          '0;;0;;5;value;T;;F');
-      expect(
-          parser.stringifyItem(
-              item: itemB,
-              idToString: LayoutParser.defaultIdToString,
-              valueToString: (value) {
-                if (value is double) {
-                  return (value + 2).toString();
-                }
-                return '';
-              }),
-          '0;;0;;3;3.5;T;;F');
+      LayoutParser parser = CustomValueParser();
+
+      expect(parser.stringifyItem(item: itemB), '0;;0;;3;3.5;T;;F');
+
+      parser = CustomValueClassParser();
+
+      expect(parser.stringifyItem(item: itemA), '0;;0;;5;value;T;;F');
     });
     test('stringify - simple', () {
       DockingItem itemA =
@@ -225,8 +148,70 @@ void main() {
 
       DockingLayout layout = DockingLayout(root: row);
 
+      LayoutParser parser = DefaultLayoutParser();
+
       expect(parser.stringify(layout: layout),
           'V1:3:1(R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)');
     });
   });
+}
+
+class CustomClass {
+  CustomClass(this.value);
+
+  final String value;
+}
+
+class DefaultLayoutParser extends LayoutParser with DefaultLayoutParserMixin {}
+
+class CustomIdParser extends DefaultLayoutParser {
+  @override
+  String idToString(dynamic id) {
+    return (id + 1).toString();
+  }
+
+  @override
+  dynamic stringToId(String id) {
+    double v = double.parse(id);
+    return v - 1;
+  }
+}
+
+class CustomIdClassParser extends DefaultLayoutParser {
+  @override
+  String idToString(dynamic id) {
+    CustomClass customClass = id;
+    return customClass.value;
+  }
+
+  @override
+  dynamic stringToId(String id) {
+    return CustomClass(id);
+  }
+}
+
+class CustomValueParser extends DefaultLayoutParser {
+  @override
+  String valueToString(dynamic value) {
+    return (value + 2).toString();
+  }
+
+  @override
+  dynamic stringToValue(String value) {
+    double v = double.parse(value);
+    return v - 2;
+  }
+}
+
+class CustomValueClassParser extends DefaultLayoutParser {
+  @override
+  String valueToString(dynamic value) {
+    CustomClass customClass = value;
+    return customClass.value;
+  }
+
+  @override
+  dynamic stringToValue(String value) {
+    return CustomClass(value);
+  }
 }
