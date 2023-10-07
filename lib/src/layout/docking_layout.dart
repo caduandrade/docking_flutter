@@ -15,7 +15,8 @@ mixin DropArea {}
 /// Represents any area of the layout.
 abstract class DockingArea extends Area {
   DockingArea(
-      {double? size,
+      {this.id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize})
@@ -24,6 +25,8 @@ abstract class DockingArea extends Area {
             weight: weight,
             minimalWeight: minimalWeight,
             minimalSize: minimalSize);
+
+  final dynamic id;
 
   int _layoutId = -1;
 
@@ -141,12 +144,14 @@ abstract class DockingArea extends Area {
 /// Represents an abstract area for a collection of widgets.
 abstract class DockingParentArea extends DockingArea {
   DockingParentArea(List<DockingArea> children,
-      {double? size,
+      {dynamic id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize})
       : this._children = children,
         super(
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
@@ -244,7 +249,7 @@ abstract class DockingParentArea extends DockingArea {
 class DockingItem extends DockingArea with DropArea {
   /// Builds a [DockingItem].
   DockingItem(
-      {this.id,
+      {dynamic id,
       this.name,
       required this.widget,
       this.value,
@@ -262,12 +267,12 @@ class DockingItem extends DockingArea with DropArea {
         this.globalKey = keepAlive ? GlobalKey() : null,
         this._maximized = maximized,
         super(
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
             minimalSize: minimalSize);
 
-  final dynamic id;
   String? name;
   Widget widget;
   dynamic value;
@@ -314,12 +319,13 @@ class DockingItem extends DockingArea with DropArea {
 /// Children will be arranged horizontally.
 class DockingRow extends DockingParentArea {
   /// Builds a [DockingRow].
-  DockingRow._(List<DockingArea> children,
+  DockingRow._(List<DockingArea> children, dynamic id,
       {double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize})
       : super(children,
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
@@ -332,7 +338,8 @@ class DockingRow extends DockingParentArea {
 
   /// Builds a [DockingRow].
   factory DockingRow(List<DockingArea> children,
-      {double? size,
+      {dynamic id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize}) {
@@ -344,7 +351,7 @@ class DockingRow extends DockingParentArea {
         newChildren.add(child);
       }
     }
-    return DockingRow._(newChildren,
+    return DockingRow._(newChildren, id,
         size: size,
         weight: weight,
         minimalWeight: minimalWeight,
@@ -365,11 +372,13 @@ class DockingRow extends DockingParentArea {
 class DockingColumn extends DockingParentArea {
   /// Builds a [DockingColumn].
   DockingColumn._(List<DockingArea> children,
-      {double? size,
+      {dynamic id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize})
       : super(children,
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
@@ -382,7 +391,8 @@ class DockingColumn extends DockingParentArea {
 
   /// Builds a [DockingColumn].
   factory DockingColumn(List<DockingArea> children,
-      {double? size,
+      {dynamic id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize}) {
@@ -395,6 +405,7 @@ class DockingColumn extends DockingParentArea {
       }
     }
     return DockingColumn._(newChildren,
+        id: id,
         size: size,
         weight: weight,
         minimalWeight: minimalWeight,
@@ -415,7 +426,8 @@ class DockingColumn extends DockingParentArea {
 class DockingTabs extends DockingParentArea with DropArea {
   /// Builds a [DockingTabs].
   DockingTabs(List<DockingItem> children,
-      {bool maximized = false,
+      {dynamic id,
+      bool maximized = false,
       this.maximizable,
       double? size,
       double? weight,
@@ -423,6 +435,7 @@ class DockingTabs extends DockingParentArea with DropArea {
       double? minimalSize})
       : this._maximized = maximized,
         super(children,
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,

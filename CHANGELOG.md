@@ -1,3 +1,7 @@
+## 1.14.0
+
+# The [id] attribute has been moved from the [DockingItem] to the [DockingArea].
+
 ## 1.13.0
 
 * Allow `DockingTabs` to be initialized with only 1 child.
