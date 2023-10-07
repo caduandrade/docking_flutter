@@ -11,11 +11,28 @@ abstract class LayoutParser {
   /// Converts String to ID.
   dynamic stringToId(String id);
 
-  /// Converts value to String.
-  String valueToString(dynamic value);
+  /// Builds a [DockingItem].
+  DockingItem buildDockingItem(
+      {required dynamic id, required double? weight, required bool maximized});
 
-  /// Converts String to value.
-  dynamic stringToValue(String value);
+  /// Builds a [DockingRow].
+  DockingRow buildDockingRow(
+      {required dynamic id,
+      required double? weight,
+      required List<DockingArea> children});
+
+  /// Builds a [DockingColumn].
+  DockingColumn buildDockingColumn(
+      {required dynamic id,
+      required double? weight,
+      required List<DockingArea> children});
+
+  /// Builds a [DockingTabs].
+  DockingTabs buildDockingTabs(
+      {required dynamic id,
+      required double? weight,
+      required bool maximized,
+      required List<DockingItem> children});
 
   /// Converts a layout into a String to be stored.
   ///
@@ -32,37 +49,28 @@ abstract class LayoutParser {
   ///
   /// * [DockingItem]
   ///   * AREA_ACRONYM
-  ///   * WEIGHT
-  ///   * MINIMAL_WEIGHT
-  ///   * MINIMAL_SIZE
   ///   * ID_LENGTH
   ///   * ID
-  ///   * NAME_LENGTH
-  ///   * NAME
-  ///   * VALUE_LENGTH
-  ///   * VALUE
-  ///   * CLOSABLE
-  ///   * MAXIMIZABLE
+  ///   * WEIGHT
   ///   * MAXIMIZED
   ///   * CHILDREN_INDEXES
   /// * [DockingColumn]
   ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
   ///   * WEIGHT
-  ///   * MINIMAL_WEIGHT
-  ///   * MINIMAL_SIZE
   ///   * CHILDREN_INDEXES
   /// * [DockingRow]
   ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
   ///   * WEIGHT
-  ///   * MINIMAL_WEIGHT
-  ///   * MINIMAL_SIZE
   ///   * CHILDREN_INDEXES
   /// * [DockingTabs]
   ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
   ///   * WEIGHT
-  ///   * MINIMAL_WEIGHT
-  ///   * MINIMAL_SIZE
-  ///   * MAXIMIZABLE
   ///   * MAXIMIZED
   ///   * CHILDREN_INDEXES
   ///
@@ -101,102 +109,47 @@ abstract class LayoutParser {
 
   /// Converts the [DockingArea] configuration into a String with the
   /// following data separated by semicolons:
+  /// * ID_LENGTH
+  /// * ID
   /// * WEIGHT
-  /// * MINIMAL_WEIGHT
-  /// * MINIMAL_SIZE
   ///
-  /// Example: .2;;100
+  /// Example: 3;id1;.2
   @visibleForTesting
   String stringifyArea({required DockingArea area}) {
     List<String> data = [];
+    // ID_LENGTH and ID
+    final String id = idToString(area.id);
+    data.add(id.length.toString());
+    data.add(id);
     // WEIGHT
     final String weight = area.weight != null ? area.weight.toString() : '';
     data.add(weight);
-    // MINIMAL_SIZE
-    final String minimalWeight =
-        area.minimalWeight != null ? area.minimalWeight.toString() : '';
-    data.add(minimalWeight);
-    // MINIMAL_SIZE
-    final String minimalSize =
-        area.minimalSize != null ? area.minimalSize!.toStringAsFixed(0) : '';
-    data.add(minimalSize);
 
     return data.join(';');
   }
 
   /// Converts the [DockingItem] configuration into a String with the
-  /// following data separated by semicolons:
-  /// * ID_LENGTH
-  /// * ID
-  /// * NAME_LENGTH
-  /// * NAME
-  /// * VALUE_LENGTH
-  /// * VALUE
-  /// * CLOSABLE
-  /// * MAXIMIZABLE
+  /// following data:
   /// * MAXIMIZED
   ///
   /// [T] is [TRUE] and [F] is [FALSE].
   ///
   /// Example:
-  /// 5;my_id;7;my_name;8;my_value;T;;F
+  /// F
   @visibleForTesting
   String stringifyItem({required DockingItem item}) {
-    List<String> data = [];
-
-    // ID_LENGTH and ID
-    final String id = idToString(item.id);
-    data.add(id.length.toString());
-    data.add(id);
-
-    // NAME_LENGTH and NAME
-    final String name = item.name ?? '';
-    data.add(name.length.toString());
-    data.add(name);
-
-    // VALUE_LENGTH and VALUE
-    final String value = valueToString(item.value);
-    data.add(value.length.toString());
-    data.add(value);
-
-    // CLOSABLE
-    data.add(item.closable ? 'T' : 'F');
-
-    // MAXIMIZABLE
-    if (item.maximizable != null) {
-      data.add(item.maximizable! ? 'T' : 'F');
-    } else {
-      data.add('');
-    }
-
-    // MAXIMIZED
-    data.add(item.maximized ? 'T' : 'F');
-
-    return data.join(';');
+    return item.maximized ? 'T' : 'F';
   }
 
   /// Converts the [DockingTabs] configuration into a String with the
-  /// following data separated by semicolons:
-  /// * MAXIMIZABLE
+  /// following data:
   /// * MAXIMIZED
   ///
   /// Example:
-  /// T;T
+  /// T
   @visibleForTesting
   String stringifyTabs({required DockingTabs tabs}) {
-    List<String> data = [];
-
-    // MAXIMIZABLE
-    if (tabs.maximizable != null) {
-      data.add(tabs.maximizable! ? 'T' : 'F');
-    } else {
-      data.add('');
-    }
-
-    // MAXIMIZED
-    data.add(tabs.maximized ? 'T' : 'F');
-
-    return data.join(';');
+    return tabs.maximized ? 'T' : 'F';
   }
 
   /// Converts the children indexes to String separated by colon.
@@ -216,79 +169,122 @@ abstract class LayoutParser {
     return indexes.join(',');
   }
 
-  // 'V1:3:1(R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
   DockingLayout layoutFrom(String layout) {
     if (layout.startsWith('V1:')) {
       _layout = layout.substring(3);
 
-      // '3:1(R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
       final int areasLength = _removeFirstRequiredInt(
           stop: ':',
           errorMessage: 'The number of areas could not be identified.');
 
-      Map<int, AreaConfig> areas = {};
+      Map<int, _AreaConfig> areas = {};
 
-      // '1(R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
       for (int areaIndex = 1; areaIndex <= areasLength; areaIndex++) {
         final int indexFromLayout = _removeFirstRequiredInt(
-            stop: '(', errorMessage: 'The area index could not be identified.');
+            stop: '(',
+            errorMessage: 'The area index could not be identified: $areaIndex');
         if (areaIndex != indexFromLayout) {
           throw StateError('Unexpected index: $indexFromLayout');
         }
-        // 'R;1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
         final String acronym = _removeFirstToken(
             stop: ';',
             errorMessage: 'The area acronym could not be identified.');
-        // '1.0;;50;2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
+
+        final int idLength = _removeFirstRequiredInt(
+            stop: ';',
+            errorMessage:
+                'Error reading area $areaIndex. Not found: id length.');
+        final String id = _removeToken(
+            length: idLength,
+            errorMessage: 'Error reading area $areaIndex. Not found: id.');
+
         final double? weight = _removeFirstOptionalDouble(
             stop: ';', errorMessage: 'Invalid weight.');
-        final double? minimalWeight = _removeFirstOptionalDouble(
-            stop: ';', errorMessage: 'Invalid minimal weight.');
-        final double? minimalSize = _removeFirstOptionalDouble(
-            stop: ';', errorMessage: 'Invalid minimal size.');
-        // '2,3),2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
 
         if (acronym == 'I') {
-          //3;idA;0;;6;valueA;T;;F)
+          final bool maximized = _removeFirstRequiredBool(
+              stop: ')',
+              errorMessage:
+                  'Error reading area $areaIndex. Not found: maximized.');
+          areas[areaIndex] =
+              _ItemConfig(id: id, weight: weight, maximized: maximized);
         } else if (acronym == 'R') {
           List<int> childrenIndexes = _removeChildrenIndexes();
-          areas[areaIndex] = RowConfig(
-              weight: weight,
-              minimalWeight: minimalWeight,
-              minimalSize: minimalSize,
-              childrenIndexes: childrenIndexes);
+          areas[areaIndex] = _RowConfig(
+              id: id, weight: weight, childrenIndexes: childrenIndexes);
         } else if (acronym == 'C') {
           List<int> childrenIndexes = _removeChildrenIndexes();
-          areas[areaIndex] = ColumnConfig(
-              weight: weight,
-              minimalWeight: minimalWeight,
-              minimalSize: minimalSize,
-              childrenIndexes: childrenIndexes);
+          areas[areaIndex] = _ColumnConfig(
+              id: id, weight: weight, childrenIndexes: childrenIndexes);
         } else if (acronym == 'T') {
+          final bool maximized = _removeFirstRequiredBool(
+              stop: ';', errorMessage: 'Unrecognized syntax.');
           List<int> childrenIndexes = _removeChildrenIndexes();
+          areas[areaIndex] = _TabsConfig(
+              id: id,
+              weight: weight,
+              maximized: maximized,
+              childrenIndexes: childrenIndexes);
         } else {
           throw StateError('Invalid area acronym: $acronym');
         }
 
-        // ',2(I;;;;3;idA;0;;6;valueA;T;;F),3(I;;0.5;;3;idB;0;;6;valueB;T;;F)'
-        if (areaIndex == areasLength - 1) {
+        if (areaIndex < areasLength) {
           if (_removeNext() != ',') {
-            throw StateError('?????');
+            throw StateError('Unrecognized syntax. Area separator not found.');
           }
         }
       }
 
       if (_layout.isNotEmpty) {
-        throw StateError('?????');
+        throw StateError('Unrecognized syntax: $_layout');
       }
 
-      return DockingLayout();
+      if (areasLength == 0) {
+        return DockingLayout();
+      }
+      final _AreaConfig rootConfig = areas.getArea(1);
+      final DockingArea root = _buildRoot(parent: rootConfig, areas: areas);
+      return DockingLayout(root: root);
     } else {
       if (layout.startsWith('V')) {
         throw StateError('Unsupported layout version.');
       }
       throw StateError('Unable to identify layout version.');
     }
+  }
+
+  DockingArea _buildRoot(
+      {required _AreaConfig parent, required Map<int, _AreaConfig> areas}) {
+    if (parent is _ItemConfig) {
+      return buildDockingItem(
+          id: parent.id, weight: parent.weight, maximized: parent.maximized);
+    } else if (parent is _ParentConfig) {
+      List<DockingArea> children = [];
+      parent.childrenIndexes.forEach((childIndex) {
+        final _AreaConfig childConfig = areas.getArea(childIndex);
+        children.add(_buildRoot(parent: childConfig, areas: areas));
+      });
+      if (parent is _RowConfig) {
+        return buildDockingRow(
+            id: parent.id, weight: parent.weight, children: children);
+      } else if (parent is _ColumnConfig) {
+        return buildDockingColumn(
+            id: parent.id, weight: parent.weight, children: children);
+      }
+      if (parent is _TabsConfig) {
+        List<DockingItem> items = [];
+        for (DockingArea area in children) {
+          items.add(area as DockingItem);
+        }
+        return buildDockingTabs(
+            id: parent.id,
+            weight: parent.weight,
+            maximized: parent.maximized,
+            children: items);
+      }
+    }
+    throw StateError('Unrecognized type: ${parent.runtimeType}');
   }
 
   String _removeNext() {
@@ -315,6 +311,19 @@ abstract class LayoutParser {
       indexes.add(index);
     });
     return indexes;
+  }
+
+  bool _removeFirstRequiredBool(
+      {required String stop, required String errorMessage}) {
+    final String token =
+        _removeFirstToken(stop: stop, errorMessage: errorMessage);
+    if (token == 'T') {
+      return true;
+    }
+    if (token == 'F') {
+      return false;
+    }
+    throw StateError(errorMessage);
   }
 
   double? _removeFirstOptionalDouble(
@@ -352,77 +361,113 @@ abstract class LayoutParser {
     _layout = _layout.substring(index + 1);
     return token;
   }
+
+  String _removeToken({required int length, required String errorMessage}) {
+    if (_layout.length < length) {
+      throw StateError(errorMessage);
+    }
+    final String token = _layout.substring(0, length);
+    _layout = _layout.substring(length + 1);
+    return token;
+  }
 }
 
-mixin DefaultLayoutParserMixin {
+mixin LayoutParserIdMixin {
   /// Default conversion from ID to String.
   String idToString(dynamic id) {
     return id == null ? '' : id.toString();
-  }
-
-  /// Default conversion from value to String.
-  String valueToString(dynamic value) {
-    return value == null ? '' : value.toString();
   }
 
   /// Default conversion from String to ID.
   dynamic stringToId(String id) {
     return id == '' ? null : id;
   }
+}
 
-  /// Default conversion from String to value.
-  dynamic stringToValue(String value) {
-    return value == '' ? null : value;
+mixin LayoutParserBuildsMixin {
+  DockingRow buildDockingRow(
+      {required dynamic id,
+      required double? weight,
+      required List<DockingArea> children}) {
+    return DockingRow(children, id: id, weight: weight);
+  }
+
+  DockingColumn buildDockingColumn(
+      {required dynamic id,
+      required double? weight,
+      required List<DockingArea> children}) {
+    return DockingColumn(children, id: id, weight: weight);
+  }
+
+  /// Builds a [DockingTabs].
+  DockingTabs buildDockingTabs(
+      {required dynamic id,
+      required double? weight,
+      required bool maximized,
+      required List<DockingItem> children}) {
+    return DockingTabs(children, id: id, weight: weight, maximized: maximized);
   }
 }
 
-class AreaConfig {
-  AreaConfig(
-      {required this.weight,
-      required this.minimalWeight,
-      required this.minimalSize});
+class _AreaConfig {
+  _AreaConfig({required this.id, required this.weight});
 
-  double? weight;
-  double? minimalWeight;
-  double? minimalSize;
+  final String id;
+  final double? weight;
 }
 
-class ParentConfig extends AreaConfig {
-  ParentConfig(
-      {required double? weight,
-      required double? minimalWeight,
-      required double? minimalSize,
-      required this.childrenIndexes})
-      : super(
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize);
-
-  List<int> childrenIndexes;
-}
-
-class RowConfig extends ParentConfig {
-  RowConfig(
-      {required double? weight,
-      required double? minimalWeight,
-      required double? minimalSize,
+class _ParentConfig extends _AreaConfig {
+  _ParentConfig(
+      {required String id,
+      required double? weight,
       required List<int> childrenIndexes})
-      : super(
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize,
-            childrenIndexes: childrenIndexes);
+      : childrenIndexes = List.unmodifiable(childrenIndexes),
+        super(id: id, weight: weight);
+
+  final List<int> childrenIndexes;
 }
 
-class ColumnConfig extends ParentConfig {
-  ColumnConfig(
-      {required double? weight,
-      required double? minimalWeight,
-      required double? minimalSize,
+class _RowConfig extends _ParentConfig {
+  _RowConfig(
+      {required String id,
+      required double? weight,
       required List<int> childrenIndexes})
-      : super(
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize,
-            childrenIndexes: childrenIndexes);
+      : super(id: id, weight: weight, childrenIndexes: childrenIndexes);
+}
+
+class _ColumnConfig extends _ParentConfig {
+  _ColumnConfig(
+      {required String id,
+      required double? weight,
+      required List<int> childrenIndexes})
+      : super(id: id, weight: weight, childrenIndexes: childrenIndexes);
+}
+
+class _TabsConfig extends _ParentConfig {
+  _TabsConfig(
+      {required String id,
+      required double? weight,
+      required this.maximized,
+      required List<int> childrenIndexes})
+      : super(id: id, weight: weight, childrenIndexes: childrenIndexes);
+
+  final bool maximized;
+}
+
+class _ItemConfig extends _AreaConfig {
+  final bool maximized;
+
+  _ItemConfig(
+      {required String id, required double? weight, required this.maximized})
+      : super(id: id, weight: weight);
+}
+
+extension E on Map<int, _AreaConfig> {
+  _AreaConfig getArea(int index) {
+    _AreaConfig? config = this[index];
+    if (config == null) {
+      throw StateError('Area index not found: $index');
+    }
+    return config;
+  }
 }
