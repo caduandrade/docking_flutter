@@ -106,7 +106,7 @@ abstract class DockingArea extends Area {
       throw StateError('Disposed area');
     }
     _parent = parentArea;
-    if (_layoutId != -1 && _layoutId != layoutId) {
+    if (layoutId != -1 && layoutId != layoutId) {
       throw ArgumentError(
           'DockingParentArea already belongs to another layout');
     }
@@ -200,16 +200,7 @@ abstract class DockingParentArea extends DockingArea {
   @override
   int _updateHierarchy(
       DockingParentArea? parentArea, int nextIndex, int layoutId) {
-    if (this.disposed) {
-      throw StateError('Disposed area');
-    }
-    _parent = parentArea;
-    if (_layoutId != -1 && _layoutId != layoutId) {
-      throw ArgumentError(
-          'DockingParentArea already belongs to another layout');
-    }
-    _layoutId = layoutId;
-    _index = nextIndex++;
+    nextIndex = super._updateHierarchy(parentArea, nextIndex, layoutId);
     for (DockingArea area in _children) {
       nextIndex = area._updateHierarchy(this, nextIndex, layoutId);
     }
