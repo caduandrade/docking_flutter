@@ -548,17 +548,23 @@ class DockingLayout extends ChangeNotifier {
 
   /// Finds a [DockingItem] given an id.
   DockingItem? findDockingItem(dynamic id) {
-    return _findDockingItem(parent: root, id: id);
+    DockingArea? area = _findDockingArea(parent: root, id: id);
+    return area is DockingItem ? area : null;
   }
 
-  /// Recursively finds a [DockingItem] given an id.
-  DockingItem? _findDockingItem({DockingArea? parent, dynamic id}) {
+  /// Finds a [DockingArea] given an id.
+  DockingArea? findDockingArea(dynamic id) {
+    return _findDockingArea(parent: root, id: id);
+  }
+
+  /// Recursively finds a [DockingArea] given an id.
+  DockingArea? _findDockingArea({DockingArea? parent, dynamic id}) {
     if (parent != null) {
-      if (parent is DockingItem && parent.id == id) {
+      if (parent.id == id) {
         return parent;
       } else if (parent is DockingParentArea) {
         for (DockingArea child in parent._children) {
-          DockingItem? item = _findDockingItem(parent: child, id: id);
+          DockingArea? item = _findDockingArea(parent: child, id: id);
           if (item != null) {
             return item;
           }

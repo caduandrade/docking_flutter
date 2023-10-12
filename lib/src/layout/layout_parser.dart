@@ -53,7 +53,6 @@ abstract class LayoutParser {
   ///   * ID
   ///   * WEIGHT
   ///   * MAXIMIZED
-  ///   * CHILDREN_INDEXES
   /// * [DockingColumn]
   ///   * AREA_ACRONYM
   ///   * ID_LENGTH
@@ -75,7 +74,7 @@ abstract class LayoutParser {
   ///   * CHILDREN_INDEXES
   ///
   /// Example:
-  /// V1:1:1(1;I;.2;;100;5;my_id;7;my_name;8;my_value;T;;F)
+  /// V1:3:1(R;0;;;2,3),2(I;6;my_id1;0.5;F),3(I;6;my_id2;0.5;F)
   String stringify({required DockingLayout layout}) {
     final List<DockingArea> areas = layout.layoutAreas();
 
@@ -169,6 +168,7 @@ abstract class LayoutParser {
     return indexes.join(',');
   }
 
+  /// Builds a [DockingLayout] from formatted layout String.
   DockingLayout layoutFrom(String layout) {
     if (layout.startsWith('V1:')) {
       _layout = layout.substring(3);
