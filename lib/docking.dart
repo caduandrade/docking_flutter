@@ -4,6 +4,7 @@ export 'src/layout/docking_layout.dart';
 export 'src/layout/docking_area_type.dart';
 export 'src/layout/drop_position.dart';
 export 'src/layout/layout_parser.dart';
+export 'src/layout/area_builder.dart';
 export 'src/on_item_selection.dart';
 export 'src/on_item_close.dart';
 export 'src/docking_buttons_builder.dart';

@@ -95,6 +95,7 @@ class _DockingState extends State<Docking> {
   Widget _buildArea(BuildContext context, DockingArea area) {
     if (area is DockingItem) {
       return DockingItemWidget(
+          key: area.key,
           layout: widget.layout!,
           dockingDrag: _dockingDrag,
           item: area,
@@ -110,6 +111,7 @@ class _DockingState extends State<Docking> {
     } else if (area is DockingTabs) {
       if (area.childrenCount == 1) {
         return DockingItemWidget(
+            key: area.key,
             layout: widget.layout!,
             dockingDrag: _dockingDrag,
             item: area.childAt(0),
@@ -120,6 +122,7 @@ class _DockingState extends State<Docking> {
             maximizable: widget.maximizableItem);
       }
       return DockingTabsWidget(
+          key: area.key,
           layout: widget.layout!,
           dockingDrag: _dockingDrag,
           dockingTabs: area,
@@ -141,6 +144,7 @@ class _DockingState extends State<Docking> {
     });
 
     return MultiSplitView(
+        key: row.key,
         children: children,
         axis: Axis.horizontal,
         controller: row.controller,
@@ -154,6 +158,7 @@ class _DockingState extends State<Docking> {
     });
 
     return MultiSplitView(
+        key: column.key,
         children: children,
         axis: Axis.vertical,
         controller: column.controller,

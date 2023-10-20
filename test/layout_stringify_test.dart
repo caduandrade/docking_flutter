@@ -1,4 +1,5 @@
 import 'package:docking/docking.dart';
+import 'package:docking/src/internal/layout/layout_stringify.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -6,6 +7,8 @@ import 'exceptions.dart';
 import 'utils.dart';
 
 void main() {
+  final LayoutParser defaultParser = DefaultLayoutParser();
+
   group('LayoutParser - stringify', () {
     test('stringifyParent', () {
       DockingItem itemA = dockingItem('a');
@@ -17,20 +20,18 @@ void main() {
       DockingTabs tabs = DockingTabs([itemD, itemE]);
       DockingColumn column = DockingColumn([itemA, row, tabs]);
 
-      final LayoutParser parser = DefaultLayoutParser();
-
-      expect(() => parser.stringifyParent(parent: column),
+      expect(() => LayoutStringify.stringifyParent(parent: column),
           childNotBelongAnyLayoutException());
-      expect(() => parser.stringifyParent(parent: row),
+      expect(() => LayoutStringify.stringifyParent(parent: row),
           childNotBelongAnyLayoutException());
-      expect(() => parser.stringifyParent(parent: tabs),
+      expect(() => LayoutStringify.stringifyParent(parent: tabs),
           childNotBelongAnyLayoutException());
 
       DockingLayout(root: column);
 
-      expect(parser.stringifyParent(parent: column), '2,3,6');
-      expect(parser.stringifyParent(parent: row), '4,5');
-      expect(parser.stringifyParent(parent: tabs), '7,8');
+      expect(LayoutStringify.stringifyParent(parent: column), '2,3,6');
+      expect(LayoutStringify.stringifyParent(parent: row), '4,5');
+      expect(LayoutStringify.stringifyParent(parent: tabs), '7,8');
     });
     test('stringifyArea', () {
       DockingItem itemA = DockingItem(widget: Container());
@@ -44,16 +45,22 @@ void main() {
 
       DockingLayout(root: column);
 
-      final LayoutParser parser = DefaultLayoutParser();
-
-      expect(parser.stringifyArea(area: column), '0;;');
-      expect(parser.stringifyArea(area: row), '0;;0.4');
-      expect(parser.stringifyArea(area: tabs), '0;;');
-      expect(parser.stringifyArea(area: itemA), '0;;');
-      expect(parser.stringifyArea(area: itemB), '0;;0.2');
-      expect(parser.stringifyArea(area: itemC), '3;idC;');
-      expect(parser.stringifyArea(area: itemD), '3;1.2;');
-      expect(parser.stringifyArea(area: itemE), '0;;0.3');
+      expect(LayoutStringify.stringifyArea(parser: defaultParser, area: column),
+          '0;;');
+      expect(LayoutStringify.stringifyArea(parser: defaultParser, area: row),
+          '0;;0.4');
+      expect(LayoutStringify.stringifyArea(parser: defaultParser, area: tabs),
+          '0;;');
+      expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemA),
+          '0;;');
+      expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemB),
+          '0;;0.2');
+      expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemC),
+          '3;idC;');
+      expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemD),
+          '3;1.2;');
+      expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemE),
+          '0;;0.3');
     });
     test('stringifyTabs', () {
       DockingItem itemA = dockingItem('a');
@@ -62,9 +69,7 @@ void main() {
 
       DockingLayout(root: tabs);
 
-      final LayoutParser parser = DefaultLayoutParser();
-
-      expect(parser.stringifyTabs(tabs: tabs), 'T');
+      expect(LayoutStringify.stringifyTabs(tabs: tabs), 'T');
     });
     test('stringifyItem', () {
       DockingItem itemA = DockingItem(widget: Container());
@@ -73,10 +78,8 @@ void main() {
 
       DockingLayout(root: row);
 
-      final LayoutParser parser = DefaultLayoutParser();
-
-      expect(parser.stringifyItem(item: itemA), 'F');
-      expect(parser.stringifyItem(item: itemB), 'T');
+      expect(LayoutStringify.stringifyItem(item: itemA), 'F');
+      expect(LayoutStringify.stringifyItem(item: itemB), 'T');
     });
     test('stringifyArea - CustomIdParser', () {
       DockingItem itemA = DockingItem(id: 1.2, widget: Container());
@@ -87,9 +90,12 @@ void main() {
 
       LayoutParser parser = CustomIdParser();
 
-      expect(parser.stringifyArea(area: itemA), '3;2.2;');
-      expect(parser.stringifyArea(area: itemB), '3;4.3;');
-      expect(parser.stringifyArea(area: row), '3;6.5;');
+      expect(
+          LayoutStringify.stringifyArea(parser: parser, area: itemA), '3;2.2;');
+      expect(
+          LayoutStringify.stringifyArea(parser: parser, area: itemB), '3;4.3;');
+      expect(
+          LayoutStringify.stringifyArea(parser: parser, area: row), '3;6.5;');
     });
     test('stringifyArea - CustomIdClassParser', () {
       DockingItem itemA =
@@ -102,9 +108,12 @@ void main() {
 
       LayoutParser parser = CustomIdClassParser();
 
-      expect(parser.stringifyArea(area: itemA), '5;itemA;');
-      expect(parser.stringifyArea(area: itemB), '5;itemB;');
-      expect(parser.stringifyArea(area: row), '3;row;');
+      expect(LayoutStringify.stringifyArea(parser: parser, area: itemA),
+          '5;itemA;');
+      expect(LayoutStringify.stringifyArea(parser: parser, area: itemB),
+          '5;itemB;');
+      expect(
+          LayoutStringify.stringifyArea(parser: parser, area: row), '3;row;');
     });
     test('stringify - simple', () {
       DockingItem itemA =
@@ -116,9 +125,7 @@ void main() {
 
       DockingLayout layout = DockingLayout(root: row);
 
-      LayoutParser parser = DefaultLayoutParser();
-
-      expect(parser.stringify(layout: layout),
+      expect(layout.stringify(parser: defaultParser),
           'V1:3:1(R;0;;1.0;2,3),2(I;3;idA;;F),3(I;3;idB;;F)');
     });
   });
@@ -130,8 +137,9 @@ class CustomClass {
   final String value;
 }
 
-class DefaultLayoutParser extends LayoutParser
-    with LayoutParserIdMixin, LayoutParserBuildsMixin {
+class DefaultLayoutParser extends LayoutParser with LayoutParserMixin {}
+
+class DefaultAreaBuilder extends AreaBuilder with AreaBuilderMixin {
   @override
   DockingItem buildDockingItem(
       {required id, required double? weight, required bool maximized}) {

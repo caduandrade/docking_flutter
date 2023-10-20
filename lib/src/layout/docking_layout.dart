@@ -1,12 +1,17 @@
 import 'package:docking/src/internal/layout/add_item.dart';
+import 'package:docking/src/internal/layout/layout_factory.dart';
 import 'package:docking/src/internal/layout/layout_modifier.dart';
+import 'package:docking/src/internal/layout/layout_stringify.dart';
 import 'package:docking/src/internal/layout/move_item.dart';
 import 'package:docking/src/internal/layout/remove_item.dart';
 import 'package:docking/src/internal/layout/remove_item_by_id.dart';
+import 'package:docking/src/layout/area_builder.dart';
 import 'package:docking/src/layout/docking_area_type.dart';
 import 'package:docking/src/layout/drop_position.dart';
+import 'package:docking/src/layout/layout_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
@@ -49,6 +54,11 @@ abstract class DockingArea extends Area {
   bool _disposed = false;
 
   bool get disposed => _disposed;
+
+  Key _key = UniqueKey();
+
+  @internal
+  Key get key => _key;
 
   /// Disposes.
   void _dispose() {
@@ -270,6 +280,7 @@ class DockingItem extends DockingArea with DropArea {
   bool closable;
   final bool? maximizable;
   List<TabButton>? buttons;
+  @internal
   final GlobalKey? globalKey;
   TabLeadingBuilder? leading;
   bool _maximized;
@@ -448,8 +459,8 @@ class DockingTabs extends DockingParentArea with DropArea {
 
   @override
   void forEach(void f(DockingItem child)) {
-    _children.forEach((element) {
-      f(element as DockingItem);
+    _children.forEach((child) {
+      f(child as DockingItem);
     });
   }
 
@@ -480,8 +491,18 @@ class DockingLayout extends ChangeNotifier {
   /// The root of this layout.
   DockingArea? get root => _root;
 
+  /// Loads a layout from String.
+  void load(
+      {required String layout,
+      required LayoutParser parser,
+      required AreaBuilder builder}) {
+    root = LayoutFactory.buildRoot(
+        layout: layout, parser: parser, builder: builder);
+  }
+
   /// Set a new root.
   set root(DockingArea? root) {
+    layoutAreas().forEach((area) => area._dispose());
     _root = root;
     _reset();
     notifyListeners();
@@ -539,23 +560,23 @@ class DockingLayout extends ChangeNotifier {
 
   /// Finds a [DockingItem] given an id.
   DockingItem? findDockingItem(dynamic id) {
-    DockingArea? area = _findDockingArea(parent: root, id: id);
+    DockingArea? area = _findDockingArea(area: _root, id: id);
     return area is DockingItem ? area : null;
   }
 
   /// Finds a [DockingArea] given an id.
   DockingArea? findDockingArea(dynamic id) {
-    return _findDockingArea(parent: root, id: id);
+    return _findDockingArea(area: _root, id: id);
   }
 
   /// Recursively finds a [DockingArea] given an id.
-  DockingArea? _findDockingArea({DockingArea? parent, dynamic id}) {
-    if (parent != null) {
-      if (parent.id == id) {
-        return parent;
-      } else if (parent is DockingParentArea) {
-        for (DockingArea child in parent._children) {
-          DockingArea? item = _findDockingArea(parent: child, id: id);
+  DockingArea? _findDockingArea({DockingArea? area, dynamic id}) {
+    if (area != null) {
+      if (area.id == id) {
+        return area;
+      } else if (area is DockingParentArea) {
+        for (DockingArea child in area._children) {
+          DockingArea? item = _findDockingArea(area: child, id: id);
           if (item != null) {
             return item;
           }
@@ -724,11 +745,58 @@ class DockingLayout extends ChangeNotifier {
   }
 
   /// Gets recursively all [DockingArea] of that layout.
-  void _fetchAreas(List<DockingArea> areas, DockingArea root) {
-    areas.add(root);
-    if (root is DockingParentArea) {
-      DockingParentArea parentArea = root;
-      parentArea.forEach((child) => _fetchAreas(areas, child));
+  void _fetchAreas(List<DockingArea> areas, DockingArea area) {
+    areas.add(area);
+    if (area is DockingParentArea) {
+      for (DockingArea child in area._children) {
+        _fetchAreas(areas, child);
+      }
     }
+  }
+
+  /// Converts a layout into a String to be stored.
+  ///
+  /// The String will have the following structure:
+  /// VERSION:AREAS_LENGTH:AREAS
+  ///
+  /// The VERSION group has a fixed value: V1
+  ///
+  /// The AREAS group separates each area with a comma and follows the
+  /// pattern: AREA_INDEX_1(AREA_CONFIGURATION),...,AREA_INDEX_N(AREA_CONFIGURATION)
+  /// Example: 1(AREA_CONFIGURATION),2(AREA_CONFIGURATION),3(AREA_CONFIGURATION)
+  ///
+  /// The AREA_CONFIGURATION group represents all area data given the class:
+  ///
+  /// * [DockingItem]
+  ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
+  ///   * WEIGHT
+  ///   * MAXIMIZED
+  /// * [DockingColumn]
+  ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
+  ///   * WEIGHT
+  ///   * CHILDREN_INDEXES
+  /// * [DockingRow]
+  ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
+  ///   * WEIGHT
+  ///   * CHILDREN_INDEXES
+  /// * [DockingTabs]
+  ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
+  ///   * WEIGHT
+  ///   * MAXIMIZED
+  ///   * CHILDREN_INDEXES
+  ///
+  /// Example:
+  /// V1:3:1(R;0;;;2,3),2(I;6;my_id1;0.5;F),3(I;6;my_id2;0.5;F)
+  String stringify({required LayoutParser parser}) {
+    final List<DockingArea> areas = layoutAreas();
+    return LayoutStringify.stringify(parser: parser, areas: areas);
   }
 }
