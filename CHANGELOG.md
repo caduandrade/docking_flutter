@@ -1,10 +1,10 @@
 ## 1.14.0
 
-* The [id] attribute has been moved from the [DockingItem] to the [DockingArea].
-* [DockingLayout]
-  * The [findDockingArea] method has been added to locate any area given an id. 
+* The `id` attribute has been moved from the `DockingItem` to the `DockingArea`.
+* `DockingLayout`
+  * The `findDockingArea` method has been added to locate any area given an id. 
   * Save/Load layout feature.
-    * The [stringify] and [load] methods have been added to convert the layout to String and to load a layout given a String.
+    * The `stringify` and `load` methods have been added to convert the layout to String and to load a layout given a String.
 
 ## 1.13.0
 
