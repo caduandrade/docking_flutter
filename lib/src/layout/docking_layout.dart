@@ -1,10 +1,17 @@
 import 'package:docking/src/internal/layout/add_item.dart';
+import 'package:docking/src/internal/layout/layout_factory.dart';
 import 'package:docking/src/internal/layout/layout_modifier.dart';
+import 'package:docking/src/internal/layout/layout_stringify.dart';
 import 'package:docking/src/internal/layout/move_item.dart';
 import 'package:docking/src/internal/layout/remove_item.dart';
 import 'package:docking/src/internal/layout/remove_item_by_id.dart';
+import 'package:docking/src/layout/area_builder.dart';
+import 'package:docking/src/layout/docking_area_type.dart';
+import 'package:docking/src/layout/drop_position.dart';
+import 'package:docking/src/layout/layout_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
@@ -13,7 +20,8 @@ mixin DropArea {}
 /// Represents any area of the layout.
 abstract class DockingArea extends Area {
   DockingArea(
-      {double? size,
+      {this.id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize})
@@ -22,6 +30,8 @@ abstract class DockingArea extends Area {
             weight: weight,
             minimalWeight: minimalWeight,
             minimalSize: minimalSize);
+
+  final dynamic id;
 
   int _layoutId = -1;
 
@@ -44,6 +54,11 @@ abstract class DockingArea extends Area {
   bool _disposed = false;
 
   bool get disposed => _disposed;
+
+  Key _key = UniqueKey();
+
+  @internal
+  Key get key => _key;
 
   /// Disposes.
   void _dispose() {
@@ -101,7 +116,7 @@ abstract class DockingArea extends Area {
       throw StateError('Disposed area');
     }
     _parent = parentArea;
-    if (_layoutId != -1 && _layoutId != layoutId) {
+    if (layoutId != -1 && layoutId != layoutId) {
       throw ArgumentError(
           'DockingParentArea already belongs to another layout');
     }
@@ -110,6 +125,7 @@ abstract class DockingArea extends Area {
     return nextIndex;
   }
 
+  /// Converts layout's hierarchical structure to a debug String.
   String hierarchy(
       {bool indexInfo = false,
       bool levelInfo = false,
@@ -131,17 +147,21 @@ abstract class DockingArea extends Area {
     }
     return str;
   }
+
+  String get areaAcronym;
 }
 
 /// Represents an abstract area for a collection of widgets.
 abstract class DockingParentArea extends DockingArea {
   DockingParentArea(List<DockingArea> children,
-      {double? size,
+      {dynamic id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize})
       : this._children = children,
         super(
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
@@ -190,16 +210,7 @@ abstract class DockingParentArea extends DockingArea {
   @override
   int _updateHierarchy(
       DockingParentArea? parentArea, int nextIndex, int layoutId) {
-    if (this.disposed) {
-      throw StateError('Disposed area');
-    }
-    _parent = parentArea;
-    if (_layoutId != -1 && _layoutId != layoutId) {
-      throw ArgumentError(
-          'DockingParentArea already belongs to another layout');
-    }
-    _layoutId = layoutId;
-    _index = nextIndex++;
+    nextIndex = super._updateHierarchy(parentArea, nextIndex, layoutId);
     for (DockingArea area in _children) {
       nextIndex = area._updateHierarchy(this, nextIndex, layoutId);
     }
@@ -239,7 +250,7 @@ abstract class DockingParentArea extends DockingArea {
 class DockingItem extends DockingArea with DropArea {
   /// Builds a [DockingItem].
   DockingItem(
-      {this.id,
+      {dynamic id,
       this.name,
       required this.widget,
       this.value,
@@ -257,18 +268,19 @@ class DockingItem extends DockingArea with DropArea {
         this.globalKey = keepAlive ? GlobalKey() : null,
         this._maximized = maximized,
         super(
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
             minimalSize: minimalSize);
 
-  final dynamic id;
   String? name;
   Widget widget;
   dynamic value;
   bool closable;
   final bool? maximizable;
   List<TabButton>? buttons;
+  @internal
   final GlobalKey? globalKey;
   TabLeadingBuilder? leading;
   bool _maximized;
@@ -300,18 +312,22 @@ class DockingItem extends DockingArea with DropArea {
     }
     return str;
   }
+
+  @override
+  String get areaAcronym => 'I';
 }
 
 /// Represents an area for a collection of widgets.
 /// Children will be arranged horizontally.
 class DockingRow extends DockingParentArea {
   /// Builds a [DockingRow].
-  DockingRow._(List<DockingArea> children,
+  DockingRow._(List<DockingArea> children, dynamic id,
       {double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize})
       : super(children,
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
@@ -324,7 +340,8 @@ class DockingRow extends DockingParentArea {
 
   /// Builds a [DockingRow].
   factory DockingRow(List<DockingArea> children,
-      {double? size,
+      {dynamic id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize}) {
@@ -336,7 +353,7 @@ class DockingRow extends DockingParentArea {
         newChildren.add(child);
       }
     }
-    return DockingRow._(newChildren,
+    return DockingRow._(newChildren, id,
         size: size,
         weight: weight,
         minimalWeight: minimalWeight,
@@ -347,6 +364,9 @@ class DockingRow extends DockingParentArea {
 
   @override
   DockingAreaType get type => DockingAreaType.row;
+
+  @override
+  String get areaAcronym => 'R';
 }
 
 /// Represents an area for a collection of widgets.
@@ -354,11 +374,13 @@ class DockingRow extends DockingParentArea {
 class DockingColumn extends DockingParentArea {
   /// Builds a [DockingColumn].
   DockingColumn._(List<DockingArea> children,
-      {double? size,
+      {dynamic id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize})
       : super(children,
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
@@ -371,7 +393,8 @@ class DockingColumn extends DockingParentArea {
 
   /// Builds a [DockingColumn].
   factory DockingColumn(List<DockingArea> children,
-      {double? size,
+      {dynamic id,
+      double? size,
       double? weight,
       double? minimalWeight,
       double? minimalSize}) {
@@ -384,6 +407,7 @@ class DockingColumn extends DockingParentArea {
       }
     }
     return DockingColumn._(newChildren,
+        id: id,
         size: size,
         weight: weight,
         minimalWeight: minimalWeight,
@@ -394,6 +418,9 @@ class DockingColumn extends DockingParentArea {
 
   @override
   DockingAreaType get type => DockingAreaType.column;
+
+  @override
+  String get areaAcronym => 'C';
 }
 
 /// Represents an area for a collection of widgets.
@@ -401,7 +428,8 @@ class DockingColumn extends DockingParentArea {
 class DockingTabs extends DockingParentArea with DropArea {
   /// Builds a [DockingTabs].
   DockingTabs(List<DockingItem> children,
-      {bool maximized = false,
+      {dynamic id,
+      bool maximized = false,
       this.maximizable,
       double? size,
       double? weight,
@@ -409,6 +437,7 @@ class DockingTabs extends DockingParentArea with DropArea {
       double? minimalSize})
       : this._maximized = maximized,
         super(children,
+            id: id,
             size: size,
             weight: weight,
             minimalWeight: minimalWeight,
@@ -430,21 +459,17 @@ class DockingTabs extends DockingParentArea with DropArea {
 
   @override
   void forEach(void f(DockingItem child)) {
-    _children.forEach((element) {
-      f(element as DockingItem);
+    _children.forEach((child) {
+      f(child as DockingItem);
     });
   }
 
   @override
   DockingAreaType get type => DockingAreaType.tabs;
+
+  @override
+  String get areaAcronym => 'T';
 }
-
-/// Represents the [DockingArea] type.
-enum DockingAreaType { item, tabs, row, column }
-
-/// Represents all positions available for a drop event that will
-/// rearrange the layout.
-enum DropPosition { top, bottom, left, right }
 
 /// Represents a layout.
 ///
@@ -466,8 +491,18 @@ class DockingLayout extends ChangeNotifier {
   /// The root of this layout.
   DockingArea? get root => _root;
 
+  /// Loads a layout from String.
+  void load(
+      {required String layout,
+      required LayoutParser parser,
+      required AreaBuilder builder}) {
+    root = LayoutFactory.buildRoot(
+        layout: layout, parser: parser, builder: builder);
+  }
+
   /// Set a new root.
   set root(DockingArea? root) {
+    layoutAreas().forEach((area) => area._dispose());
     _root = root;
     _reset();
     notifyListeners();
@@ -501,7 +536,7 @@ class DockingLayout extends ChangeNotifier {
   /// Gets the maximized area in this layout.
   DockingArea? get maximizedArea => _maximizedArea;
 
-  /// Converts layout's hierarchical structure to String.
+  /// Converts layout's hierarchical structure to a debug String.
   String hierarchy(
       {bool indexInfo = false,
       bool levelInfo = false,
@@ -525,17 +560,23 @@ class DockingLayout extends ChangeNotifier {
 
   /// Finds a [DockingItem] given an id.
   DockingItem? findDockingItem(dynamic id) {
-    return _findDockingItem(parent: root, id: id);
+    DockingArea? area = _findDockingArea(area: _root, id: id);
+    return area is DockingItem ? area : null;
   }
 
-  /// Recursively finds a [DockingItem] given an id.
-  DockingItem? _findDockingItem({DockingArea? parent, dynamic id}) {
-    if (parent != null) {
-      if (parent is DockingItem && parent.id == id) {
-        return parent;
-      } else if (parent is DockingParentArea) {
-        for (DockingArea child in parent._children) {
-          DockingItem? item = _findDockingItem(parent: child, id: id);
+  /// Finds a [DockingArea] given an id.
+  DockingArea? findDockingArea(dynamic id) {
+    return _findDockingArea(area: _root, id: id);
+  }
+
+  /// Recursively finds a [DockingArea] given an id.
+  DockingArea? _findDockingArea({DockingArea? area, dynamic id}) {
+    if (area != null) {
+      if (area.id == id) {
+        return area;
+      } else if (area is DockingParentArea) {
+        for (DockingArea child in area._children) {
+          DockingArea? item = _findDockingArea(area: child, id: id);
           if (item != null) {
             return item;
           }
@@ -704,11 +745,58 @@ class DockingLayout extends ChangeNotifier {
   }
 
   /// Gets recursively all [DockingArea] of that layout.
-  void _fetchAreas(List<DockingArea> areas, DockingArea root) {
-    areas.add(root);
-    if (root is DockingParentArea) {
-      DockingParentArea parentArea = root;
-      parentArea.forEach((child) => _fetchAreas(areas, child));
+  void _fetchAreas(List<DockingArea> areas, DockingArea area) {
+    areas.add(area);
+    if (area is DockingParentArea) {
+      for (DockingArea child in area._children) {
+        _fetchAreas(areas, child);
+      }
     }
+  }
+
+  /// Converts a layout into a String to be stored.
+  ///
+  /// The String will have the following structure:
+  /// VERSION:AREAS_LENGTH:AREAS
+  ///
+  /// The VERSION group has a fixed value: V1
+  ///
+  /// The AREAS group separates each area with a comma and follows the
+  /// pattern: AREA_INDEX_1(AREA_CONFIGURATION),...,AREA_INDEX_N(AREA_CONFIGURATION)
+  /// Example: 1(AREA_CONFIGURATION),2(AREA_CONFIGURATION),3(AREA_CONFIGURATION)
+  ///
+  /// The AREA_CONFIGURATION group represents all area data given the class:
+  ///
+  /// * [DockingItem]
+  ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
+  ///   * WEIGHT
+  ///   * MAXIMIZED
+  /// * [DockingColumn]
+  ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
+  ///   * WEIGHT
+  ///   * CHILDREN_INDEXES
+  /// * [DockingRow]
+  ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
+  ///   * WEIGHT
+  ///   * CHILDREN_INDEXES
+  /// * [DockingTabs]
+  ///   * AREA_ACRONYM
+  ///   * ID_LENGTH
+  ///   * ID
+  ///   * WEIGHT
+  ///   * MAXIMIZED
+  ///   * CHILDREN_INDEXES
+  ///
+  /// Example:
+  /// V1:3:1(R;0;;;2,3),2(I;6;my_id1;0.5;F),3(I;6;my_id2;0.5;F)
+  String stringify({required LayoutParser parser}) {
+    final List<DockingArea> areas = layoutAreas();
+    return LayoutStringify.stringify(parser: parser, areas: areas);
   }
 }

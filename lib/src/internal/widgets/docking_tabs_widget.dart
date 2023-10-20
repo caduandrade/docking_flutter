@@ -7,6 +7,7 @@ import 'package:docking/src/internal/widgets/draggable_config_mixin.dart';
 import 'package:docking/src/internal/widgets/drop/content_wrapper.dart';
 import 'package:docking/src/internal/widgets/drop/drop_feedback_widget.dart';
 import 'package:docking/src/layout/docking_layout.dart';
+import 'package:docking/src/layout/drop_position.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
 import 'package:flutter/material.dart';

@@ -12,3 +12,8 @@ Matcher dockingAreaInSomeLayoutException() {
       x is ArgumentError &&
       x.message == "DockingArea already belongs to some layout."));
 }
+
+Matcher childNotBelongAnyLayoutException() {
+  return throwsA(predicate((x) =>
+      x is StateError && x.message == "Child does not belong to any layout."));
+}
