@@ -1,4 +1,4 @@
-# Docking (1.14.0)
+# Docking (1.13.0)
 
 Layout for placing widgets in docking areas and arrange them into split and tabbed views.
 
@@ -20,8 +20,6 @@ The following dependencies are exported along with this package:
   * [Combined](#combined)
   * [Finding DockingItem by id](#finding-dockingitem-by-id)
   * [Removing DockingItem by id](#removing-dockingitem-by-id)
-  * [Save and load](#save-and-load)
-    * [Custom id parser](#custom-id-parser)
 * Item
   * [Non-closable](#non-closable)
   * [Non-maximizable](#non-maximizable)
@@ -118,173 +116,6 @@ DockingItem? item = _layout.findDockingItem('id');
 
 ```dart
 _layout.removeItemByIds([2, 4]);
-```
-
-### Save and Load
-
-The [DockingLayout] offers the [stringify] method to allow save the layout. The same layout
-can be restored by [load] method.
-The instantiation of Widgets cannot be done automatically, for this it is necessary 
-to define a builder.
-The [DockingArea] ID can be used to identify which widget should be instantiated.
-
-```dart
-class MainWidgetState extends State<MainWidget>
-    with LayoutParserMixin, AreaBuilderMixin {
-  late DockingLayout _layout;
-  String _lastStringify = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _layout = DockingLayout(
-        root: DockingRow([
-      DockingItem(id: 'green', widget: greenWidget),
-      DockingItem(id: 'blue', widget: blueWidget)
-    ]));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Row(children: [
-        ElevatedButton(onPressed: _saveLayout, child: Text('Save layout')),
-        SizedBox(width: 8),
-        ElevatedButton(
-            onPressed: _lastStringify.isNotEmpty ? _loadLayout : null,
-            child: Text('Load layout'))
-      ]),
-      SizedBox(height: 8),
-      Text('Last stringify: $_lastStringify'),
-      SizedBox(height: 8),
-      Expanded(child: Docking(layout: _layout))
-    ]);
-  }
-
-  void _saveLayout() {
-    setState(() {
-      _lastStringify = _layout.stringify(parser: this);
-    });
-  }
-
-  void _loadLayout() {
-    if (_lastStringify.isNotEmpty) {
-      _layout.load(layout: _lastStringify, parser: this, builder: this);
-    }
-  }
-
-  Widget get greenWidget =>
-      Center(child: Text('Green', style: TextStyle(color: Colors.green)));
-
-  Widget get blueWidget =>
-      Center(child: Text('Blue', style: TextStyle(color: Colors.blue)));
-
-  @override
-  DockingItem buildDockingItem(
-      {required dynamic id, required double? weight, required bool maximized}) {
-    if (id == 'green') {
-      return DockingItem(
-          id: id, weight: weight, maximized: maximized, widget: greenWidget);
-    } else if (id == 'blue') {
-      return DockingItem(
-          id: id, weight: weight, maximized: maximized, widget: blueWidget);
-    }
-    throw StateError('ID not recognized: $id');
-  }
-}
-```
-
-#### Custom id parser
-
-```dart
-enum ExampleId { blue, green }
-
-class MainWidgetState extends State<MainWidget>
-    with AreaBuilderMixin
-    implements LayoutParser {
-  late DockingLayout _layout;
-  String _lastStringify = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _layout = DockingLayout(
-        root: DockingRow([
-      DockingItem(id: ExampleId.green, widget: greenWidget),
-      DockingItem(id: ExampleId.blue, widget: blueWidget)
-    ]));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Row(children: [
-        ElevatedButton(onPressed: _saveLayout, child: Text('Save layout')),
-        SizedBox(width: 8),
-        ElevatedButton(
-            onPressed: _lastStringify.isNotEmpty ? _loadLayout : null,
-            child: Text('Load layout'))
-      ]),
-      SizedBox(height: 8),
-      Text('Last stringify: $_lastStringify'),
-      SizedBox(height: 8),
-      Expanded(child: Docking(layout: _layout))
-    ]);
-  }
-
-  void _saveLayout() {
-    setState(() {
-      _lastStringify = _layout.stringify(parser: this);
-    });
-  }
-
-  void _loadLayout() {
-    if (_lastStringify.isNotEmpty) {
-      _layout.load(layout: _lastStringify, parser: this, builder: this);
-    }
-  }
-
-  Widget get greenWidget =>
-      Center(child: Text('Green', style: TextStyle(color: Colors.green)));
-
-  Widget get blueWidget =>
-      Center(child: Text('Blue', style: TextStyle(color: Colors.blue)));
-
-  @override
-  DockingItem buildDockingItem(
-      {required dynamic id, required double? weight, required bool maximized}) {
-    if (id == ExampleId.green) {
-      return DockingItem(
-          id: id, weight: weight, maximized: maximized, widget: greenWidget);
-    } else if (id == ExampleId.blue) {
-      return DockingItem(
-          id: id, weight: weight, maximized: maximized, widget: blueWidget);
-    }
-    throw StateError('ID not recognized: $id');
-  }
-
-  @override
-  String idToString(dynamic id) {
-    if (id == null) {
-      // row, column and tabs
-      return '';
-    }
-    // item
-    ExampleId exampleId = id;
-    // Just a simple example but don't do this as it depends on not changing
-    // the order of values in the enum.
-    return exampleId.index.toString();
-  }
-
-  @override
-  dynamic stringToId(String id) {
-    if (id.isEmpty) {
-      return null;
-    }
-    int index = int.parse(id);
-    return ExampleId.values[index];
-  }
-}
 ```
 
 ## Item
