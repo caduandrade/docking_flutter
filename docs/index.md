@@ -122,11 +122,11 @@ _layout.removeItemByIds([2, 4]);
 
 ### Save and Load
 
-The [DockingLayout] offers the [stringify] method to allow save the layout. The same layout
-can be restored by [load] method.
+The `DockingLayout` offers the `stringify` method to allow save the layout. The same layout
+can be restored by `load` method.
 The instantiation of Widgets cannot be done automatically, for this it is necessary 
 to define a builder.
-The [DockingArea] ID can be used to identify which widget should be instantiated.
+The `DockingArea` ID can be used to identify which widget should be instantiated.
 
 ```dart
 class MainWidgetState extends State<MainWidget>
