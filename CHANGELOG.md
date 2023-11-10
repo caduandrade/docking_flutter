@@ -1,3 +1,8 @@
+## 1.14.1
+
+* Bugfix
+  * Fixing the issue that reset the weight after using the `DockingLayout.addItemOn` method.
+
 ## 1.14.0
 
 * The `id` attribute has been moved from the `DockingItem` to the `DockingArea`.

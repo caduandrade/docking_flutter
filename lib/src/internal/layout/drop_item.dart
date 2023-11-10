@@ -62,17 +62,35 @@ class DropItem extends LayoutModifier {
       } else if (dockingItem == targetArea) {
         final DockingItem newDraggedItem = dropItem;
         if (dropIndex == 0) {
-          return DockingTabs([newDraggedItem, dockingItem]);
+          return DockingTabs([newDraggedItem, dockingItem],
+              weight: dockingItem.weight,
+              minimalSize: dockingItem.minimalSize,
+              minimalWeight: dockingItem.minimalWeight);
         } else if (dropIndex == 1) {
-          return DockingTabs([dockingItem, newDraggedItem]);
+          return DockingTabs([dockingItem, newDraggedItem],
+              weight: dockingItem.weight,
+              minimalSize: dockingItem.minimalSize,
+              minimalWeight: dockingItem.minimalWeight);
         } else if (dropPosition == DropPosition.top) {
-          return DockingColumn([newDraggedItem, dockingItem]);
+          return DockingColumn([newDraggedItem, dockingItem],
+              weight: dockingItem.weight,
+              minimalSize: dockingItem.minimalSize,
+              minimalWeight: dockingItem.minimalWeight);
         } else if (dropPosition == DropPosition.bottom) {
-          return DockingColumn([dockingItem, newDraggedItem]);
+          return DockingColumn([dockingItem, newDraggedItem],
+              weight: dockingItem.weight,
+              minimalSize: dockingItem.minimalSize,
+              minimalWeight: dockingItem.minimalWeight);
         } else if (dropPosition == DropPosition.left) {
-          return DockingRow([newDraggedItem, dockingItem]);
+          return DockingRow([newDraggedItem, dockingItem],
+              weight: dockingItem.weight,
+              minimalSize: dockingItem.minimalSize,
+              minimalWeight: dockingItem.minimalWeight);
         } else if (dropPosition == DropPosition.right) {
-          return DockingRow([dockingItem, newDraggedItem]);
+          return DockingRow([dockingItem, newDraggedItem],
+              weight: dockingItem.weight,
+              minimalSize: dockingItem.minimalSize,
+              minimalWeight: dockingItem.minimalWeight);
         } else {
           throw ArgumentError(
               'DropPosition not recognized: ' + dropPosition.toString());
@@ -81,6 +99,7 @@ class DropItem extends LayoutModifier {
       return area;
     } else if (area is DockingTabs) {
       final DockingTabs dockingTabs = area;
+      print('${dockingTabs.index}: ${dockingTabs.weight}');
       List<DockingItem> children = [];
       DockingItem? oldSelection;
       int oldIndex = -1;
@@ -104,7 +123,10 @@ class DropItem extends LayoutModifier {
       } else {
         newArea = DockingTabs(children,
             maximized: dockingTabs.maximized,
-            maximizable: dockingTabs.maximizable);
+            maximizable: dockingTabs.maximizable,
+            weight: dockingTabs.weight,
+            minimalWeight: dockingTabs.minimalWeight,
+            minimalSize: dockingTabs.minimalSize);
         if (oldSelection != null) {
           int newSelectedIndex = children.indexOf(oldSelection);
           (newArea as DockingTabs).selectedIndex =
@@ -123,7 +145,12 @@ class DropItem extends LayoutModifier {
           } else {
             children.insert(newIndex, newDraggedItem);
           }
-          DockingTabs newDockingTabs = DockingTabs(children);
+          DockingTabs newDockingTabs = DockingTabs(children,
+              maximized: dockingTabs.maximized,
+              maximizable: dockingTabs.maximizable,
+              weight: dockingTabs.weight,
+              minimalWeight: dockingTabs.minimalWeight,
+              minimalSize: dockingTabs.minimalSize);
           if (oldSelection != null) {
             int newSelectedIndex = children.indexOf(oldSelection);
             newDockingTabs.selectedIndex =
@@ -158,9 +185,15 @@ class DropItem extends LayoutModifier {
         return children.first;
       }
       if (area is DockingRow) {
-        return DockingRow(children);
+        return DockingRow(children,
+            weight: area.weight,
+            minimalWeight: area.minimalWeight,
+            minimalSize: area.minimalSize);
       } else if (area is DockingColumn) {
-        return DockingColumn(children);
+        return DockingColumn(children,
+            weight: area.weight,
+            minimalWeight: area.minimalWeight,
+            minimalSize: area.minimalSize);
       }
       throw StateError(
           'DockingArea class not recognized: ' + area.runtimeType.toString());
