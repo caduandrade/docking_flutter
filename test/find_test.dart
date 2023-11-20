@@ -7,7 +7,7 @@ DockingItem dockingItem(dynamic id) {
 }
 
 void main() {
-  group('find item', () {
+  group('find', () {
     test('empty layout', () {
       DockingLayout layout = DockingLayout(root: null);
       expect(layout.findDockingItem(1), isNull);
@@ -42,6 +42,22 @@ void main() {
       expect(layout.findDockingItem(2), item2);
       expect(layout.findDockingItem(3), isNull);
       expect(layout.findDockingArea('tabs'), tabs);
+    });
+
+    test('tabs with item', () {
+      DockingItem itemA = dockingItem('a');
+      DockingItem itemB = dockingItem('b');
+      DockingItem itemC = dockingItem('c');
+      DockingItem itemD = dockingItem('d');
+      DockingItem itemE = dockingItem('e');
+      DockingColumn innerColumn =
+          DockingColumn([itemB, itemC], id: 'innerColumn');
+      DockingRow row = DockingRow([itemA, innerColumn], id: 'row');
+      DockingTabs tabs = DockingTabs([itemD, itemE], id: 'tabs');
+      DockingColumn column = DockingColumn([row, tabs], id: 'column');
+      DockingLayout layout = DockingLayout(root: column);
+      expect(layout.findDockingTabsWithItem('a'), null);
+      expect(layout.findDockingTabsWithItem('e'), tabs);
     });
 
     test('complex', () {

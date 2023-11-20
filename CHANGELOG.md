@@ -1,3 +1,8 @@
+## 1.15.0
+
+* `DockingLayout`
+  * Method `findDockingTabsWithItem` to finds a `DockingTabs` that has a `DockingItem` with the given id.
+
 ## 1.14.1
 
 * Bugfix

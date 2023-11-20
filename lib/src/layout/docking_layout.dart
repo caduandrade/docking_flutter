@@ -558,6 +558,16 @@ class DockingLayout extends ChangeNotifier {
     _root?._updateHierarchy(null, 1, id);
   }
 
+  /// Finds a [DockingTabs] that has a [DockingItem] with the given id.
+  DockingTabs? findDockingTabsWithItem(dynamic itemId) {
+    DockingItem? item = findDockingItem(itemId);
+    if (item != null) {
+      DockingArea? parent = item.parent;
+      return parent is DockingTabs ? parent : null;
+    }
+    return null;
+  }
+
   /// Finds a [DockingItem] given an id.
   DockingItem? findDockingItem(dynamic id) {
     DockingArea? area = _findDockingArea(area: _root, id: id);
