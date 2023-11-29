@@ -10,6 +10,8 @@ import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/layout/drop_position.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
+import 'package:docking/src/theme/docking_theme.dart';
+import 'package:docking/src/theme/docking_theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
@@ -66,14 +68,15 @@ class DockingTabsWidgetState extends State<DockingTabsWidget>
         if (buttons == null) {
           buttons = [];
         }
+        DockingThemeData data = DockingTheme.of(context);
         if (widget.layout.maximizedArea != null &&
             widget.layout.maximizedArea == child) {
           buttons.add(TabButton(
-              icon: IconProvider.path(DockingIcons.restore),
+              icon: data.restoreIcon,
               onPressed: () => widget.layout.restore()));
         } else {
           buttons.add(TabButton(
-              icon: IconProvider.data(Icons.web_asset_sharp),
+              icon: data.maximizeIcon,
               onPressed: () => widget.layout.maximizeDockingItem(child)));
         }
       }
@@ -149,14 +152,14 @@ class DockingTabsWidgetState extends State<DockingTabsWidget>
         ? widget.dockingTabs.maximizable!
         : widget.maximizableTabsArea;
     if (maximizable) {
+      DockingThemeData data = DockingTheme.of(context);
       if (widget.layout.maximizedArea != null &&
           widget.layout.maximizedArea == widget.dockingTabs) {
         buttons.add(TabButton(
-            icon: IconProvider.path(DockingIcons.restore),
-            onPressed: () => widget.layout.restore()));
+            icon: data.restoreIcon, onPressed: () => widget.layout.restore()));
       } else {
         buttons.add(TabButton(
-            icon: IconProvider.data(Icons.web_asset_sharp),
+            icon: data.maximizeIcon,
             onPressed: () =>
                 widget.layout.maximizeDockingTabs(widget.dockingTabs)));
       }

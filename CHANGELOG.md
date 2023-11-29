@@ -2,6 +2,8 @@
 
 * `DockingLayout`
   * Method `findDockingTabsWithItem` to finds a `DockingTabs` that has a `DockingItem` with the given id.
+* Theme
+  * The `DockingTheme` class has been added to provide icons customization.
 
 ## 1.14.1
 

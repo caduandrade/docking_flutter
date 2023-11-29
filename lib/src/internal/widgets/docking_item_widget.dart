@@ -1,6 +1,5 @@
-import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/docking_buttons_builder.dart';
-import 'package:docking/src/docking_icons.dart';
+import 'package:docking/src/docking_drag.dart';
 import 'package:docking/src/internal/widgets/draggable_config_mixin.dart';
 import 'package:docking/src/internal/widgets/drop/content_wrapper.dart';
 import 'package:docking/src/internal/widgets/drop/drop_feedback_widget.dart';
@@ -8,6 +7,8 @@ import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/layout/drop_position.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
+import 'package:docking/src/theme/docking_theme.dart';
+import 'package:docking/src/theme/docking_theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:tabbed_view/tabbed_view.dart';
@@ -63,14 +64,15 @@ class DockingItemWidgetState extends State<DockingItemWidget>
       if (buttons == null) {
         buttons = [];
       }
+      DockingThemeData data = DockingTheme.of(context);
+
       if (widget.layout.maximizedArea != null &&
           widget.layout.maximizedArea == widget.item) {
         buttons.add(TabButton(
-            icon: IconProvider.path(DockingIcons.restore),
-            onPressed: () => widget.layout.restore()));
+            icon: data.restoreIcon, onPressed: () => widget.layout.restore()));
       } else {
         buttons.add(TabButton(
-            icon: IconProvider.data(Icons.web_asset_sharp),
+            icon: data.maximizeIcon,
             onPressed: () => widget.layout.maximizeDockingItem(widget.item)));
       }
     }
