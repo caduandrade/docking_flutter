@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:docking/src/docking_buttons_builder.dart';
 import 'package:docking/src/docking_drag.dart';
-import 'package:docking/src/docking_icons.dart';
 import 'package:docking/src/internal/widgets/draggable_config_mixin.dart';
 import 'package:docking/src/internal/widgets/drop/content_wrapper.dart';
 import 'package:docking/src/internal/widgets/drop/drop_feedback_widget.dart';
