@@ -1,4 +1,4 @@
-import 'package:docking/src/docking_drag.dart';
+import 'package:docking/src/drag_over_position.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
@@ -8,7 +8,7 @@ import 'package:tabbed_view/tabbed_view.dart';
 @internal
 mixin DraggableConfigMixin {
   DraggableConfig buildDraggableConfig(
-      {required DockingDrag dockingDrag, required TabData tabData}) {
+      {required DragOverPosition dockingDrag, required TabData tabData}) {
     DockingItem item = tabData.value;
     String name = item.name != null ? item.name! : '';
     return DraggableConfig(

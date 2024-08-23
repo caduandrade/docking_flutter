@@ -1,3 +1,8 @@
+## 1.16.0
+
+* `Docking`
+  * Allow to disable draggable
+
 ## 1.15.0
 
 * `DockingLayout`

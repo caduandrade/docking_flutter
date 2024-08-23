@@ -1,5 +1,5 @@
 import 'package:docking/src/docking_buttons_builder.dart';
-import 'package:docking/src/docking_drag.dart';
+import 'package:docking/src/drag_over_position.dart';
 import 'package:docking/src/internal/widgets/docking_item_widget.dart';
 import 'package:docking/src/internal/widgets/docking_tabs_widget.dart';
 import 'package:docking/src/layout/docking_layout.dart';
@@ -21,7 +21,8 @@ class Docking extends StatefulWidget {
       this.maximizableItem = true,
       this.maximizableTab = true,
       this.maximizableTabsArea = true,
-      this.antiAliasingWorkaround = true})
+      this.antiAliasingWorkaround = true,
+      this.draggable = true})
       : super(key: key);
 
   final DockingLayout? layout;
@@ -33,6 +34,7 @@ class Docking extends StatefulWidget {
   final bool maximizableTab;
   final bool maximizableTabsArea;
   final bool antiAliasingWorkaround;
+  final bool draggable;
 
   @override
   State<StatefulWidget> createState() => _DockingState();
@@ -40,19 +42,19 @@ class Docking extends StatefulWidget {
 
 /// The [Docking] state.
 class _DockingState extends State<Docking> {
-  final DockingDrag _dockingDrag = DockingDrag();
+  final DragOverPosition _dragOverPosition = DragOverPosition();
 
   @override
   void initState() {
     super.initState();
-    _dockingDrag.addListener(_forceRebuild);
+    _dragOverPosition.addListener(_forceRebuild);
     widget.layout?.addListener(_forceRebuild);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _dockingDrag.removeListener(_forceRebuild);
+    _dragOverPosition.removeListener(_forceRebuild);
     widget.layout?.removeListener(_forceRebuild);
   }
 
@@ -97,7 +99,8 @@ class _DockingState extends State<Docking> {
       return DockingItemWidget(
           key: area.key,
           layout: widget.layout!,
-          dockingDrag: _dockingDrag,
+          dragOverPosition: _dragOverPosition,
+          draggable: widget.draggable,
           item: area,
           onItemSelection: widget.onItemSelection,
           itemCloseInterceptor: widget.itemCloseInterceptor,
@@ -113,7 +116,8 @@ class _DockingState extends State<Docking> {
         return DockingItemWidget(
             key: area.key,
             layout: widget.layout!,
-            dockingDrag: _dockingDrag,
+            dragOverPosition: _dragOverPosition,
+            draggable: widget.draggable,
             item: area.childAt(0),
             onItemSelection: widget.onItemSelection,
             itemCloseInterceptor: widget.itemCloseInterceptor,
@@ -124,7 +128,8 @@ class _DockingState extends State<Docking> {
       return DockingTabsWidget(
           key: area.key,
           layout: widget.layout!,
-          dockingDrag: _dockingDrag,
+          dragOverPosition: _dragOverPosition,
+          draggable: widget.draggable,
           dockingTabs: area,
           onItemSelection: widget.onItemSelection,
           onItemClose: widget.onItemClose,
