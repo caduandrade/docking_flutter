@@ -26,8 +26,10 @@ abstract class DropAnchorBaseWidget extends StatelessWidget {
         onExit: (e) => listener(null),
         child: DragTarget<DraggableData>(
             builder: _buildDropWidget,
-            onWillAccept: (DraggableData? draggableData) {
-              final TabData? draggedTabData = draggableData?.tabData;
+            onWillAcceptWithDetails:
+                (DragTargetDetails<DraggableData> details) {
+              final DraggableData draggableData = details.data;
+              final TabData? draggedTabData = draggableData.tabData;
               final DockingItem? draggedItem = draggedTabData?.value;
               if (draggedItem != null) {
                 bool willAccept = onWillAccept(draggedItem);
@@ -42,7 +44,8 @@ abstract class DropAnchorBaseWidget extends StatelessWidget {
               }
               return false;
             },
-            onAccept: (DraggableData draggableData) {
+            onAcceptWithDetails: (DragTargetDetails<DraggableData> details) {
+              final DraggableData draggableData = details.data;
               final TabData tabData = draggableData.tabData;
               final DockingItem draggableItem = tabData.value;
               onAccept(draggableItem);
