@@ -2,10 +2,12 @@ import 'package:docking/docking.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(DockingExampleApp());
+  runApp(const DockingExampleApp());
 }
 
 class DockingExampleApp extends StatelessWidget {
+  const DockingExampleApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,17 +16,19 @@ class DockingExampleApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: DockingExamplePage(),
+      home: const DockingExamplePage(),
     );
   }
 }
 
 class DockingExamplePage extends StatefulWidget {
+  const DockingExamplePage({Key? key}) : super(key: key);
+
   @override
-  _DockingExamplePageState createState() => _DockingExamplePageState();
+  DockingExamplePageState createState() => DockingExamplePageState();
 }
 
-class _DockingExamplePageState extends State<DockingExamplePage> {
+class DockingExamplePageState extends State<DockingExamplePage> {
   late DockingLayout _layout;
 
   @override
@@ -45,22 +49,22 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
   DockingItem get _minimalWeightItem => DockingItem(
       name: 'minimalSize',
       minimalWeight: .15,
-      widget: CenterText(text: 'minimalWeight: .15'));
+      widget: const CenterText(text: 'minimalWeight: .15'));
 
   DockingItem get _minimalSizeItem => DockingItem(
       name: 'minimalSize',
       minimalSize: 150,
-      widget: CenterText(text: 'minimalSize: 150'));
+      widget: const CenterText(text: 'minimalSize: 150'));
 
   DockingItem get _nonMaximizableItem => DockingItem(
       name: 'non-maximizable',
       maximizable: false,
-      widget: CenterText(text: 'non-maximizable'));
+      widget: const CenterText(text: 'non-maximizable'));
 
   DockingItem get _nonClosableItem => DockingItem(
       name: 'non-closable',
       closable: false,
-      widget: CenterText(text: 'non-closable'));
+      widget: const CenterText(text: 'non-closable'));
 
   DockingItem _buildItem(int value,
       {double? weight, bool closable = true, bool? maximizable}) {
@@ -69,7 +73,7 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
         name: value.toString(),
         closable: closable,
         maximizable: maximizable,
-        widget: Container(child: Center(child: Text('$value'))));
+        widget: Center(child: Text('$value')));
   }
 
   @override
@@ -78,7 +82,8 @@ class _DockingExamplePageState extends State<DockingExamplePage> {
         body: TabbedViewTheme(
             data: TabbedViewThemeData.classic(),
             child: Container(
-                child: Docking(layout: _layout), padding: EdgeInsets.all(16))));
+                padding: const EdgeInsets.all(16),
+                child: Docking(layout: _layout))));
   }
 }
 

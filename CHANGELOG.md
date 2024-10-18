@@ -1,7 +1,7 @@
 ## 1.16.1
 
 * Bugfix
-  * The `removeItemById` method not preserving id.
+  * The `removeItemById` method does not preserving id.
 
 ## 1.16.0
 
