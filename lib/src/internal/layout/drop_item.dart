@@ -99,7 +99,6 @@ class DropItem extends LayoutModifier {
       return area;
     } else if (area is DockingTabs) {
       final DockingTabs dockingTabs = area;
-      print('${dockingTabs.index}: ${dockingTabs.weight}');
       List<DockingItem> children = [];
       DockingItem? oldSelection;
       int oldIndex = -1;
@@ -122,6 +121,7 @@ class DropItem extends LayoutModifier {
         newArea = children.first;
       } else {
         newArea = DockingTabs(children,
+            id: dockingTabs.id,
             maximized: dockingTabs.maximized,
             maximizable: dockingTabs.maximizable,
             weight: dockingTabs.weight,
@@ -146,6 +146,7 @@ class DropItem extends LayoutModifier {
             children.insert(newIndex, newDraggedItem);
           }
           DockingTabs newDockingTabs = DockingTabs(children,
+              id: dockingTabs.id,
               maximized: dockingTabs.maximized,
               maximizable: dockingTabs.maximizable,
               weight: dockingTabs.weight,

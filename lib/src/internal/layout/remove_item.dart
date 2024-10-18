@@ -1,5 +1,5 @@
-import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/internal/layout/layout_modifier.dart';
+import 'package:docking/src/layout/docking_layout.dart';
 import 'package:meta/meta.dart';
 
 /// Removes [DockingItem] from this layout.
@@ -50,6 +50,7 @@ class RemoveItem extends LayoutModifier {
         return null;
       }
       DockingTabs newDockingTabs = DockingTabs(children,
+          id: dockingTabs.id,
           maximized: dockingTabs.maximized,
           maximizable: dockingTabs.maximizable);
       newDockingTabs.selectedIndex = dockingTabs.selectedIndex;
@@ -68,9 +69,9 @@ class RemoveItem extends LayoutModifier {
         return children.first;
       }
       if (area is DockingRow) {
-        return DockingRow(children);
+        return DockingRow(children, id: area.id);
       } else if (area is DockingColumn) {
-        return DockingColumn(children);
+        return DockingColumn(children, id: area.id);
       }
       throw ArgumentError(
           'DockingArea class not recognized: ' + area.runtimeType.toString());

@@ -37,6 +37,7 @@ class RemoveItemById extends LayoutModifier {
         return children.first;
       }
       DockingTabs newDockingTabs = DockingTabs(children,
+          id: dockingTabs.id,
           maximized: dockingTabs.maximized,
           maximizable: dockingTabs.maximizable);
       newDockingTabs.selectedIndex = dockingTabs.selectedIndex;
@@ -55,9 +56,9 @@ class RemoveItemById extends LayoutModifier {
         return children.first;
       }
       if (area is DockingRow) {
-        return DockingRow(children);
+        return DockingRow(children, id: area.id);
       } else if (area is DockingColumn) {
-        return DockingColumn(children);
+        return DockingColumn(children, id: area.id);
       }
       throw ArgumentError(
           'DockingArea class not recognized: ' + area.runtimeType.toString());

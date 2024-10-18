@@ -1,3 +1,8 @@
+## 1.16.1
+
+* Bugfix
+  * The `removeItemById` method not preserving id.
+
 ## 1.16.0
 
 * `Docking`
