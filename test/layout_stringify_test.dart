@@ -46,17 +46,17 @@ void main() {
       DockingLayout(root: column);
 
       expect(LayoutStringify.stringifyArea(parser: defaultParser, area: column),
-          '0;;');
+          '0;;1.0');
       expect(LayoutStringify.stringifyArea(parser: defaultParser, area: row),
           '0;;0.4');
       expect(LayoutStringify.stringifyArea(parser: defaultParser, area: tabs),
-          '0;;');
+          '0;;1.0');
       expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemA),
-          '0;;');
+          '0;;1.0');
       expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemB),
           '0;;0.2');
       expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemC),
-          '3;idC;');
+          '3;idC;1.0');
       expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemD),
           '3;1.2;');
       expect(LayoutStringify.stringifyArea(parser: defaultParser, area: itemE),
@@ -90,8 +90,8 @@ void main() {
 
       LayoutParser parser = CustomIdParser();
 
-      expect(
-          LayoutStringify.stringifyArea(parser: parser, area: itemA), '3;2.2;');
+      expect(LayoutStringify.stringifyArea(parser: parser, area: itemA),
+          '3;2.2;1.0');
       expect(
           LayoutStringify.stringifyArea(parser: parser, area: itemB), '3;4.3;');
       expect(
@@ -109,11 +109,11 @@ void main() {
       LayoutParser parser = CustomIdClassParser();
 
       expect(LayoutStringify.stringifyArea(parser: parser, area: itemA),
-          '5;itemA;');
+          '5;itemA;1.0');
       expect(LayoutStringify.stringifyArea(parser: parser, area: itemB),
-          '5;itemB;');
-      expect(
-          LayoutStringify.stringifyArea(parser: parser, area: row), '3;row;');
+          '5;itemB;1.0');
+      expect(LayoutStringify.stringifyArea(parser: parser, area: row),
+          '3;row;1.0');
     });
     test('stringify - simple', () {
       DockingItem itemA =

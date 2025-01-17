@@ -134,10 +134,10 @@ packages:
     dependency: transitive
     description:
       name: multi_split_view
-      sha256: f3cd3d2808048054538a5a5a12f0acb23231d6d6353b7fdab59fc0dae645b1e8
+      sha256: "8551eb4108467a00d80833adb86a938a3889ca8dcb3382b3a1786c2949610007"
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.1-rc.1"
+    version: "3.6.1-rc.2"
   path:
     dependency: transitive
     description:
