@@ -63,34 +63,34 @@ class DropItem extends LayoutModifier {
         final DockingItem newDraggedItem = dropItem;
         if (dropIndex == 0) {
           return DockingTabs([newDraggedItem, dockingItem],
-              weight: dockingItem.weight,
-              minimalSize: dockingItem.minimalSize,
-              minimalWeight: dockingItem.minimalWeight);
+              flex: dockingItem.flex,
+              size: dockingItem.size,
+              min: dockingItem.min);
         } else if (dropIndex == 1) {
           return DockingTabs([dockingItem, newDraggedItem],
-              weight: dockingItem.weight,
-              minimalSize: dockingItem.minimalSize,
-              minimalWeight: dockingItem.minimalWeight);
+              flex: dockingItem.flex,
+              size: dockingItem.size,
+              min: dockingItem.min);
         } else if (dropPosition == DropPosition.top) {
           return DockingColumn([newDraggedItem, dockingItem],
-              weight: dockingItem.weight,
-              minimalSize: dockingItem.minimalSize,
-              minimalWeight: dockingItem.minimalWeight);
+              flex: dockingItem.flex,
+              size: dockingItem.size,
+              min: dockingItem.min);
         } else if (dropPosition == DropPosition.bottom) {
           return DockingColumn([dockingItem, newDraggedItem],
-              weight: dockingItem.weight,
-              minimalSize: dockingItem.minimalSize,
-              minimalWeight: dockingItem.minimalWeight);
+              flex: dockingItem.flex,
+              size: dockingItem.size,
+              min: dockingItem.min);
         } else if (dropPosition == DropPosition.left) {
           return DockingRow([newDraggedItem, dockingItem],
-              weight: dockingItem.weight,
-              minimalSize: dockingItem.minimalSize,
-              minimalWeight: dockingItem.minimalWeight);
+              flex: dockingItem.flex,
+              size: dockingItem.size,
+              min: dockingItem.min);
         } else if (dropPosition == DropPosition.right) {
           return DockingRow([dockingItem, newDraggedItem],
-              weight: dockingItem.weight,
-              minimalSize: dockingItem.minimalSize,
-              minimalWeight: dockingItem.minimalWeight);
+              flex: dockingItem.flex,
+              size: dockingItem.size,
+              min: dockingItem.min);
         } else {
           throw ArgumentError(
               'DropPosition not recognized: ' + dropPosition.toString());
@@ -124,9 +124,9 @@ class DropItem extends LayoutModifier {
             id: dockingTabs.id,
             maximized: dockingTabs.maximized,
             maximizable: dockingTabs.maximizable,
-            weight: dockingTabs.weight,
-            minimalWeight: dockingTabs.minimalWeight,
-            minimalSize: dockingTabs.minimalSize);
+            flex: dockingTabs.flex,
+            size: dockingTabs.size,
+            min: dockingTabs.min);
         if (oldSelection != null) {
           int newSelectedIndex = children.indexOf(oldSelection);
           (newArea as DockingTabs).selectedIndex =
@@ -149,9 +149,9 @@ class DropItem extends LayoutModifier {
               id: dockingTabs.id,
               maximized: dockingTabs.maximized,
               maximizable: dockingTabs.maximizable,
-              weight: dockingTabs.weight,
-              minimalWeight: dockingTabs.minimalWeight,
-              minimalSize: dockingTabs.minimalSize);
+              flex: dockingTabs.flex,
+              size: dockingTabs.size,
+              min: dockingTabs.min);
           if (oldSelection != null) {
             int newSelectedIndex = children.indexOf(oldSelection);
             newDockingTabs.selectedIndex =
@@ -187,14 +187,10 @@ class DropItem extends LayoutModifier {
       }
       if (area is DockingRow) {
         return DockingRow(children,
-            weight: area.weight,
-            minimalWeight: area.minimalWeight,
-            minimalSize: area.minimalSize);
+            flex: area.flex, size: area.size, min: area.min);
       } else if (area is DockingColumn) {
         return DockingColumn(children,
-            weight: area.weight,
-            minimalWeight: area.minimalWeight,
-            minimalSize: area.minimalSize);
+            flex: area.flex, size: area.size, min: area.min);
       }
       throw StateError(
           'DockingArea class not recognized: ' + area.runtimeType.toString());

@@ -35,11 +35,11 @@ void main() {
     });
     test('stringifyArea', () {
       DockingItem itemA = DockingItem(widget: Container());
-      DockingItem itemB = DockingItem(widget: Container(), weight: .2);
+      DockingItem itemB = DockingItem(widget: Container(), flex: .2);
       DockingItem itemC = DockingItem(id: 'idC', widget: Container());
       DockingItem itemD = DockingItem(id: 1.2, widget: Container());
-      DockingItem itemE = DockingItem(widget: Container(), weight: .3);
-      DockingRow row = DockingRow([itemB, itemC], weight: .4);
+      DockingItem itemE = DockingItem(widget: Container(), flex: .3);
+      DockingRow row = DockingRow([itemB, itemC], flex: .4);
       DockingTabs tabs = DockingTabs([itemD, itemE]);
       DockingColumn column = DockingColumn([itemA, row, tabs]);
 
@@ -121,7 +121,7 @@ void main() {
       DockingItem itemB =
           DockingItem(id: 'idB', value: 'valueB', widget: Container());
 
-      DockingRow row = DockingRow([itemA, itemB], weight: 1);
+      DockingRow row = DockingRow([itemA, itemB], flex: 1);
 
       DockingLayout layout = DockingLayout(root: row);
 

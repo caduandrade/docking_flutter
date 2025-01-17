@@ -19,19 +19,8 @@ mixin DropArea {}
 
 /// Represents any area of the layout.
 abstract class DockingArea extends Area {
-  DockingArea(
-      {this.id,
-      double? size,
-      double? weight,
-      double? minimalWeight,
-      double? minimalSize})
-      : super(
-            size: size,
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize);
-
-  final dynamic id;
+  DockingArea({dynamic id, double? size, double? flex, double? min})
+      : super(id:id, size: size, flex: flex, min: min);
 
   int _layoutId = -1;
 
@@ -154,18 +143,9 @@ abstract class DockingArea extends Area {
 /// Represents an abstract area for a collection of widgets.
 abstract class DockingParentArea extends DockingArea {
   DockingParentArea(List<DockingArea> children,
-      {dynamic id,
-      double? size,
-      double? weight,
-      double? minimalWeight,
-      double? minimalSize})
+      {dynamic id, double? size, double? flex, double? min})
       : this._children = children,
-        super(
-            id: id,
-            size: size,
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize) {
+        super(id: id, size: size, flex: flex, min: min) {
     for (DockingArea child in this._children) {
       if (child.runtimeType == this.runtimeType) {
         throw ArgumentError(
@@ -261,18 +241,12 @@ class DockingItem extends DockingArea with DropArea {
       bool maximized = false,
       this.leading,
       double? size,
-      double? weight,
-      double? minimalWeight,
-      double? minimalSize})
+      double? flex,
+      double? min})
       : this.buttons = buttons != null ? List.unmodifiable(buttons) : [],
         this.globalKey = keepAlive ? GlobalKey() : null,
         this._maximized = maximized,
-        super(
-            id: id,
-            size: size,
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize);
+        super(id: id, size: size, flex: flex, min: min);
 
   String? name;
   Widget widget;
@@ -322,16 +296,8 @@ class DockingItem extends DockingArea with DropArea {
 class DockingRow extends DockingParentArea {
   /// Builds a [DockingRow].
   DockingRow._(List<DockingArea> children, dynamic id,
-      {double? size,
-      double? weight,
-      double? minimalWeight,
-      double? minimalSize})
-      : super(children,
-            id: id,
-            size: size,
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize) {
+      {double? size, double? flex, double? min})
+      : super(children, id: id, size: size, flex: flex, min: min) {
     controller = MultiSplitViewController(areas: children);
     if (this._children.length < 2) {
       throw ArgumentError('Insufficient number of children');
@@ -340,11 +306,7 @@ class DockingRow extends DockingParentArea {
 
   /// Builds a [DockingRow].
   factory DockingRow(List<DockingArea> children,
-      {dynamic id,
-      double? size,
-      double? weight,
-      double? minimalWeight,
-      double? minimalSize}) {
+      {dynamic id, double? size, double? flex, double? min}) {
     List<DockingArea> newChildren = [];
     for (DockingArea child in children) {
       if (child is DockingRow) {
@@ -353,11 +315,7 @@ class DockingRow extends DockingParentArea {
         newChildren.add(child);
       }
     }
-    return DockingRow._(newChildren, id,
-        size: size,
-        weight: weight,
-        minimalWeight: minimalWeight,
-        minimalSize: minimalSize);
+    return DockingRow._(newChildren, id, size: size, flex: flex, min: min);
   }
 
   late MultiSplitViewController controller;
@@ -374,17 +332,8 @@ class DockingRow extends DockingParentArea {
 class DockingColumn extends DockingParentArea {
   /// Builds a [DockingColumn].
   DockingColumn._(List<DockingArea> children,
-      {dynamic id,
-      double? size,
-      double? weight,
-      double? minimalWeight,
-      double? minimalSize})
-      : super(children,
-            id: id,
-            size: size,
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize) {
+      {dynamic id, double? size, double? flex, double? min})
+      : super(children, id: id, size: size, flex: flex, min: min) {
     controller = MultiSplitViewController(areas: children);
     if (this._children.length < 2) {
       throw ArgumentError('Insufficient number of children');
@@ -393,11 +342,7 @@ class DockingColumn extends DockingParentArea {
 
   /// Builds a [DockingColumn].
   factory DockingColumn(List<DockingArea> children,
-      {dynamic id,
-      double? size,
-      double? weight,
-      double? minimalWeight,
-      double? minimalSize}) {
+      {dynamic id, double? size, double? flex, double? min}) {
     List<DockingArea> newChildren = [];
     for (DockingArea child in children) {
       if (child is DockingColumn) {
@@ -407,11 +352,7 @@ class DockingColumn extends DockingParentArea {
       }
     }
     return DockingColumn._(newChildren,
-        id: id,
-        size: size,
-        weight: weight,
-        minimalWeight: minimalWeight,
-        minimalSize: minimalSize);
+        id: id, size: size, flex: flex, min: min);
   }
 
   late MultiSplitViewController controller;
@@ -432,16 +373,10 @@ class DockingTabs extends DockingParentArea with DropArea {
       bool maximized = false,
       this.maximizable,
       double? size,
-      double? weight,
-      double? minimalWeight,
-      double? minimalSize})
+      double? flex,
+      double? min})
       : this._maximized = maximized,
-        super(children,
-            id: id,
-            size: size,
-            weight: weight,
-            minimalWeight: minimalWeight,
-            minimalSize: minimalSize) {
+        super(children, id: id, size: size, flex: flex, min: min) {
     if (this._children.length == 0) {
       throw ArgumentError('DockingTabs cannot be empty');
     }
@@ -781,25 +716,25 @@ class DockingLayout extends ChangeNotifier {
   ///   * AREA_ACRONYM
   ///   * ID_LENGTH
   ///   * ID
-  ///   * WEIGHT
+  ///   * FLEX
   ///   * MAXIMIZED
   /// * [DockingColumn]
   ///   * AREA_ACRONYM
   ///   * ID_LENGTH
   ///   * ID
-  ///   * WEIGHT
+  ///   * FLEX
   ///   * CHILDREN_INDEXES
   /// * [DockingRow]
   ///   * AREA_ACRONYM
   ///   * ID_LENGTH
   ///   * ID
-  ///   * WEIGHT
+  ///   * FLEX
   ///   * CHILDREN_INDEXES
   /// * [DockingTabs]
   ///   * AREA_ACRONYM
   ///   * ID_LENGTH
   ///   * ID
-  ///   * WEIGHT
+  ///   * FLEX
   ///   * MAXIMIZED
   ///   * CHILDREN_INDEXES
   ///
