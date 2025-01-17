@@ -1,5 +1,5 @@
 import 'package:docking/src/docking_buttons_builder.dart';
-import 'package:docking/src/drag_over_position.dart';
+import 'package:docking/src/internal/drag_over_position.dart';
 import 'package:docking/src/internal/widgets/docking_item_widget.dart';
 import 'package:docking/src/internal/widgets/docking_tabs_widget.dart';
 import 'package:docking/src/layout/docking_layout.dart';
@@ -48,22 +48,26 @@ class _DockingState extends State<Docking> {
   void initState() {
     super.initState();
     _dragOverPosition.addListener(_forceRebuild);
-    widget.layout?.addListener(_forceRebuild);
+    DockingLayoutHelper.setRebuildCallback(
+        layout: widget.layout, callback: _forceRebuild);
   }
 
   @override
   void dispose() {
     super.dispose();
     _dragOverPosition.removeListener(_forceRebuild);
-    widget.layout?.removeListener(_forceRebuild);
+    DockingLayoutHelper.setRebuildCallback(
+        layout: widget.layout, callback: null);
   }
 
   @override
   void didUpdateWidget(Docking oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.layout != widget.layout) {
-      oldWidget.layout?.removeListener(_forceRebuild);
-      widget.layout?.addListener(_forceRebuild);
+      DockingLayoutHelper.setRebuildCallback(
+          layout: oldWidget.layout, callback: null);
+      DockingLayoutHelper.setRebuildCallback(
+          layout: widget.layout, callback: _forceRebuild);
     }
   }
 
@@ -148,6 +152,7 @@ class _DockingState extends State<Docking> {
         builder: _buildArea,
         axis: Axis.horizontal,
         controller: row.controller,
+        onDividerDragUpdate: (index) => widget.layout?.notifyLayoutChange(),
         antiAliasingWorkaround: widget.antiAliasingWorkaround);
   }
 
@@ -157,6 +162,7 @@ class _DockingState extends State<Docking> {
         builder: _buildArea,
         axis: Axis.vertical,
         controller: column.controller,
+        onDividerDragUpdate: (index) => widget.layout?.notifyLayoutChange(),
         antiAliasingWorkaround: widget.antiAliasingWorkaround);
   }
 

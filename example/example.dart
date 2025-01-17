@@ -47,6 +47,7 @@ class DockingExamplePageState extends State<DockingExamplePage> {
   }
 
   DockingItem get _minItem => DockingItem(
+      id: 'min',
       name: 'min',
       min: 0.2,
       widget: const CenterText(text: 'min: 0.2'));

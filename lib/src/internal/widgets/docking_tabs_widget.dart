@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:docking/src/docking_buttons_builder.dart';
-import 'package:docking/src/drag_over_position.dart';
+import 'package:docking/src/internal/drag_over_position.dart';
 import 'package:docking/src/internal/widgets/draggable_config_mixin.dart';
 import 'package:docking/src/internal/widgets/drop/content_wrapper.dart';
 import 'package:docking/src/internal/widgets/drop/drop_feedback_widget.dart';
@@ -12,9 +12,11 @@ import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/theme/docking_theme.dart';
 import 'package:docking/src/theme/docking_theme_data.dart';
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
 /// Represents a widget for [DockingTabs].
+@internal
 class DockingTabsWidget extends StatefulWidget {
   DockingTabsWidget(
       {Key? key,
