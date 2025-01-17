@@ -1,4 +1,4 @@
-## 1.17.0
+## 1.17.0-rc.1
 
 * The dependency `tabbed_view` has been updated to version 1.19.1.
 * The dependency `multi_split_view` has been updated to version 3.6.1.

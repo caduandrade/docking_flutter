@@ -63,7 +63,7 @@ class RemoveItem extends LayoutModifier {
           children.add(newChild);
         }
       });
-      if (children.length == 0) {
+      if (children.isEmpty) {
         return null;
       } else if (children.length == 1) {
         return children.first;
