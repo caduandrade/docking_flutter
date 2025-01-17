@@ -32,14 +32,14 @@ mixin AreaBuilderMixin implements AreaBuilder {
       {required dynamic id,
       required double? weight,
       required List<DockingArea> children}) {
-    return DockingRow(children, id: id, weight: weight);
+    return DockingRow(children, id: id, flex: weight);
   }
 
   DockingColumn buildDockingColumn(
       {required dynamic id,
       required double? weight,
       required List<DockingArea> children}) {
-    return DockingColumn(children, id: id, weight: weight);
+    return DockingColumn(children, id: id, flex: weight);
   }
 
   /// Builds a [DockingTabs].
@@ -48,6 +48,6 @@ mixin AreaBuilderMixin implements AreaBuilder {
       required double? weight,
       required bool maximized,
       required List<DockingItem> children}) {
-    return DockingTabs(children, id: id, weight: weight, maximized: maximized);
+    return DockingTabs(children, id: id, flex: weight, maximized: maximized);
   }
 }

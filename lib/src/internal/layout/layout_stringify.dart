@@ -21,25 +21,25 @@ class LayoutStringify {
   ///   * AREA_ACRONYM
   ///   * ID_LENGTH
   ///   * ID
-  ///   * WEIGHT
+  ///   * FLEX
   ///   * MAXIMIZED
   /// * [DockingColumn]
   ///   * AREA_ACRONYM
   ///   * ID_LENGTH
   ///   * ID
-  ///   * WEIGHT
+  ///   * FLEX
   ///   * CHILDREN_INDEXES
   /// * [DockingRow]
   ///   * AREA_ACRONYM
   ///   * ID_LENGTH
   ///   * ID
-  ///   * WEIGHT
+  ///   * FLEX
   ///   * CHILDREN_INDEXES
   /// * [DockingTabs]
   ///   * AREA_ACRONYM
   ///   * ID_LENGTH
   ///   * ID
-  ///   * WEIGHT
+  ///   * FLEX
   ///   * MAXIMIZED
   ///   * CHILDREN_INDEXES
   ///
@@ -79,7 +79,7 @@ class LayoutStringify {
   /// following data separated by semicolons:
   /// * ID_LENGTH
   /// * ID
-  /// * WEIGHT
+  /// * FLEX
   ///
   /// Example: 3;id1;.2
   static String stringifyArea(
@@ -89,9 +89,9 @@ class LayoutStringify {
     final String id = parser.idToString(area.id);
     data.add(id.length.toString());
     data.add(id);
-    // WEIGHT
-    final String weight = area.weight != null ? area.weight.toString() : '';
-    data.add(weight);
+    // FLEX
+    final String flex = area.flex != null ? area.flex.toString() : '';
+    data.add(flex);
 
     return data.join(';');
   }

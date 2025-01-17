@@ -39,22 +39,17 @@ class DockingExamplePageState extends State<DockingExamplePage> {
         root: DockingRow([
       _buildItem(v++, weight: .2),
       DockingColumn([
-        DockingRow([_nonMaximizableItem, _nonClosableItem, _minimalSizeItem]),
+        DockingRow([_nonMaximizableItem, _nonClosableItem]),
         DockingTabs([_buildItem(v++), _buildItem(v++)]),
-        _minimalWeightItem
+        _minItem
       ])
     ]));
   }
 
-  DockingItem get _minimalWeightItem => DockingItem(
-      name: 'minimalSize',
-      minimalWeight: .15,
-      widget: const CenterText(text: 'minimalWeight: .15'));
-
-  DockingItem get _minimalSizeItem => DockingItem(
-      name: 'minimalSize',
-      minimalSize: 150,
-      widget: const CenterText(text: 'minimalSize: 150'));
+  DockingItem get _minItem => DockingItem(
+      name: 'min',
+      min: 0.2,
+      widget: const CenterText(text: 'min: 0.2'));
 
   DockingItem get _nonMaximizableItem => DockingItem(
       name: 'non-maximizable',
@@ -69,7 +64,7 @@ class DockingExamplePageState extends State<DockingExamplePage> {
   DockingItem _buildItem(int value,
       {double? weight, bool closable = true, bool? maximizable}) {
     return DockingItem(
-        weight: weight,
+        flex: weight,
         name: value.toString(),
         closable: closable,
         maximizable: maximizable,

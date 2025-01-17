@@ -94,7 +94,7 @@ class _DockingState extends State<Docking> {
     return Container();
   }
 
-  Widget _buildArea(BuildContext context, DockingArea area) {
+  Widget _buildArea(BuildContext context, Area area) {
     if (area is DockingItem) {
       return DockingItemWidget(
           key: area.key,
@@ -143,28 +143,18 @@ class _DockingState extends State<Docking> {
   }
 
   Widget _row(BuildContext context, DockingRow row) {
-    List<Widget> children = [];
-    row.forEach((child) {
-      children.add(_buildArea(context, child));
-    });
-
     return MultiSplitView(
         key: row.key,
-        children: children,
+        builder: _buildArea,
         axis: Axis.horizontal,
         controller: row.controller,
         antiAliasingWorkaround: widget.antiAliasingWorkaround);
   }
 
   Widget _column(BuildContext context, DockingColumn column) {
-    List<Widget> children = [];
-    column.forEach((child) {
-      children.add(_buildArea(context, child));
-    });
-
     return MultiSplitView(
         key: column.key,
-        children: children,
+        builder: _buildArea,
         axis: Axis.vertical,
         controller: column.controller,
         antiAliasingWorkaround: widget.antiAliasingWorkaround);

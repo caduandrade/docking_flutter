@@ -1,3 +1,5 @@
+import 'package:multi_split_view/multi_split_view.dart';
+
 /// Parser between DockingLayout and String.
 abstract class LayoutParser {
   const LayoutParser();
@@ -12,6 +14,9 @@ abstract class LayoutParser {
 mixin LayoutParserMixin implements LayoutParser {
   /// Default conversion from ID to String.
   String idToString(dynamic id) {
+    if (id is AreaId) {
+      return '';
+    }
     return id == null ? '' : id.toString();
   }
 
