@@ -20,7 +20,7 @@ mixin DropArea {}
 /// Represents any area of the layout.
 abstract class DockingArea extends Area {
   DockingArea({dynamic id, double? size, double? flex, double? min})
-      : super(id:id, size: size, flex: flex, min: min);
+      : super(id: id, size: size, flex: flex, min: min);
 
   int _layoutId = -1;
 
@@ -420,6 +420,9 @@ class DockingLayout extends ChangeNotifier {
   /// The id of this layout.
   int get id => this.hashCode;
 
+  /// Used by the widget to force a rebuild.
+  VoidCallback? _rebuildCallback;
+
   /// The protected root of this layout.
   DockingArea? _root;
 
@@ -441,11 +444,19 @@ class DockingLayout extends ChangeNotifier {
     _root = root;
     _reset();
     notifyListeners();
+    rebuild();
+  }
+
+  /// Notifies that some change has occurred in the layout.
+  void notifyLayoutChange() {
+    notifyListeners();
   }
 
   /// Notifies the UI to rebuild the layout.
   void rebuild() {
-    notifyListeners();
+    if (_rebuildCallback != null) {
+      _rebuildCallback!();
+    }
   }
 
   void _reset() {
@@ -541,6 +552,7 @@ class DockingLayout extends ChangeNotifier {
       dockingItem._maximized = true;
       _maximizedArea = dockingItem;
       notifyListeners();
+      rebuild();
     }
   }
 
@@ -554,6 +566,7 @@ class DockingLayout extends ChangeNotifier {
       dockingTabs._maximized = true;
       _maximizedArea = dockingTabs;
       notifyListeners();
+      rebuild();
     }
   }
 
@@ -573,6 +586,7 @@ class DockingLayout extends ChangeNotifier {
   void restore() {
     _removesMaximizedStatus();
     notifyListeners();
+    rebuild();
   }
 
   /// Moves a DockingItem in this layout.
@@ -678,6 +692,7 @@ class DockingLayout extends ChangeNotifier {
     });
 
     notifyListeners();
+    rebuild();
   }
 
   /// Gets all [DockingArea] from this layout.
@@ -743,5 +758,13 @@ class DockingLayout extends ChangeNotifier {
   String stringify({required LayoutParser parser}) {
     final List<DockingArea> areas = layoutAreas();
     return LayoutStringify.stringify(parser: parser, areas: areas);
+  }
+}
+
+@internal
+class DockingLayoutHelper {
+  static void setRebuildCallback(
+      {required DockingLayout? layout, VoidCallback? callback}) {
+    layout?._rebuildCallback = callback;
   }
 }

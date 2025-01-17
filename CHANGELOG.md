@@ -2,6 +2,9 @@
 
 * The dependency `tabbed_view` has been updated to version 1.19.1.
 * The dependency `multi_split_view` has been updated to version 3.6.1.
+* `DockingLayout`
+  * The method `notifyLayoutChange` has been added.
+  * Changing the size/flex of areas now notifies listeners.
 
 ## 1.16.1
 

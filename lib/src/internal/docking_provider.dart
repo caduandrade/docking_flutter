@@ -2,7 +2,9 @@ import 'package:docking/src/docking_buttons_builder.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:docking/src/on_item_close.dart';
 import 'package:docking/src/on_item_selection.dart';
+import 'package:meta/meta.dart';
 
+@internal
 class DockingProvider {
   const DockingProvider(
       {required this.layout,

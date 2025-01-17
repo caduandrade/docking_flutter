@@ -1,4 +1,4 @@
-import 'package:docking/src/drag_over_position.dart';
+import 'package:docking/src/internal/drag_over_position.dart';
 import 'package:docking/src/layout/docking_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';

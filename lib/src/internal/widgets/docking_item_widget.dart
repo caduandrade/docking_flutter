@@ -1,5 +1,5 @@
 import 'package:docking/src/docking_buttons_builder.dart';
-import 'package:docking/src/drag_over_position.dart';
+import 'package:docking/src/internal/drag_over_position.dart';
 import 'package:docking/src/internal/widgets/draggable_config_mixin.dart';
 import 'package:docking/src/internal/widgets/drop/content_wrapper.dart';
 import 'package:docking/src/internal/widgets/drop/drop_feedback_widget.dart';
