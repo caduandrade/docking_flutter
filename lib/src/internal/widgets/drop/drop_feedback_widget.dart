@@ -26,7 +26,7 @@ class _CustomPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (dropPosition != null) {
       Paint paint = Paint()
-        ..color = Colors.black.withOpacity(.5)
+        ..color = Colors.black.withValues(alpha: .5)
         ..style = PaintingStyle.fill;
       late Rect rect;
       if (dropPosition == DropPosition.top) {
