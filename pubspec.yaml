@@ -18,9 +18,9 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.7.0
-  tabbed_view: '1.19.1'
+  tabbed_view: ^1.19.1
     #path: ../tabbed_view/
-  multi_split_view: '3.6.1-rc.2'
+  multi_split_view: ^3.6.1-rc.2
     #path: ../multi_split_view/
 
 dev_dependencies:
