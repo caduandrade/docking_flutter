@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:docking/src/docking_buttons_builder.dart';
 import 'package:docking/src/internal/drag_over_position.dart';
 import 'package:docking/src/internal/widgets/draggable_config_mixin.dart';
@@ -152,7 +154,7 @@ class DockingItemWidgetState extends State<DockingItemWidget>
     return [];
   }
 
-  bool _tabCloseInterceptor(int tabIndex) {
+  FutureOr<bool> _tabCloseInterceptor(int tabIndex, TabData tabData) {
     if (widget.itemCloseInterceptor != null) {
       return widget.itemCloseInterceptor!(widget.item);
     }

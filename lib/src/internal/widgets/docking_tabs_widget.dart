@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:docking/src/docking_buttons_builder.dart';
@@ -172,7 +173,7 @@ class DockingTabsWidgetState extends State<DockingTabsWidget>
     return buttons;
   }
 
-  bool _tabCloseInterceptor(int tabIndex) {
+  FutureOr<bool> _tabCloseInterceptor(int tabIndex, TabData tabData) {
     if (widget.itemCloseInterceptor != null) {
       return widget.itemCloseInterceptor!(widget.dockingTabs.childAt(tabIndex));
     }
