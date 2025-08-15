@@ -242,7 +242,10 @@ class DockingItem extends DockingArea with DropArea {
       this.leading,
       double? size,
       double? flex,
-      double? min})
+      double? min,
+      this.normalStatusTheme,
+      this.highlightedStatusTheme,
+      this.selectedStatusTheme})
       : this.buttons = buttons != null ? List.unmodifiable(buttons) : [],
         this.globalKey = keepAlive ? GlobalKey() : null,
         this._maximized = maximized,
@@ -289,6 +292,10 @@ class DockingItem extends DockingArea with DropArea {
 
   @override
   String get areaAcronym => 'I';
+
+  final TabStatusThemeData? normalStatusTheme;
+  final TabStatusThemeData? selectedStatusTheme;
+  final TabStatusThemeData? highlightedStatusTheme;
 }
 
 /// Represents an area for a collection of widgets.

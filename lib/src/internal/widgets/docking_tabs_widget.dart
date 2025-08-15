@@ -92,7 +92,10 @@ class DockingTabsWidgetState extends State<DockingTabsWidget>
           keepAlive: child.globalKey != null,
           leading: child.leading,
           buttons: buttons,
-          draggable: widget.draggable));
+          draggable: widget.draggable,
+          normalStatusTheme: child.normalStatusTheme,
+          highlightedStatusTheme: child.highlightedStatusTheme,
+          selectedStatusTheme: child.selectedStatusTheme));
     });
     TabbedViewController controller = TabbedViewController(tabs);
     controller.selectedIndex =

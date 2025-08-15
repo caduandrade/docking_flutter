@@ -89,7 +89,10 @@ class DockingItemWidgetState extends State<DockingItemWidget>
           closable: widget.item.closable,
           leading: widget.item.leading,
           buttons: buttons,
-          draggable: widget.draggable)
+          draggable: widget.draggable,
+          normalStatusTheme: widget.item.normalStatusTheme,
+          highlightedStatusTheme: widget.item.highlightedStatusTheme,
+          selectedStatusTheme: widget.item.selectedStatusTheme)
     ];
     TabbedViewController controller = TabbedViewController(tabs);
 
