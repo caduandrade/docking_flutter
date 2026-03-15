@@ -10,6 +10,7 @@ import 'package:docking/src/on_item_selection.dart';
 import 'package:docking/src/theme/docking_theme.dart';
 import 'package:docking/src/theme/docking_theme_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:meta/meta.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
@@ -139,8 +140,12 @@ class DockingItemWidgetState extends State<DockingItemWidget>
 
   void _updateActiveDropPosition(DropPosition? dropPosition) {
     if (_activeDropPosition != dropPosition) {
-      setState(() {
-        _activeDropPosition = dropPosition;
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            _activeDropPosition = dropPosition;
+          });
+        }
       });
     }
   }
