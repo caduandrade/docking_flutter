@@ -1,3 +1,8 @@
+## 1.16.2
+
+* Bugfix
+  * Defer state updates during drag-and-drop to prevent layout collisions in split-view panes.
+
 ## 1.16.1
 
 * Bugfix
