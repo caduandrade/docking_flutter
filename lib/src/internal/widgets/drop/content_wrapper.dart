@@ -10,59 +10,32 @@ abstract class ContentWrapperBase extends StatelessWidget {
       {Key? key,
       required this.layout,
       required this.listener,
-      required this.child})
+      required this.child,
+      this.allowRightEdgeDrop = false})
       : super(key: key);
 
   final DockingLayout layout;
   final Widget child;
   final DropWidgetListener listener;
+  final bool allowRightEdgeDrop;
 
   @nonVirtual
   @override
   Widget build(BuildContext context) {
+    if (!allowRightEdgeDrop) {
+      return child;
+    }
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      List<Widget> children = [Positioned.fill(child: child)];
-
-      // percentage of width reserved for detecting center area
-      const double centerWidthRatio = 50;
-      // reserved width to detect center area
-      final double centerWidth = centerWidthRatio * constraints.maxWidth / 100;
-      // reserved width to detect left and right areas
-      final double horizontalEdgeWidth =
-          (constraints.maxWidth - centerWidth) / 2;
-      // height reserved for detecting the top and bottom areas
-      final double verticalEdgeHeight = constraints.maxHeight / 2;
-
-      children.add(Positioned(
-          child: buildDropAnchor(DropPosition.left),
-          width: horizontalEdgeWidth,
-          bottom: 0,
-          top: 0,
-          left: 0));
-
-      children.add(Positioned(
-          child: buildDropAnchor(DropPosition.right),
-          width: horizontalEdgeWidth,
-          bottom: 0,
-          top: 0,
-          right: 0));
-
-      children.add(Positioned(
-          child: buildDropAnchor(DropPosition.top),
-          height: verticalEdgeHeight,
-          top: 0,
-          left: horizontalEdgeWidth,
-          right: horizontalEdgeWidth));
-
-      children.add(Positioned(
-          child: buildDropAnchor(DropPosition.bottom),
-          height: verticalEdgeHeight,
-          bottom: 0,
-          left: horizontalEdgeWidth,
-          right: horizontalEdgeWidth));
-
-      return Stack(children: children);
+      return Stack(children: [
+        Positioned.fill(child: child),
+        Positioned(
+            child: buildDropAnchor(DropPosition.right),
+            width: constraints.maxWidth / 2,
+            top: 0,
+            bottom: 0,
+            right: 0),
+      ]);
     });
   }
 
@@ -75,9 +48,14 @@ class ItemContentWrapper extends ContentWrapperBase {
       {required DockingLayout layout,
       required DropWidgetListener listener,
       required DockingItem dockingItem,
-      required Widget child})
+      required Widget child,
+      bool allowRightEdgeDrop = false})
       : _dockingItem = dockingItem,
-        super(layout: layout, listener: listener, child: child);
+        super(
+            layout: layout,
+            listener: listener,
+            child: child,
+            allowRightEdgeDrop: allowRightEdgeDrop);
 
   final DockingItem _dockingItem;
 
@@ -97,9 +75,14 @@ class TabsContentWrapper extends ContentWrapperBase {
       {required DockingLayout layout,
       required DropWidgetListener listener,
       required DockingTabs dockingTabs,
-      required Widget child})
+      required Widget child,
+      bool allowRightEdgeDrop = false})
       : _dockingTabs = dockingTabs,
-        super(layout: layout, listener: listener, child: child);
+        super(
+            layout: layout,
+            listener: listener,
+            child: child,
+            allowRightEdgeDrop: allowRightEdgeDrop);
 
   final DockingTabs _dockingTabs;
 

@@ -85,7 +85,10 @@ class DockingItemWidgetState extends State<DockingItemWidget>
           value: widget.item,
           text: name,
           content: content,
-          closable: widget.item.closable,
+          closable:
+              widget.layout.layoutAreas().whereType<DockingItem>().length > 1
+                  ? widget.item.closable
+                  : false,
           leading: widget.item.leading,
           buttons: buttons,
           draggable: widget.draggable)

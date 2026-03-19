@@ -50,6 +50,10 @@ class DockingTabsWidgetState extends State<DockingTabsWidget>
     with DraggableConfigMixin {
   DropPosition? _activeDropPosition;
 
+  /// Allow right edge drop only when there is a single pane —
+  /// i.e. root is not yet a DockingRow.
+  bool get _allowRightEdgeDrop => widget.layout.root is! DockingRow;
+
   @override
   Widget build(BuildContext context) {
     List<TabData> tabs = [];
@@ -82,16 +86,23 @@ class DockingTabsWidgetState extends State<DockingTabsWidget>
               onPressed: () => widget.layout.maximizeDockingItem(child)));
         }
       }
+
+      // Hide close button when this is the very last tab in the layout
+      final int totalItems =
+          widget.layout.layoutAreas().whereType<DockingItem>().length;
+      final bool closable = totalItems > 1 ? child.closable : false;
+
       tabs.add(TabData(
           value: child,
           text: child.name != null ? child.name! : '',
           content: content,
-          closable: child.closable,
+          closable: closable,
           keepAlive: child.globalKey != null,
           leading: child.leading,
           buttons: buttons,
           draggable: widget.draggable));
     });
+
     TabbedViewController controller = TabbedViewController(tabs);
     controller.selectedIndex =
         math.min(widget.dockingTabs.selectedIndex, tabs.length - 1);
@@ -119,8 +130,10 @@ class DockingTabsWidgetState extends State<DockingTabsWidget>
             listener: _updateActiveDropPosition,
             layout: widget.layout,
             dockingTabs: widget.dockingTabs,
+            allowRightEdgeDrop: _allowRightEdgeDrop,
             child: controller.tabs[tabIndex].content!),
         onBeforeDropAccept: widget.draggable ? _onBeforeDropAccept : null);
+
     if (widget.draggable && widget.dragOverPosition.enable) {
       return DropFeedbackWidget(
           dropPosition: _activeDropPosition, child: tabbedView);

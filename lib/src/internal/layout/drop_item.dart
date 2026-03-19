@@ -116,8 +116,12 @@ class DropItem extends LayoutModifier {
           oldSelection = child;
         }
       }
+
       final DockingArea? newArea;
-      if (children.length == 1) {
+      if (children.isEmpty) {
+        // Pane emptied — remove it from layout entirely.
+        newArea = null;
+      } else if (children.length == 1) {
         newArea = children.first;
       } else {
         newArea = DockingTabs(children,
@@ -133,6 +137,7 @@ class DropItem extends LayoutModifier {
               newSelectedIndex > -1 ? newSelectedIndex : 0;
         }
       }
+
       if (dockingTabs == targetArea) {
         DockingItem newDraggedItem = dropItem;
         if (dropIndex != null) {
@@ -159,13 +164,13 @@ class DropItem extends LayoutModifier {
           }
           return newDockingTabs;
         } else if (dropPosition == DropPosition.top) {
-          return DockingColumn([newDraggedItem, newArea]);
+          return DockingColumn([newDraggedItem, newArea!]);
         } else if (dropPosition == DropPosition.bottom) {
-          return DockingColumn([newArea, newDraggedItem]);
+          return DockingColumn([newArea!, newDraggedItem]);
         } else if (dropPosition == DropPosition.left) {
-          return DockingRow([newDraggedItem, newArea]);
+          return DockingRow([newDraggedItem, newArea!]);
         } else if (dropPosition == DropPosition.right) {
-          return DockingRow([newArea, newDraggedItem]);
+          return DockingRow([newArea!, newDraggedItem]);
         } else {
           throw ArgumentError(
               'DropPosition not recognized: ' + dropPosition.toString());

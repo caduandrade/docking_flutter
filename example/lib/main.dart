@@ -1,5 +1,6 @@
 import 'package:docking/docking.dart';
 import 'package:flutter/material.dart';
+import 'package:tabbed_view/tabbed_view.dart';
 
 void main() {
   runApp(const DockingExampleApp());
@@ -13,9 +14,7 @@ class DockingExampleApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Docking example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const DockingExamplePage(),
     );
   }
@@ -34,56 +33,113 @@ class DockingExamplePageState extends State<DockingExamplePage> {
   @override
   void initState() {
     super.initState();
-    int v = 1;
     _layout = DockingLayout(
-        root: DockingRow([
-      _buildItem(v++, weight: .2),
-      DockingColumn([
-        DockingRow([_nonMaximizableItem, _nonClosableItem, _minimalSizeItem]),
-        DockingTabs([_buildItem(v++), _buildItem(v++)]),
-        _minimalWeightItem
-      ])
-    ]));
+      root: DockingRow([
+        DockingTabs([
+          DockingItem(
+            id: 'left_1',
+            name: 'Home',
+            widget: const CenterText(text: 'Left — Home'),
+          ),
+          DockingItem(
+            id: 'left_2',
+            name: 'Documents',
+            widget: const CenterText(text: 'Left — Documents'),
+          ),
+          DockingItem(
+            id: 'left_3',
+            name: 'Downloads',
+            widget: const CenterText(text: 'Left — Downloads'),
+          ),
+          DockingItem(
+            id: 'left_4',
+            name: 'Desktop',
+            widget: const CenterText(text: 'Left — Desktop'),
+          ),
+        ]),
+        DockingTabs([
+          DockingItem(
+            id: 'right_1',
+            name: 'Android',
+            widget: const CenterText(text: 'Right — Android'),
+          ),
+          DockingItem(
+            id: 'right_2',
+            name: 'DCIM',
+            widget: const CenterText(text: 'Right — DCIM'),
+          ),
+          DockingItem(
+            id: 'right_3',
+            name: 'Pictures',
+            widget: const CenterText(text: 'Right — Pictures'),
+          ),
+          DockingItem(
+            id: 'right_4',
+            name: 'Music',
+            widget: const CenterText(text: 'Right — Music'),
+          ),
+        ]),
+      ]),
+    );
   }
 
-  DockingItem get _minimalWeightItem => DockingItem(
-      name: 'minimalSize',
-      minimalWeight: .15,
-      widget: const CenterText(text: 'minimalWeight: .15'));
-
-  DockingItem get _minimalSizeItem => DockingItem(
-      name: 'minimalSize',
-      minimalSize: 150,
-      widget: const CenterText(text: 'minimalSize: 150'));
-
-  DockingItem get _nonMaximizableItem => DockingItem(
-      name: 'non-maximizable',
-      maximizable: false,
-      widget: const CenterText(text: 'non-maximizable'));
-
-  DockingItem get _nonClosableItem => DockingItem(
-      name: 'non-closable',
-      closable: false,
-      widget: const CenterText(text: 'non-closable'));
-
-  DockingItem _buildItem(int value,
-      {double? weight, bool closable = true, bool? maximizable}) {
-    return DockingItem(
-        weight: weight,
-        name: value.toString(),
-        closable: closable,
-        maximizable: maximizable,
-        widget: Center(child: Text('$value')));
+  bool _onCloseInterceptor(DockingItem item) {
+    // Block close if this is the very last tab in the entire layout
+    final totalItems = _layout.layoutAreas().whereType<DockingItem>().length;
+    return totalItems > 1;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: TabbedViewTheme(
-            data: TabbedViewThemeData.classic(),
-            child: Container(
-                padding: const EdgeInsets.all(16),
-                child: Docking(layout: _layout))));
+      body: TabbedViewTheme(
+        data: TabbedViewThemeData.minimalist(),
+        child: Docking(
+          layout: _layout,
+          draggable: true,
+          itemCloseInterceptor: _onCloseInterceptor,
+          dockingButtonsBuilder: (context, dockingTabs, dockingItem) {
+            if (dockingTabs != null) {
+              return [
+                TabButton(
+                  icon: IconProvider.data(Icons.add),
+                  onPressed: () {
+                    _layout.addItemOn(
+                      newItem: DockingItem(
+                        id: 'new_${DateTime.now().millisecondsSinceEpoch}',
+                        name: 'New Tab',
+                        widget: const CenterText(text: 'New Tab'),
+                      ),
+                      targetArea: dockingTabs,
+                      dropIndex: dockingTabs.childrenCount,
+                    );
+                  },
+                )
+              ];
+            }
+            if (dockingItem != null) {
+              return [
+                TabButton(
+                  icon: IconProvider.data(Icons.add),
+                  onPressed: () {
+                    _layout.addItemOn(
+                      newItem: DockingItem(
+                        id: 'new_${DateTime.now().millisecondsSinceEpoch}',
+                        name: 'New Tab',
+                        widget: const CenterText(text: 'New Tab'),
+                      ),
+                      targetArea: dockingItem,
+                      dropIndex: 1,
+                    );
+                  },
+                )
+              ];
+            }
+            return [];
+          },
+        ),
+      ),
+    );
   }
 }
 
@@ -94,6 +150,8 @@ class CenterText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text(text, overflow: TextOverflow.ellipsis));
+    return Center(
+      child: Text(text, overflow: TextOverflow.ellipsis),
+    );
   }
 }
